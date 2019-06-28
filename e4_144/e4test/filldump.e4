@@ -1,0 +1,70 @@
+CR .( eForth memory fill & dump )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110209 jwr runs on ga144 sram eForth
+\ 20080825 bee add continuous scrolling and non-scrolling dump
+\ ==============================================================
+
+[DEFINED] M.DEMO 0= IF\ M.DEMO
+MARKER M.DEMO
+DECIMAL
+
+\ ==============================================================
+create da 2 cells allot
+
+: xmfill ( w da u -- )
+   >r da 2! begin r> dup while 1- >r
+     dup da 2@ 2dup 1. d+ da 2! xm!
+   repeat 2drop ;
+
+: xmwck ( da u -- ) \ puts test value in mem = dah + dal
+   >r 2dup da 2! + begin r> dup while 1- >r
+     dup da 2@ 2dup 1. d+ da 2! xm! 1+
+   repeat 2drop ;
+
+: xmrck ( da u -- ) \ reads test value in mem = dah + dal
+   >r 2dup da 2! + begin r> dup while 1- >r
+     dup da 2@ 2dup 1. d+ da 2! xm@ xor >r 1+ r>
+   until da 2@ .s exit then 2drop ." matches" ;
+
+\ ==============================================================
+\ tests -- dump xram
+
+: xmline ( da -- da+8 ) \ display 8 locations
+   cr base @ >r hex 2dup 8 d.r
+   8 >r begin r> dup while 1- >r
+     2dup xm@ 6 u.r 1. d+
+   repeat drop r> base ! ;
+
+\ swiftforth color attributes
+
+: INVERSE [CTRL] [ EMIT ." [7m" ;
+
+: NORMAL  [CTRL] [ EMIT ." [0m" ;
+
+CREATE COLOR[]
+   ' NORMAL ,  ' INVERSE , \ ' BRIGHT ,  ' BOLD ,
+\  ' CYAN ,    ' MAGENTA ,   ' YELLOW ,  ' GREEN ,
+HERE COLOR[] - 1 CELLS / CONSTANT #COLORS
+
+: .COLOR ( u -- ) CELLS COLOR[] + @ EXECUTE ;
+
+: COLOR2 ( u -- u ) DUP #COLORS U< AND  DUP .COLOR 1+ ;
+
+: XMDUMP ( da -- da ) \ continuous dump, non-scrolling
+   #COLORS PAGE
+   BEGIN 1 DUP AT-XY ( start position )
+     COLOR2 >R  16 ( number of lines )
+     BEGIN >R  xmline  R> 1- ?DUP 0=
+     UNTIL R>  NUF?
+   UNTIL DROP NORMAL ;
+
+: HELP
+ cr ." <w> <da> <u> XMFILL - fill region with <w>
+ cr ." <da> <u> XMWCK      - fill region with da.h + da.l"
+ cr ." <da> <u> XMRCK      - compare region with da.h + da.l"
+ cr ." <da> XMDUMP         - colorful 16-line version" cr ;
+HELP
+HAND
+

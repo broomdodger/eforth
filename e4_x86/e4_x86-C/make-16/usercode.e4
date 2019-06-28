@@ -1,0 +1,168 @@
+CR .( ++++ eForth btc x86 user CODE optimization  cell=16 ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110125 bee add _VAR _CON
+\ 20070926 bee fixes  2DUP was 32bit version  RSHIFT was signed
+\ 20070926 bee add UM* UM/MOD ABS _VAR _CON
+\ 20070916 bee add CODE-VERSION  split out code.lib.e4
+\ 20070725 bee back to EXIT  'XT! CHARS C! C@
+\ 20070724 bee remove EXIT use 0 token
+\ 20070517 bee char=8 cell=16
+\ 20070516 bee add char=8 cell=32 to CHARS CELLS
+\ 20070516 bee add 1+ 1-  fix CHAR+ CHAR-
+\ 20070511 bee add ATTRIBUTE&  add optimizations
+\ 20070423 bee separate code and list
+\ ==============================================================
+
+CR .( CODE optimizations of LIST words ) CR
+
+CODE _LIT ( -- n )( 0x10 )
+  D# 0 ip [] push             \ get literal
+  D# 1 CELLS ## ip add  next, \ ip+ -> ip
+END-CODE COMPILE-ONLY
+
+CODE _VAR ( -- a )( 0xB9 )
+  ip push  'EXIT jmp
+END-CODE COMPILE-ONLY
+
+CODE _CON ( -- n )( 0xBA )
+  D# 0 ip [] push  'EXIT jmp
+END-CODE COMPILE-ONLY
+
+CODE NOOP ( -- )( 0x7B )
+  next,
+END-CODE
+
+CODE NIP ( n1 n2 -- n2 )( 6.2.1930 ( 0x4D )
+  ax pop  bx pop  ax push  next,
+END-CODE
+
+CODE 2DROP ( n n -- )( 6.1.0370 ( 0x52 )
+  ax pop  ax pop  next,
+END-CODE
+
+CODE 2DUP ( n1 n2 -- n1 n2 n1 n2 )( 6.1.0380 ( 0x53 )
+  ax pop bx pop  bx push ax push  bx push ax push  next,
+END-CODE
+
+CODE ?DUP ( n -- n n | 0 )( 6.1.0630 ( 0x50 )
+  ax pop  ax ax or  z= ~ if  ax push  then  ax push  next,
+END-CODE
+
+CODE INVERT ( n -- n )( 6.1.1720 ( 0x26 )
+  ax pop  ax not  ax push  next,
+END-CODE
+
+CODE + ( u u -- u )( 6.1.0120 ( 0x1E )
+  ax pop  bx pop  bx ax add  ax push  next,
+END-CODE
+
+CODE NEGATE ( n -- n )( 6.1.1910 ( 0x2C )
+  ax pop  ax not  ax inc  ax push  next, \ invert 1 +
+END-CODE
+
+CODE - ( n n -- n )( 6.1.0160 ( 0x1F )
+  bx pop  ax pop  bx ax sub  ax push  next,
+END-CODE
+
+CODE SWAP- ( n n -- n )
+  ax pop  bx pop  bx ax sub  ax push  next,
+END-CODE
+
+CODE 0= ( n -- f )( 6.1.0270 ( 0x34 )
+  bx pop  bx neg  bx bx sbb  bx not  bx push  next,
+END-CODE
+
+CODE LSHIFT ( u n -- u )( 6.1.1805 ( 0x27 )
+  cx pop  cx? if  ax pop
+    begin  D# 1 ## ax shl  cx? ~ until  ax push
+  then  next,
+END-CODE
+
+CODE RSHIFT ( u n -- u )( 6.1.2162 ( 0x28 )
+  cx pop  cx? if  ax pop
+    begin  D# 1 ## ax shr  cx? ~ until  ax push
+  then  next,
+END-CODE
+
+CODE +! ( n a -- )( 6.1.0130 ( 0x6C )
+  bx pop  ax pop  ax D# 0 bx [] add  next,
+END-CODE
+
+CODE 2! ( d a -- )( 6.1.0310 ( 0x77 )
+  bx pop  D# 0 bx [] pop  D# 2 bx [] pop  next,
+END-CODE
+
+CODE 2@ ( a -- d )( 6.1.0350 ( 0x76 )
+  bx pop  D# 2 bx [] push  D# 0 bx [] push  next,
+END-CODE
+
+CODE 2/ ( n -- n )( 6.1.0330 ( 0x57 )
+  ax pop  D# 1 ## ax sar  ax push  next,
+END-CODE
+
+CODE 2* ( n -- n )( 6.1.0320 ( 0x59 )
+  ax pop  D# 1 ## ax shl  ax push  next,
+END-CODE
+
+CODE 1+ ( n -- n )( 6.1.0290 )
+  ax pop  ax inc  ax push  next,
+END-CODE
+
+CODE 1- ( n -- n )( 6.1.0300 )
+  ax pop  ax dec  ax push  next,
+END-CODE
+
+CODE ABS ( n -- u )( 6.1.0690 ( 0x2D )
+  ax pop  cwd  dx ax xor  dx ax sub  ax push  next,
+END-CODE
+
+CODE UM* ( u u -- ud )( 6.1.2360 ( 0xD4 )
+  bx pop  ax pop  bx mul  ax push  dx push  next,
+END-CODE
+
+CODE UM/MOD ( ud u -- ur uq )( 6.1.2370 ( 0xD5 )
+  bx pop  dx pop  ax pop  bx div  dx push  ax push  next,
+END-CODE
+
+CODE +* ( n1 n2 -- n1 n3 ) \ c18 signed multiply step
+  ax pop  ax bx mov  D# 1 ## bx and \ test bit0 of t
+  z= ~ if  bx pop  bx push  bx ax add
+  then  D# 1 ## ax sar  ax push  next,
+END-CODE
+
+CODE -1 ( -- -1 )
+  D# -1 ## ax mov  ax push  next,
+END-CODE
+
+\ CODE 0 ( -- 0 )
+\   ax ax xor  ax push  next,
+\ END-CODE
+
+\ CODE 1 ( -- 1 )
+\   D# 1 ## ax mov  ax push  next,
+\ END-CODE
+
+D# 0000 [IF]
+
+\ ==============================================================
+CR .( debug words ) CR
+
+CODE xxx ( -- )
+  CHAR b ## dl mov  \ char in dl
+  D# 2 ## ah mov    \ MS-DOS Character Output
+  H# 021 int        \ ^C terminate
+  next,
+END-CODE
+
+CODE hang ( -- )
+  begin again
+END-CODE
+
+\ ==============================================================
+
+[THEN]
+
+  D# 60000 EQU =MSA   \ MilliSecond Adjust 1600Mhz Intel T2300
+

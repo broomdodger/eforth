@@ -1,0 +1,165 @@
+CR .( ++++ eForth btc s40 core words ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110204 bee init DP WORDLIST from COLD
+\ 20110125 bee move io
+\ 20110121 bee move optimizations
+\ 20110118 jwr add E4SIZE E4ORG
+\ 20110104 bee change to CODE.B
+\ 20081229 jwr removed address and uncommented name for auto XT
+\ 20081101 jwr began to restore Bill's automatic XT assignment
+\ 20080925 jwr XT addresses changed for paging code changes
+\ 20080816 bee move eForth to upper 128k, H# 020000 ORG
+\ 20080713 jwr consistant line-lengths and eForth spelling
+\ 20080711 bee move init MAX binary size to eforth.f
+\ 20080703 bee update date
+\ 20080702 bee start
+\ ==============================================================
+
+CR .( System equates )
+
+H#     0 EQU E4SIZE     \ size in cells  18bit address space
+H# 20000 EQU E4ORG      \ cell address   eforth origin  ( 128k )
+
+D#   128 EQU #RP        \ size in cells  return stack
+D#    64 EQU #SP        \ size in cells  data stack
+
+D#     8 EQU #VOCS      \ size in cells  vocabulary stack depth
+
+D#    80 EQU #PAD       \ size in chars  PAD floats above HERE
+D#   128 D# 2 + H# 010 NEGATE AND H# 010 + \ round up
+         EQU nTIB       \ size in chars  input buffer 128+2
+
+H#   040 EQU =COMP      \ attribute COMPILE-ONLY bit
+H#   080 EQU =IMED      \ attribute IMMEDIATE bit
+H#   03F EQU ATTRIBUTE& \ attribute AND mask
+
+D#     8 EQU =BS        \ backspace character
+D#    10 EQU =LF        \ line feed character
+D#    13 EQU =CR        \ carrage return character
+D#    27 EQU =ESC       \ escape character
+D#    32 EQU =BL        \ space character
+
+D#  130  EQU =MSA       \ MilliSecond Adjust
+
+CR .( Memory allocation )
+
+\ |---h>-pad>---<u\r>--<s\tib>-|
+E4SIZE nTIB CHARS NEGATE + \ end of memory, allocate down
+     H# 010 NEGATE AND     \ H# 010 align
+     H# 03FFFF     AND     \ 18bit address space \ 20080630
+        DUP EQU =TIB       \ terminal input buffer
+        DUP EQU =SP        \ data stack, builds down
+#SP CELLS -                \ allocate data and return stacks
+#RP CELLS - EQU =RP        \ return stack, builds up
+
+\ ==============================================================
+
+CR .( System entry point )
+
+E4ORG ORG
+
+LABEL =DP     H# 0 , H# 0 ,        \ COLD init HERE MARKER
+LABEL =LAST   H# 0 , H# 0 , H# 0 , \ COLD init WORDLIST
+HERE =DP - EQU #DP
+
+LABEL =COLD   H# 0 ,  \ COLD vector
+LABEL =HAND   H# 0 , \ console i/o
+
+LABEL =ioa \ io array \ use ALLOT for sp2
+LABEL =rx?    D# 1 CELLS ALLOT \ key?
+LABEL =tx?    D# 1 CELLS ALLOT \ emit?
+LABEL =echo   D# 1 CELLS ALLOT \ echo
+LABEL =.cr    D# 1 CELLS ALLOT \ .cr
+LABEL =.ok    D# 1 CELLS ALLOT \ .ok
+LABEL =pacer  D# 1 CELLS ALLOT \ pacer
+LABEL =ibuf   D# 1 CELLS ALLOT \ input buffer
+LABEL =obuf   D# 1 CELLS ALLOT \ output buffer
+HERE =ioa - EQU #ioa \ ioa size
+
+CR .( Interpreter ) CR
+
+CODE.B EXIT ( -- (R a -- )( 6.1.1380 ( 0x33 )
+  H# 01e XTXT! ( _EXIT ) END-CODE
+CODE.B EXECUTE ( xt -- )( 6.1.1370 ( 0x1D )
+  H# 028 XTXT! ( EXECUTE ) END-CODE
+
+CR .( Return stack ) CR
+
+CODE.B RP@ ( -- a ) H# 006 XTXT! ( RP@ ) END-CODE
+CODE.B RP! ( a -- ) H# 019 XTXT! ( RP! ) END-CODE COMPILE-ONLY
+
+CODE.B R@ ( -- n (R n -- n )( 6.1.2070 ( 0x32 )
+  H# 009 XTXT! ( R@ ) END-CODE
+CODE.B >R ( n -- (R -- n )( 6.1.0580 ( 0x30 )
+  H# 016 XTXT! ( >R ) END-CODE COMPILE-ONLY
+CODE.B R> ( -- n (R n -- )( 6.1.2060 ( 0x31 )
+  H# 00c XTXT! ( R> ) END-CODE COMPILE-ONLY
+
+CR .( Address Units ) CR
+
+CODE.S CHAR+ ( a -- a )( 6.1.0897 ( 0x62 )
+  H# 003 XTXT! ( CHAR+ ) END-CODE
+CODE.S CELL+ ( a -- a )( 6.1.0880 ( 0x65 )
+  H# 003 XTXT! ( CELL+ ) END-CODE
+
+CODE.S CHAR- ( a -- a ) H# 007 XTXT! ( CHAR- ) END-CODE
+CODE.S CELL- ( a -- a ) H# 007 XTXT! ( CELL- ) END-CODE
+
+CODE.B CHARS ( n -- n )( 6.1.0890 ( 0x69 )
+  H# 023 XTXT! ( bitsy ) END-CODE IMMEDIATE
+CODE.B CELLS ( n -- n )( 6.1.0890 ( 0x69 )
+  H# 023 XTXT! ( bitsy ) END-CODE IMMEDIATE
+
+CR .( Memory Access ) CR
+
+CODE.S @ ( a -- n )( 6.1.0650 ( 0x6D )
+  H# 000 XTXT! ( @ ) END-CODE
+CODE.S C@ ( a -- n )( 6.1.0870 ( 0x71 )
+  H# 000 XTXT! ( C@ ) END-CODE
+CODE.S AU@ ( a -- c )( address units )
+  H# 000 XTXT! ( @ ) END-CODE
+
+CODE.S ! ( n a -- )( 6.1.0010 ( 0x72 )
+  H# 00e XTXT! ( ! ) END-CODE
+CODE.S C! ( n a -- )( 6.1.0850 ( 0x75 )
+  H# 00e XTXT! ( C! ) END-CODE
+CODE.S AU! ( c a -- )( address units )
+  H# 00e XTXT! ( ! ) END-CODE
+
+CR .( Literal & Branch ) CR
+
+CODE.B _IF ( f -- )( 0x14 )
+  H# 02d XTXT! ( _IF ) END-CODE COMPILE-ONLY
+
+CR .( Data stack ) CR
+
+CODE.S SP@ ( -- a ) H# 01b XTXT! ( SP@ ) END-CODE
+CODE.S SP! ( a -- ) H# 01e XTXT! ( SP! ) END-CODE
+
+CODE.S DROP ( n -- )( 6.1.1260 ( 0x46 )
+  H# 020 XTXT! ( _DROP ) END-CODE
+CODE.S OVER ( n1 n2 -- n1 n2 n1 )( 6.1.1990 ( 0x48 )
+  H# 021 XTXT! ( _OVER ) END-CODE
+CODE.S DUP ( n -- n n )( 6.1.1290 ( 0x47 )
+  H# 022 XTXT! ( _DUP ) END-CODE
+CODE.S SWAP ( n1 n2 -- n2 n1 )( 6.1.2260 ( 0x49 )
+  H# 023 XTXT! ( SWAP ) END-CODE
+
+CR .( ALU ) CR
+
+CODE.S UM+ ( u u -- ud ) H# 027 XTXT! ( UM+ ) END-CODE
+
+CODE.S 0< ( n -- f )( 6.1.0250 ( 0x36 )
+  H# 030 XTXT! ( 0< ) END-CODE
+
+CODE.S OR ( n n -- n )( 6.1.1980 ( 0x24 )
+  H# 033 XTXT! ( OR ) END-CODE
+CODE.S XOR ( n n -- n )( 6.1.2490 ( 0x25 )
+  H# 034 XTXT! ( _XOR ) END-CODE
+CODE.S AND ( n n -- n )( 6.1.0720 ( 0x23 )
+  H# 035 XTXT! ( _AND ) END-CODE
+
+LABEL =CODE-VERSION ," c18:20110205"
+

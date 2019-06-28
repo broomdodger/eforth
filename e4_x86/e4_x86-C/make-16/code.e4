@@ -1,0 +1,311 @@
+CR .( ++++ eForth btc x86 core words  cell=16 ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110204 bee init DP WORDLIST from COLD
+\ 20110125 bee move io
+\ 20110121 bee move optimizations
+\ 20110118 jwr add E4SIZE E4ORG
+\ 20101223 bee codebit version
+\ 20090726 bee move !IMAGE to eforth.f
+\ 20070916 bee add CODE-VERSION  split out code.lib.e4
+\ 20070725 bee back to EXIT  'XT! CHARS C! C@
+\ 20070724 bee remove EXIT use 0 token
+\ 20070517 bee char=8 cell=16
+\ 20070516 bee add char=8 cell=32 to CHARS CELLS
+\ 20070516 bee add 1+ 1-  fix CHAR+ CHAR-
+\ 20070511 bee add ATTRIBUTE&  add optimizations
+\ 20070423 bee separate code and list
+
+\ ==============================================================
+\ 8086 register usage
+  \ flags     the direction bit must normally be cleared. CLD
+  \ SI        IP Interpreter  Pointer  DS:SI
+  \ BP        RP Return stack Pointer  SS:BP builds up
+  \ SP        SP data Stack   Pointer  SS:SP builds down
+  \ CS=DS=SS  segment registers
+  \ ES        free
+  \ DI        free  ES:DI
+  \ AX        free
+  \ BX        free
+  \ CX        free
+  \ DX        free
+
+\ ==============================================================
+
+CR .( System equates )
+
+H# 0000 EQU E4SIZE    \ size in cells  model with only 32k
+H# 0100 EQU E4ORG     \ cell address   eForth .com origin
+
+D#  128 EQU #RP       \ size in cells  return stack
+D#   64 EQU #SP       \ size in cells  data stack
+
+D#    8 EQU #VOCS     \ size in cells  vocabulary stack depth
+
+D#   80 EQU #PAD      \ size in chars  PAD floats above HERE
+D#  128 D# 2 + H# 010 NEGATE AND H# 010 + \ round up
+        EQU nTIB      \ size in chars  input buffer 128+2
+
+H# 040 EQU =COMP      \ attribute COMPILE-ONLY bit
+H# 080 EQU =IMED      \ attribute IMMEDIATE bit
+H# 03F EQU ATTRIBUTE& \ attribute AND mask
+
+D#    8 EQU =BS       \ backspace character
+D#   10 EQU =LF       \ line feed character
+D#   13 EQU =CR       \ carrage return character
+D#   27 EQU =ESC      \ escape character
+D#   32 EQU =BL       \ space character
+
+\ D#  1200 EQU =MSA   \ MilliSecond Adjust  300Mhz Celeron
+\ D#  1800 EQU =MSA   \ MilliSecond Adjust  500Mhz Celeron
+  D#  7300 EQU =MSA   \ MilliSecond Adjust 1600Mhz Intel T2300
+
+CR .( Memory allocation )
+
+\ |---h>-pad>---<u\r>--<s\tib>-|
+E4SIZE nTIB CHARS NEGATE +  \ end of memory, allocate down
+     H# 010 NEGATE AND      \ H# 010 align
+     H# 0FFFF      AND      \ limit to 16bit address space
+        DUP EQU =TIB        \ terminal input buffer
+        DUP EQU =SP         \ data stack, builds down
+#SP CELLS -                 \ allocate data and return stacks
+#RP CELLS - EQU =RP         \ return stack, builds up
+
+\ ==============================================================
+
+CR .( System entry point )
+
+E4ORG ORG
+PROC RESET
+  ahead  ALIGN
+
+LABEL =DP     H# 0 , H# 0 ,        \ COLD init HERE MARKER
+LABEL =LAST   H# 0 , H# 0 , H# 0 , \ COLD init WORDLIST
+HERE =DP - EQU #DP
+
+lABEL VRESET  H# 0 , \ boot vector
+LABEL =COLD   H# 0 , \ COLD vector
+LABEL =HAND   H# 0 , \ console i/o
+
+LABEL =ioa \ io array \ use ALLOT for sp2
+LABEL =rx?    D# 1 CELLS ALLOT \ key?
+LABEL =tx?    D# 1 CELLS ALLOT \ emit
+LABEL =echo   D# 1 CELLS ALLOT \ echo
+LABEL =.cr    D# 1 CELLS ALLOT \ .cr
+LABEL =.ok    D# 1 CELLS ALLOT \ .ok
+LABEL =pacer  D# 1 CELLS ALLOT \ pacer
+LABEL =ibuf   D# 1 CELLS ALLOT \ input buffer
+LABEL =obuf   D# 1 CELLS ALLOT \ output buffer
+HERE =ioa - EQU #ioa \ ioa size
+
+  then   VRESET [] jmp
+END-CODE
+
+CR .( Interpreter ) CR
+
+CODE EXIT ( -- (R a -- )( 6.1.1380 ( 0x33 )
+LABEL 'EXIT
+  D# 0 rp [] ip mov         \ unnest, restore ip
+  D# 1 CELLS ## rp sub      \ post-decrement rp
+  begin
+LABEL next_xt               \ from next, and boot
+    D# 0 ip [] ax mov       \ fetch next token
+    D# 1 CELLS ## ip add    \ post-increment ip
+LABEL exec_xt               \ from EXECUTE
+    ax dx mov               \ preserve ax
+    CODEBIT  ## dx and      \ token to address
+  z=   while                \ list token ?
+\   LISTBIT& ## ax and      \ mask list bit
+    D# 1 CELLS ## rp add    \ pre-increment rp
+    ip D# 0 rp [] mov       \ nest ip
+    ax ip mov               \ start new list
+  repeat
+    CODEBIT& ## ax and      \ mask code bit
+    ax jmp                  \ execute code
+
+LABEL boot
+  cli                       \ disable interrupt
+  cs bx mov  bx ds mov      \ ds=cs
+  bx ss mov  bx es mov      \ ss=cs es=cs
+  =SP ## sp mov             \ init SP
+  =RP ## rp mov             \ init RP
+  sti                       \ enable interrrupts
+\ ==============================================================
+  RESET ## dx mov
+  H# 02523 ## ax mov        \ MS-DOS ^C output interrupt
+  H# 021 int
+\ ==============================================================
+  =COLD ## ip mov           \ first word to execute
+  next_xt jmp               \ start interpreting
+  boot VRESET !             \ init boot vector
+END-CODE
+
+CODE EXECUTE ( xt -- )( 6.1.1370 ( 0x1D )
+  ax pop  exec_xt jmp
+END-CODE
+
+CR .( Return stack ) CR
+
+CODE RP@ ( -- a )
+  rp push  next,
+END-CODE
+
+CODE RP! ( a -- )
+  rp pop  next,
+END-CODE COMPILE-ONLY
+
+CODE R@ ( -- n (R n -- n )( 6.1.2070 ( 0x32 )
+  D# 0 rp [] push  next,
+END-CODE
+
+CODE >R ( n -- (R -- n )( 6.1.0580 ( 0x30 )
+  D# 1 CELLS ## rp add  D# 0 rp [] pop  next,
+END-CODE COMPILE-ONLY
+
+CODE R> ( -- n (R n -- )( 6.1.2060 ( 0x31 )
+  D# 0 rp [] push  D# 1 CELLS ## rp sub  next,
+END-CODE COMPILE-ONLY
+
+CR .( Address Units ) CR
+
+CODE CELL- ( a -- a )
+  ax pop  D# 1 CELLS ## ax sub  ax push  next,
+END-CODE
+
+CODE CELL+ ( a -- a )( 6.1.0880 ( 0x65 )
+  ax pop  D# 1 CELLS ## ax add  ax push  next,
+END-CODE
+
+CODE CELLS ( n -- n )( 6.1.0890 ( 0x69 )
+  ax pop  D# 1 ## ax shl  ax push  next,
+END-CODE
+
+CODE CHAR- ( a -- a )
+  ax pop  D# 1 CHARS ## ax sub  ax push  next,
+END-CODE
+
+CODE CHAR+ ( a -- a )( 6.1.0897 ( 0x62 )
+  ax pop  D# 1 CHARS ## ax add  ax push  next,
+END-CODE
+
+D# 0001 CHARS D# 0001 = [IF]
+
+CODE CHARS ( n -- n )( 6.1.0898 ( 0x66 ) \ char=8
+  next,
+END-CODE IMMEDIATE
+
+[ELSE]
+
+CODE CHARS ( n -- n )( 6.1.0898 ( 0x66 ) 'XT! CELLS \ char=16
+END-CODE
+
+[THEN]
+
+CR .( Memory Access ) CR
+
+CODE ! ( n a -- )( 6.1.0010 ( 0x72 )
+  bx pop  D# 0 bx [] pop  next,
+END-CODE
+
+CODE @ ( a -- n )( 6.1.0650 ( 0x6D )
+  bx pop  D# 0 bx [] push  next,
+END-CODE
+
+D# 0001 CHARS D# 0001 = [IF]
+
+CODE C! ( n a -- )( 6.1.0850 ( 0x75 ) \ char=8
+  bx pop  ax pop  al D# 0 bx [] mov  next,
+END-CODE
+
+CODE C@ ( a -- n )( 6.1.0870 ( 0x71 ) \ char=8
+  bx pop  ax ax xor  D# 0 bx [] al mov  ax push  next,
+END-CODE
+
+[ELSE]
+
+CODE C! ( n a -- )( 6.1.0850 ( 0x75 ) 'XT! ! \ char=16
+END-CODE
+
+CODE C@ ( a -- n )( 6.1.0870 ( 0x71 ) 'XT! @ \ char=16
+END-CODE
+
+[THEN]
+
+CODE AU! ( c a -- ) \ address units
+  bx pop  ax pop  al D# 0 bx [] mov  next,
+END-CODE
+
+CODE AU@ ( a -- c ) \ address units
+  bx pop  ax ax xor  D# 0 bx [] al mov  ax push  next,
+END-CODE
+
+CR .( Literal & Branch ) CR
+
+\ do not separate _ELSE _IF
+CODE _ELSE ( -- )( 0x13 ) \ absolute branch
+  begin
+    D# 0 ip [] ip mov  next,  \ 0==: [ip] -> ip
+END-CODE COMPILE-ONLY
+CODE _IF ( f -- )( 0x14 ) \ absolute branch
+    ax pop  ax ax or
+  z= ~ until
+  D# 1 CELLS ## ip add  next, \ 0<>: ip+ -> ip
+END-CODE COMPILE-ONLY
+
+CR .( Data stack ) CR
+
+CODE SP@ ( -- a )
+  sp ax mov  ax push  next,
+END-CODE
+
+CODE SP! ( a -- )
+  sp pop  next,
+END-CODE
+
+CODE DROP ( n -- )( 6.1.1260 ( 0x46 )
+  ax pop  next,
+END-CODE
+
+CODE OVER ( n1 n2 -- n1 n2 n1 )( 6.1.1990 ( 0x48 )
+  ax pop  bx pop  bx push  ax push  bx push  next,
+END-CODE
+
+CODE DUP ( n -- n n )( 6.1.1290 ( 0x47 )
+  ax pop  ax push  ax push  next,
+END-CODE
+
+CODE SWAP ( n1 n2 -- n2 n1 )( 6.1.2260 ( 0x49 )
+  ax pop  bx pop  ax push  bx push  next,
+END-CODE
+
+CR .( ALU ) CR
+
+CODE 0< ( n -- f )( 6.1.0250 ( 0x36 )
+  ax pop  cwd  dx push  next,
+END-CODE
+
+CODE AND ( n n -- n )( 6.1.0720 ( 0x23 )
+  ax pop  bx pop  bx ax and  ax push  next,
+END-CODE
+
+CODE XOR ( n n -- n )( 6.1.2490 ( 0x25 )
+  ax pop  bx pop  bx ax xor  ax push  next,
+END-CODE
+
+CODE OR ( n n -- n )( 6.1.1980 ( 0x24 )
+  ax pop  bx pop  bx ax or  ax push  next,
+END-CODE
+
+CODE UM+ ( u u -- ud )
+  bx pop  ax pop  dx dx xor ( dx=0 )
+  bx ax add  ax push
+  dx dx adc  dx push  next,
+END-CODE
+
+CODE BYE ( -- )( 15.6.2.0830 )
+  H# 020 int \ terminate process
+END-CODE
+
+LABEL =CODE-VERSION ," x86-16:20110205"
+

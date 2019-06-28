@@ -1,0 +1,53 @@
+CR .( ++++ eForth btc x86 io CODE words  cell=32 ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110206 bee change to TX?
+\ 20110125 bee move io
+\ ==============================================================
+
+CR .( Terminal I/O ) CR
+
+CODE TX? ( ~c|n|0 -- ~c|n|0 )
+  dx pop ax pop  dx dx and
+  z< if
+    dx not                \ invert char
+    D# 2 ## ah mov        \ MS-DOS Character Output
+    H# 021 int            \ ^C terminate
+    dx dx xor  ax ax xor  \ MS-DOS alway 0
+  then
+  ax push dx push  next,
+END-CODE
+
+CODE RX? ( -- ~c|0 )
+  bx bx xor  bx cx mov  \ bx=cx=0 setup
+  H# 0FF ## dl mov      \ command = input
+  D# 6 ## ah mov        \ MS-DOS Direct Console I/O
+  H# 021 int
+  z= ~ if               \ key ready ?
+    al bl mov           \ cx=char
+    bx not cx not       \ invert char
+  then
+  cx push bx push  next,
+END-CODE
+
+CODE REDIRECT ( asciiz -- f ) \ MS-DOS redirect input
+  dx pop ax pop           \ dx=filespec0
+  H# 03D00 ## ax mov      \ open file read-only
+  H# 021 int
+  cy ~ if                 \ ?err
+    D# 0 ## cx mov        \ stdin
+    ax bx mov             \ file handle
+    H# 04600 ## ax mov    \ redirect handle
+    H# 021 int            \ file = stdin
+    cy ~ if               \ ?err
+      H# 03E00 ## ax mov  \ close file
+      H# 021 int
+      cy ~ if             \ ?err
+        ax ax xor         \ no err
+      then
+    then
+  then ax push            \ error code
+  cwd  dx push  next,
+END-CODE COMPILE-ONLY
+

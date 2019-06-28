@@ -1,0 +1,57 @@
+CR .( USB-serial adapter test routines )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110206 jwr update for new IOS word
+\ 20080825 bee add continuous scrolling and non-scrolling dump
+\ 20080822 bee random.e4 display upper alpha chars, add counter
+\ 20080719 jwr file-load display more compact CR trailing lines
+\ 20080713 jwr consistant line-lengths and eForth spelling
+\ ==============================================================
+
+[DEFINED] M.DEMO 0= IF\ M.DEMO
+MARKER M.DEMO
+DECIMAL
+
+\ ==============================================================
+
+\ These words wait for the SPACEBAR when they're executed.
+\ So after typing them and pressing ENTER, change the terminal
+\ baud rate if you wish BEFORE pressing the SPACEBAR.
+
+: g ( -- ) 0 ios ( wait for <space> ) . ;
+
+: ga ( -- ) \ display average of ten samples
+  0 10 begin >r 0 ios ( wait for <space> ) + r> 1- dup 0=
+  until drop 5 + 10 / . ;
+
+\ display effects of baud-rate count changes while maintaining
+\ the current rate the left column is descending, the right
+\ column is ascending from the center
+\ Some test results are shown in e4term/bps-test.log.
+
+\ only the string display uses the inc/dec counts
+: .str ( ctr.io try.io -- )
+  dup 5 u.r  space  ios drop ." abcdefghijklmnopqrstuvwxyz"
+  ios drop ; ( restore center count)
+
+: ttx ( centerbps increment -- ) \ test baud rate counts
+  >r dup begin
+    cr  2dup .str 2 spaces 2dup 2dup - 2* + .str  r@ -
+    500 ms  nuf? \ press any key to pause, then <enter> to stop
+  until r> drop 2drop ;
+
+cr .( =====================)
+cr .(    bps     est count )
+cr .( ---------------------)
+cr .(    9600        30000 )
+cr .(   19200        15000 )
+cr .(   38400         7500 )
+cr .(   57600         5000 )
+cr .(  115200         2500 )
+cr .(  230400         1250 )
+cr .(  460800          625 )
+cr .( =====================)
+cr .( example:   2500 25 ttx <enter>  )
+   .( \ pressing <enter> twice stops output)
+

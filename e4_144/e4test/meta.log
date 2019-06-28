@@ -1,0 +1,176 @@
+
+++++ eForth load file for swiftforth ++++
+++++ platform load -- swiftforth ++++
+EMPTY isn't unique.
+++++ Radix Based Number I/O ++++
+++++ SAVEFILE ++++
+++++ eForth nuf? - throttle output ++++
+++++ eForth btc ga144 load file ++++
+++++ eForth btc ga144 cpu definition ++++
+++++ eForth Meta Compiler with Late Binding ++++
+++++ eForth btc ga144 Meta Extensions ++++
+//// Metacompile Begin \\\\
+++++ eForth btc ga144 core words ++++
+System equates
+Memory allocation
+System entry point
+Interpreter
+  EXIT a=F x=C00F   EXECUTE a=1E x=C01E
+Return stack
+  RP@ a=A x=C00A   RP! a=2F x=C02F   R@ a=11 x=C011   >R a=2C x=C02C
+  R> a=14 x=C014
+Address Units
+  CHAR+ a=0 x=8000   CELL+ a=0 x=8000   CHAR- a=E x=800E
+  CELL- a=E x=800E   CHARS a=31 x=8031   CELLS a=31 x=8031
+Memory Access
+  @ a=3C x=803C   C@ a=3C x=803C   AU@ a=3C x=803C   ! a=8 x=8008
+  C! a=8 x=8008   AU! a=8 x=8008
+Literal & Branch
+  _IF a=34 x=C034
+Data stack
+  SP@ a=15 x=8015   SP! a=18 x=8018   DROP a=1A x=801A
+  OVER a=1B x=801B   DUP a=32 x=8032   SWAP a=33 x=8033
+ALU
+  UM+ a=2C x=802C   0< a=2A x=802A   OR a=25 x=8025   XOR a=26 x=8026
+  AND a=27 x=8027
+++++ eForth btc ga144 io CODE words ++++
+Terminal I/O
+  RX? a=3C x=C03C   TX? a=3D x=C03D
+++++ eForth btc ga144 user CODE optimization ++++
+CODE optimizations of LIST words
+  _VAR a=E x=C00E   _CON a=D x=C00D   _ELSE a=6 x=C006
+  _LIT a=32 x=C032   INVERT a=28 x=8028   + a=35 x=8035
+  1+ a=0 x=8000   1- a=E x=800E   CELL/ a=31 x=8031   CHAR/ a=31 x=8031
+  ALIGN a=31 x=8031   ALIGNED a=31 x=8031   NOOP a=31 x=8031
+  2* a=24 x=8024   2/ a=4 x=8004
+User application CODE words
+  XM! a=1C x=801C   XM@ a=1F x=801F   XCX a=21 x=8021   BTC.DN a=115 x=C115
+  BTC.UP a=145 x=C145   STK.DN a=115 x=8115   STK.UP a=145 x=8145
+++++ eForth btc inline heads model ++++
+List definitions
+
+System variables
+  BASE a=191 x=C9   DPL a=19A x=CD   HLD a=1A2 x=D1   >IN a=1AA x=D5
+  #IN a=1B2 x=D9   CSP a=1BB x=DE   STATE a=1C6 x=E3   DP a=1CE x=E7
+  SUP a=1DA x=ED   BL a=1E2 x=F1   #TIB a=1EB x=F6   \r a=1F3 x=FA
+  \n a=1FB x=FE
+Data stack and ALU
+  HEX a=204 x=102   DECIMAL a=213 x=10A   NIP a=21F x=110
+  ROT a=229 x=115   2DROP a=237 x=11C   2DUP a=242 x=121
+  ?DUP a=24C x=126   NEGATE a=25A x=12D   - a=261 x=131
+  ABS a=26B x=136   S>D a=278 x=13C   D+ a=280 x=140   DNEGATE a=293 x=14A
+  DABS a=2A4 x=152
+Comparison
+  0= a=2AF x=158   = a=2BC x=15E   U< a=2C4 x=162   < a=2D3 x=16A
+  MIN a=2E5 x=173   MAX a=2F2 x=179   WITHIN a=301 x=181
+Multiply
+  LSHIFT a=312 x=189   UM* a=324 x=192   M* a=34B x=1A6
+  * a=35D x=1AF
+Divide
+  RSHIFT a=36A x=1B5   RIVE a=385 x=1C3   UM/MOD a=398 x=1CC
+  SM/REM a=3D4 x=1EA   FM/MOD a=3F3 x=1FA   /MOD a=415 x=20B
+  MOD a=421 x=211   / a=429 x=215   */MOD a=435 x=21B   */ a=440 x=220
+Memory access
+  +! a=448 x=224   COUNT a=457 x=22C   BOUNDS a=466 x=233
+  /STRING a=474 x=23A   2! a=480 x=240   2@ a=48B x=246
+  MOVE a=499 x=24D   ERASE a=4D1 x=269   FILL a=4E7 x=274
+  -TRAILING a=504 x=282   >ADR a=519 x=28D   >BODY a=531 x=299
+  UPPER a=53D x=29F
+Multitask
+  UP a=54E x=2A7   _USR a=557 x=2AC   FOLLOWER a=569 x=2B5
+  STATUS a=575 x=2BB   TOS a=57E x=2BF   TID a=586 x=2C3
+  TF a=58D x=2C7   U1 a=595 x=2CB   U2 a=59D x=2CF   PAUSE a=5A8 x=2D4
+  _WAKE a=5B8 x=2DC   WAKE a=5C7 x=2E4   PASS a=5D1 x=2E9
+  'S a=5D9 x=2ED   AWAKE a=5E9 x=2F5   SLEEP a=5F8 x=2FC
+  STOP a=605 x=303   ACTIVATE a=616 x=30B   BUILD a=62B x=316
+  GET a=644 x=322   RELEASE a=662 x=331
+Error handling
+  CATCH a=677 x=33C   THROW a=691 x=349   DEPTH a=6AA x=355
+  ABORT a=6BA x=35D
+Numeric input
+  DIGIT? a=6C7 x=364   >NUMBER a=6E8 x=374   NUMBER? a=713 x=38A
+Numeric formatting
+  HERE a=755 x=3AB   PAD a=75F x=3B0   UNUSED a=76E x=3B7
+  <# a=779 x=3BD   DIGIT a=786 x=3C3   HOLD a=799 x=3CD
+  # a=7A6 x=3D3   #S a=7B9 x=3DD   #> a=7C6 x=3E3   SIGN a=7D4 x=3EA
+Basic I/O
+  IBUF a=7E2 x=3F1   KEY? a=7EB x=3F6   KEY a=803 x=402
+  MSA a=815 x=40B   MS a=81D x=40F   NUF a=834 x=41A   NUF? a=83E x=41F
+  OBUF a=85F x=430   EMIT? a=86A x=435   C# a=87F x=440
+  EMIT a=88A x=445   SPACE a=89D x=44F   EMITS a=8B0 x=458
+  SPACES a=8C7 x=464   TYPE a=8D2 x=469   CR a=8E3 x=472
+  ?CR a=8F3 x=47A
+String output
+  _" a=900 x=480   _S" a=90F x=488   _." a=919 x=48D   _ABORT" a=928 x=494
+Number output
+  S.R a=939 x=49D   D.R a=945 x=4A3   U.R a=958 x=4AC   .R a=962 x=4B1
+  D. a=96C x=4B6   U. a=976 x=4BB   . a=97E x=4BF   ? a=98E x=4C7
+Terminal
+  ECHO a=998 x=4CC   ACCEPT a=9A6 x=4D3
+Interpreter
+  SAME? a=9E8 x=4F4   _DELIMIT a=A11 x=509   _PARSE a=A4C x=526
+  NAME> a=A73 x=53A   WID? a=A7F x=540   FORTH-WORDLIST a=AB9 x=55D
+  CONTEXT a=AC6 x=563   CURRENT a=ADD x=56F   SFIND a=AE9 x=575
+  ?STACK a=B06 x=583   _[ a=B16 x=58B   [ a=B3B x=59E   SOURCE a=B4C x=5A6
+  PARSE-WORD a=B5C x=5AE   EVALUATE a=B6F x=5B8   .OK a=B95 x=5CB
+  ?THROW a=BA5 x=5D3   QUIT a=BD6 x=5EB
+Compiler
+  ALLOT a=C09 x=605   AU, a=C13 x=60A   C, a=C1F x=610
+  , a=C2A x=615   COMPILE, a=C3B x=61E   LITERAL a=C48 x=624
+  CHAR a=C54 x=62A   [CHAR] a=C61 x=631   CTRL a=C6C x=636
+  [CTRL] a=C7A x=63D   ' a=C81 x=641   ['] a=C92 x=649
+  [COMPILE] a=CA1 x=651   [DEFINED] a=CB1 x=659   PARSE a=CC2 x=661
+  ( a=CD0 x=668   .( a=CDA x=66D   \ a=CE3 x=672   .\ a=CEE x=677
+  IF\ a=CF9 x=67D   _S, a=D04 x=682   STRING, a=D14 x=68A
+  S, a=D1D x=68F   SLITERAL a=D2B x=696   S" a=D36 x=69B
+  "S, a=D45 x=6A3   ." a=D51 x=6A9   ABORT" a=D5F x=6B0
+  _] a=D69 x=6B5   ] a=D8D x=6C7   LAST a=D9C x=6CE   GET-CURRENT a=DAF x=6D8
+  SET-CURRENT a=DC1 x=6E1   ?UNIQUE a=DCF x=6E8   >XT a=DEA x=6F5
+  HEAD, a=E01 x=701   LEX! a=E21 x=711   IMMEDIATE a=E36 x=71B
+  COMPILE-ONLY a=E49 x=725   REVEAL a=E57 x=72C   RECURSE a=E68 x=734
+  POSTPONE a=E78 x=73C
+Defining words
+  :NONAME a=E95 x=74B   : a=EA3 x=752   ; a=EAD x=757   _DOES> a=EBC x=75E
+  DOES> a=ECD x=767   CREATE a=EE0 x=770   VARIABLE a=EF5 x=77B
+  CONSTANT a=F06 x=783   USER a=F14 x=78A   HAT a=F21 x=791
+Wordlists
+  WORDLIST a=F3E x=79F   ORDER@ a=F56 x=7AB   GET-ORDER a=F70 x=7B8
+  SET-ORDER a=F7F x=7C0   -ROT a=FAB x=7D6   _-ORDER a=FBB x=7DE
+  -ORDER a=FD8 x=7EC   +ORDER a=FE6 x=7F3   ONLY a=FF6 x=7FB
+  ALSO a=1001 x=801   PREVIOUS a=1013 x=80A   DEFINITIONS a=1027 x=814
+Marker
+  _MARKER a=1036 x=81B   MARKER a=106E x=837
+Control flow
+  BEGIN a=109C x=84E   THEN a=10A5 x=853   RESOLVE a=10B4 x=85A
+  MARK a=10BD x=85F   IF a=10C7 x=864   AHEAD a=10D5 x=86B
+  ELSE a=10E2 x=871   WHILE a=10EE x=877   UNTIL a=10F9 x=87D
+  AGAIN a=1107 x=884   REPEAT a=1116 x=88B
+ANSI terminal
+  PAGE a=1120 x=890   AT-XY a=1131 x=899
+Tools
+  !CSP a=1158 x=8AC   ?CSP a=1163 x=8B2   .S a=1174 x=8BA
+Dictionary listings
+  .ID a=1183 x=8C2   .WID a=1191 x=8C9   .ORDER a=11A9 x=8D5
+  ORDER a=11BD x=8DF   VOCS a=11CF x=8E8   WIDWORDS a=11E8 x=8F4
+  WORDS a=1214 x=90A
+Memory dump / decompiler
+  NAMED? a=1235 x=91B   >CHAR a=1255 x=92B   DUMP a=1267 x=934
+  SEE a=12A3 x=952
+Software reset
+  'WARM a=12BB x=95E   COLD a=12C5 x=963   .VERSION a=12F0 x=978
+++++ eForth btc ga144 io LIST words ++++   PACER a=1313 x=98A
+  !IOA a=131F x=990   HAND[] a=132F x=998   FILE[] a=1342 x=9A1
+  FILE a=1352 x=9A9   HAND a=135C x=9AE   IO# a=1365 x=9B3
+  IOS a=136E x=9B7   WARM a=137D x=9BF
+++++ eForth btc ga144 user LIST words ++++
+User initialization
+
+HERE=$138A   Waste=0   WasteXT=137   Words=308   xWords=15
+\\\\ Metacompile End ////
+Saving e4okad/eforth.bin
+++++ eForth see -- target decompiler ++++
+' isn't unique.
+ALL isn't unique.
+eForth saved
+Project Complete  ok
+

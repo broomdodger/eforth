@@ -1,0 +1,47 @@
+CR .( ++++ platform load -- swiftforth ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110115 bee add RIVE >CHAR . .S
+\ 20090726 bee update, add S+
+\ 20070910 bee add order
+\ 20070419 bee separate from eforth load file
+\ 20070411 bee changes to move to nodes 0-3
+\ 20070330 bee move compiler switch here
+\ 20070326 bee cleanup
+\ 20070316 bee start
+\ ==============================================================
+
+DECIMAL
+
+\ ==============================================================
+
+marker m.empty
+
+: empty ( -- ) only forth also definitions  m.empty  empty ;
+
+warning on
+
+\ ==============================================================
+
+VARIABLE CSP \ stack mismatch error check
+: !CSP ( -- ) SP@ CSP ! ;
+: ?CSP ( -- ) SP@ CSP @ XOR ABORT" csp?" ;
+
+CREATE C#  0 , 54 , \ column, max
+: ?LF ( -- ) C# CELL+ @ GET-XY DROP U< IF CR THEN ;
+
+: le! ( n a -- ) ! ;
+: le@ ( a -- n ) @ ;
+
+: S+ ( ca1 u1  ca2 u2 -- ca1 u1+u2 ) \ concatenate strings
+  >R >R                 \ save second string
+  2DUP CHARS +          \ end of first string
+  R> SWAP R@ CHARS MOVE \ append second string
+  R> + ;                \ adjust count
+
+: RIVE ( hl -- h l ) DUP 8 RSHIFT  SWAP $0FF AND ;
+: >CHAR ( c -- c ) DUP 127 BL WITHIN IF DROP BL THEN ;
+
+\ ==============================================================
+

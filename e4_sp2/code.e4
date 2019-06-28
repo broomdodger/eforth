@@ -1,0 +1,241 @@
+CR .( ++++ eForth btc sp2 core words ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110204 bee init DP WORDLIST from COLD
+\ 20110125 bee move io
+\ 20110121 bee move optimizations
+\ 20110118 jwr add E4SIZE E4ORG
+\ 20110117 bee allocate more space for sp2 rom/ram variables
+\ 20080521 bee fix 0<
+\ 20080323 bee changes for new sp2  EXECUTE 1- 1+ u+* XOR OR
+\ 20080323 bee change exit to back
+\ 20071009 bee use ASM to start boot code
+\ 20070916 bee add CODE-VERSION
+\ 20070912 jwr add swap to UM*
+\ 20070821 bee add +! 1- 1+
+\ 20070820 bee change to forth names  remove manual stack check
+\ 20070818 bee nxtl > into   retl > back  fix execute
+\ 20070817 bee ( o256 oa.r r256 )
+\ 20070812 bee change 0< jwr
+\ 20070730 bee catch/throw, jmp+1 for odd fill
+\ 20070730 bee separate code space
+\ 20070730 bee boot copy to local ram
+\ 20070726 bee rename !XT as 'XT!
+\ 20070724 bee remove EXIT use 0 token
+\ 20070723 bee reorganize code.e4 metacpu.e4
+\ 20070722 bee !XT
+\ 20070722 bee AU! AU@ C! C@ CHAR- CHAR+ CHARS
+\ 20070722 bee RP! RP@ SP! SP@ TX! RX?
+\ 20070716 bee catch throw with no sp@ bbb ???
+\ 20070706 bee slot/branch info from john
+\ 20070705 bee sp2 start 6
+\ ==============================================================
+\ sp2
+ \ absolute branch
+ \ t = second on stack
+ \ a = top of stack
+ \ r = top of return stack
+ \ boot starts at address 0
+ \ list =  odd xt
+ \ code = even xt
+\ ==============================================================
+
+CR .( System equates )
+
+H#    0 EQU E4SIZE     \ size in cells  16bit address space
+H#    0 EQU E4ORG      \ cell address   eforth origin
+
+D#  256 EQU #RP         \ cells  return stack
+D#  256 EQU #SP         \ cells  data stack
+
+D#    8 EQU #VOCS       \ cells  vocabulary stack depth
+
+D#   80 EQU #PAD       \ size in chars  PAD floats above HERE
+D#  128 D# 2 + H# 010 NEGATE AND H# 010 + \ round up
+        EQU nTIB \ size in chars input buffer 128+2 \ ram ???
+
+H#  040 EQU =COMP       \ attribute COMPILE-ONLY bit
+H#  080 EQU =IMED       \ attribute IMMEDIATE bit
+
+H#  03F EQU ATTRIBUTE&  \ attribute AND mask
+
+D#    8 EQU =BS         \ backspace character
+D#   10 EQU =LF         \ line feed character
+D#   13 EQU =CR         \ carrage return character
+D#   27 EQU =ESC        \ escape character
+D#   32 EQU =BL         \ space character
+
+D# 0000 EQU =MSA        \ MilliSecond Adjust
+
+CR .( Memory allocation )
+
+\ |romcode>-|romlist+heads---|ramcode-h>-pad>--|tib-|
+
+H#    0 EQU =SP         \ data stack pointer, not available sp2
+H#    0 EQU =RP         \ return stack pointer, not in sp2
+H# FF00 EQU =TIB        \ terminal input buffer
+
+\ ==============================================================
+CR .( System entry point )
+E4ORG ORG           \ set base address \ 20110117 bee
+E4ORG ORG[CODE]     \ code only
+  \ bbb "," in list.e4 can over writing heads see metacpu.e4
+  \ bbb allocate more space for sp2 rom/ram variables
+E4ORG H# 0130 + ORG \ heads+lists \ bbb 20110118
+
+CR .( Reset & EXIT ) CR
+
+ASM                 \ start boot code
+  H#    0 #         \ src
+  H# FC00 #         \ dst - last 256 word local
+  H# 00FF #         \ count = 256 \ 03FF jwr \ bbb ???
+  drop for
+    push ldai stri  \ move code to local ram
+  pop next   into   \ fall into a list
+END-CODE
+
+LABEL =DP     H# 0 , H# 0 ,        \ COLD init HERE MARKER
+LABEL =LAST   H# 0 , H# 0 , H# 0 , \ COLD init WORDLIST
+HERE =DP - EQU #DP
+
+LABEL =COLD   H# 0 , \ COLD vector
+LABEL =HAND   H# 0 , \ console i/o
+
+LABEL =ioa \ io array \ use ALLOT for sp2
+LABEL =rx?    D# 1 CELLS ALLOT \ key?
+LABEL =tx?    D# 1 CELLS ALLOT \ emit?
+LABEL =echo   D# 1 CELLS ALLOT \ echo
+LABEL =.cr    D# 1 CELLS ALLOT \ .cr
+LABEL =.ok    D# 1 CELLS ALLOT \ .ok
+LABEL =pacer  D# 1 CELLS ALLOT \ pacer
+LABEL =ibuf   D# 1 CELLS ALLOT \ input buffer
+LABEL =obuf   D# 1 CELLS ALLOT \ output buffer
+HERE =ioa - EQU #ioa \ ioa size
+
+HERE D# 1 AND CELLS ALLOT \ even the address
+
+CODE EXIT ( -- (R a -- )( 6.1.1380 ( 0x33 )
+  COMPILE-ONLY H# 0 XT!
+END-CODE ( +0)
+
+CODE EXECUTE ( xt -- )( 6.1.1370 ( 0x1D )
+  copy zero lsr
+  if    drop drop back ( list )
+  then  drop drop ret  ( code ) ( +4)
+END-CODE
+
+CR .( Branch & Literal ) CR
+
+CODE _IF ( f -- )( 0x14 ) \ page32
+  ldri if   drop drop back
+  then   drop pop drop   push back ( +4)
+END-CODE COMPILE-ONLY
+
+CR .( Return stack ) CR
+
+CODE R@ ( -- n (R n -- n )( 6.1.2070 ( 0x32 )
+  pop get swap   push back ( +2)
+END-CODE
+
+CODE R> ( -- n (R n -- )( 6.1.2060 ( 0x31 )
+  pop pop swap   push back ( +2)
+END-CODE COMPILE-ONLY
+
+CODE >R ( n -- (R -- n )( 6.1.0580 ( 0x30 )
+  pop swap push   push back ( +2)
+END-CODE COMPILE-ONLY
+
+CR .( Memory Access ) CR
+
+CODE ! ( n a -- )( 6.1.0010 )
+CODE C! ( n a -- )( 6.1.0850 )
+CODE AU! ( c a -- )
+  sta drop back ( +1)
+END-CODE
+
+CODE @ ( a -- n )( 6.1.0650 )
+CODE C@ ( a -- n )( 6.1.0870 )
+CODE AU@ ( a -- c )
+  lda drop back ( +1)
+END-CODE
+
+CR .( Address Units ) CR
+
+CODE CHAR- ( a -- a )
+CODE CELL- ( a -- a )
+CODE 1- ( n -- n )( 6.1.0300 )
+  neg inv back ( +1)
+END-CODE
+
+CODE CHAR+ ( a -- a )( 6.1.0897 ( 0x62 )
+CODE CELL+ ( a -- a )( 6.1.0880 ( 0x65 )
+CODE 1+ ( n -- n )( 6.1.0290 )
+  inv neg back ( +1)
+END-CODE
+
+CODE CHARS ( n -- n )( 6.1.0898 ( 0x66 ) IMMEDIATE
+CODE CELLS ( n -- n )( 6.1.0890 ( 0x69 ) IMMEDIATE
+CODE NOOP ( -- )( 0x7B )
+  back ( +1)
+END-CODE
+
+CR .( Data stack ) CR
+
+CODE +! ( n a -- )( 6.1.0130 ( 0x6C )
+  lda push add   nip pop sta ( +2)
+CODE DROP ( n -- )( 6.1.1260 ( 0x46 )
+  drop back ( +1)
+END-CODE
+
+CODE DUP ( n -- n n )( 6.1.1290 ( 0x47 )
+  dup back ( +1)
+END-CODE
+
+CODE SWAP ( n1 n2 -- n2 n1 )( 6.1.2260 ( 0x49 )
+  swap back ( +1)
+END-CODE
+
+CODE OVER ( n1 n2 -- n1 n2 n1 )( 6.1.1990 ( 0x48 )
+  over back ( +1)
+END-CODE
+
+CR .( ALU ) CR
+
+CODE AND ( n n -- n )( 6.1.0720 ( 0x23 )
+  and back ( +1)
+END-CODE
+
+CODE OR ( n n -- n )( 6.1.1980 ( 0x24 )
+  or back ( +1)
+END-CODE
+
+CODE XOR ( n n -- n )( 6.1.2490 ( 0x25 )
+  xor back ( +1)
+END-CODE
+
+CODE UM+ ( u u -- ud )
+  add swap back ( +1)
+LABEL u+* ( m.cand p.high p.low/m.plier - m.cand p.high' p.low/m.plier' )
+(   mhl.  )  dup zero lsr            \ isolate low multiplier bit
+( mhlLF.  )  nip if                  \ add & shift when =1 \ page32
+(  mhlF.  )    drop push over add    \ add m.cand to p.high
+(   mch.l )    copy   lsr nip        \ shift carry into p.high
+(    mH.hl)    pop pop lsr nip ret   \ shift p.high into p.low/m.plier
+(  mhlF.  )  then drop lsr ret ( +7) \ only shift when =0
+END-CODE ( 11 or 27 cycles, depending on multiplier bits )
+
+CODE UM* ( u u -- ud )( 6.1.2360 ( 0xD4 )
+(  uu. )  zero swap
+( mhl. )  D# 15 #   swap for   u+* jsr next
+( mHL. )  push nip pop   swap back ( +7)
+END-CODE ( 84 + 16*20avg = 404 cycles )
+\ bbb      84 + 16*(11+27)/2 = 388 ???
+
+CODE 0< ( n -- f )( 6.1.0250 ( 0x36 )
+  -if   drop zero inv   back
+  then  drop zero back ( +4)
+END-CODE
+
+LABEL =CODE-VERSION ," sp2:20110205"
+

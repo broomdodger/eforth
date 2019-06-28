@@ -1,0 +1,251 @@
+CR .( ++++ eForth btc sp2 user CODE optimization ++++ )
+\ ==============================================================
+\ todo     allow D# with code -1
+\ ==============================================================
+\ 20110121 bee move optimizations 
+\ 20080323 bee changes for new sp2
+\ 20080323 bee S>D ?DUP ABS NEGATE  -  = 0= U<  -1 0 1
+\ 20080323 bee change exit to back
+\ 20070912 bee fix U<  fix DABS
+\ 20070821 bee move +! 1- 1+ to code.e4
+\ 20070820 bee change to forth names  remove manual stack check
+\ 20070818 bee nxtl > into   retl > back
+\ 20070818 bee fix 2/mod u2/mod   change _NEXT
+\ 20070817 bee ( o256 oa.r r256 )
+\ 20070726 bee change opcode names
+\ 20070723 bee remove fall thru
+\ 20070716 bee catch throw with no sp@ bbb ???
+\ 20070706 bee slot/branch info from john
+\ 20070705 bee sp2 start 6
+\ ==============================================================
+
+CR .( CODE optimizations of LIST words ) CR
+
+CODE _VAR ( -- a )( 0xB9 )
+  pop back ( +1)
+END-CODE COMPILE-ONLY
+
+CODE _CON ( -- n )( 0xBA )
+  pop lda drop   back ( +2)
+END-CODE COMPILE-ONLY
+
+CODE _ELSE ( -- )( 0x13 )
+  pop lda drop   push back ( +2)
+END-CODE COMPILE-ONLY
+
+CODE _LIT ( -- n )( 0x10 )
+  ldri swap back ( +1)
+END-CODE COMPILE-ONLY
+
+CODE _NEXT ( -- (R u ip -- [u'] ip' )
+  pop ldai   zif   swap   then   drop push back ( +4)
+END-CODE
+
+\ CODE MAX ( n n -- n )( 6.1.1870 ( 0x2F ) ( Chuck ) \ bbb test
+\   inv over add   nip inv   -if begin   add nip back ( +4)
+\ CODE MIN ( n n -- n )( 6.1.1880 ( 0x2E ) ( Chuck ) \ bbb test
+\   inv over add   nip inv   -until then   nip back ( +4)
+\ END-CODE
+
+CODE S>D ( n -- d )( 6.1.2170 )
+  -if   zero inv back   then ( +2)
+CODE 0 ( -- 0 )
+  zero back ( +1)
+END-CODE
+
+CODE CMOVE ( ca ca u -- )( 17.6.1.0910 )
+  push zif   drop drop back   then \ page32
+  begin   push ldai stri   pop next ( +4)
+CODE 2DROP ( n n -- )
+  begin begin   drop drop back ( +1)
+CODE LSHIFT ( w u -- w )( 6.1.1805 ( 0x27 )
+  dup until  push zif then begin  lsl nop next  nip back ( +4)
+CODE RSHIFT ( w u -- w )( 6.1.2162 ( 0x28 )
+  dup until  push zif then begin  lsr nop next  drop back ( +4)
+END-CODE
+
+CODE 2DUP ( n1 n2 -- n1 n2 n1 n2 )( 6.1.0380 ( 0x53 )
+  over over back ( +1)
+END-CODE
+
+\ CODE 2/MOD ( u -- r q ) \ asr = d15 -> d.a \ jwr 20070903
+\   zero asr if begin  drop one swap  back ( +4)
+\ CODE U2/MOD ( u -- r q ) \ lsr = 0 -> d.a
+\   zero lsr eqz until then  swap back ( +3)
+\ END-CODE
+
+CODE 2/MOD ( u -- r q ) \ asr = d15 -> d.a
+  zero asr if  drop zero inv  neg swap back ( +4)
+CODE U2/MOD ( u -- r q ) \ lsr = 0 -> d.a
+  zero lsr if  drop zero inv  neg swap back ( +4)
+CODE NIP ( n1 n2 -- n2 )( 6.2.1930 ( 0x4D )
+  nip back ( +1) \ or any code word of +1
+  then then swap back ( +1)
+END-CODE
+
+CODE ROT ( n1 n2 n3 -- n2 n3 n1 )( 6.1.2160 ( 0x4A )
+  push swap pop   swap back ( +2)
+END-CODE
+
+CODE -ROT ( n1 n2 n3 -- n3 n1 n2 )
+  swap push swap   pop back ( +2)
+END-CODE
+
+CODE 2OVER ( d1 d2 -- d1 d2 d1 )( 6.1.0400 )
+  push push over   over pop pop ( +2)
+CODE 2SWAP ( d1 d2 -- d2 d1 )( 6.1.0430 )
+  push swap pop  swap push push  swap pop swap  pop back ( +4)
+END-CODE
+
+CODE 2R@ ( -- n1 n2 (R n1 n2 -- n1 n2 )( 6.2.0415 )
+  pop pop get   swap push swap   get swap push   back ( +4)
+END-CODE COMPILE-ONLY
+
+CODE 2>R ( n1 n2 -- (R -- n1 n2 )( 6.2.0340 )
+  swap pop swap   push swap push   push back ( +3)
+END-CODE COMPILE-ONLY
+
+CODE 2R> ( -- n1 n2 (R n1 n2 -- )( 6.2.0410 )
+  pop pop swap   push swap push   swap back ( +3)
+END-CODE COMPILE-ONLY
+
+CODE 0= ( n -- f )( 6.1.0270 ( 0x34 )
+  if   begin drop zero back ( +2)
+CODE = ( n n -- f )( 6.1.0530 ( 0x3C )
+    xor   until ( +2)
+CODE INVERT ( n -- n )( 6.1.1720 ( 0x26 )
+  then inv back ( +1)
+END-CODE
+
+CODE U< ( u u -- f )( 6.1.2340 ( 0x40 )
+  swap inv add   drop neg back ( +2)
+END-CODE
+
+CODE + ( u u -- u )( 6.1.0120 ( 0x1E )
+  add nip back ( +1)
+END-CODE
+
+CODE - ( n n -- n )( 6.1.0160 ( 0x1F )
+  neg add nip   begin begin back ( +2)
+CODE ?DUP ( n -- n n | 0 )( 6.1.0630 ( 0x50 )
+  until   dup back ( +2)
+CODE ABS ( n -- |n| )( 6.1.0690 ( 0x2D )
+  -until   neg back ( +2)
+END-CODE
+
+CODE NEGATE ( n -- n )( 6.1.1910 ( 0x2C )
+  neg back ( +1)
+END-CODE
+
+\ CODE SWAP- ( n n -- n )
+\   inv add nip   inv back ( +2)
+\ END-CODE
+
+CODE 2* ( n -- n )( 6.1.0320 ( 0x59 )
+  dup lsl nip   back ( +2)
+END-CODE
+
+\ CODE 4* ( n -- n )
+\   dup lsl lsl   nip back ( +2)
+\ END-CODE
+
+\ CODE 8* ( n -- n )
+\   dup lsl lsl   lsl nip back ( +2)
+\ END-CODE
+
+\ CODE 16* ( n -- n )
+\   dup lsl lsl   lsl lsl nip   back ( +3)
+\ END-CODE
+
+\ CODE 32* ( n -- n )
+\   dup lsl lsl   lsl lsl lsl   nip back ( +3)
+\ END-CODE
+
+\ CODE 64* ( n -- n )
+\   dup lsl lsl   lsl lsl lsl   lsl nip back ( +3)
+\ END-CODE
+
+\ CODE 3* ( n -- n )
+\   dup dup lsl   nip add nip   back ( +3)
+\ END-CODE
+
+\ CODE 5* ( n -- n )
+\   dup dup lsl   lsl nip add   nip back ( +3)
+\ END-CODE
+
+\ CODE 10* ( n -- n )
+\   dup dup lsl   lsl nip add   lsl nip back ( +3)
+\ END-CODE
+
+\ code 10*j ( n -- n ) \ jwr
+\   dup dup lsl   add nip add   lsl nip back ( +3)
+\ end-code
+
+CODE 2/ ( n -- n )( 6.1.0330 ( 0x57 )
+  dup asr nip   back ( +2)
+END-CODE
+
+CODE U2/ ( u -- u )
+  dup lsr nip   back ( +2)
+END-CODE
+
+CODE D2/ ( d -- d )( 8.6.1.1100 )
+  swap asr swap   back ( +2)
+END-CODE
+
+CODE DU2/ ( ud -- ud )
+  swap lsr swap   back ( +2)
+END-CODE
+
+CODE D2* ( d -- d )( 8.6.1.1090 )
+  swap lsl swap   begin back ( +2)
+CODE DABS ( d -- ud )( 8.6.1.1160 )
+  -until ( +2) \ filler for align
+CODE DNEGATE ( d -- d )( 8.6.1.1230 )
+  inv push inv  zero inv neg  add swap pop  add nip back ( +4)
+END-CODE
+
+CODE D+ ( d d -- d )( 8.6.1.1040 ( 0xD8 )
+  push swap push  add swap pop  add nip pop  add nip back ( +4)
+END-CODE
+
+CODE 2- ( n -- n )
+  neg inv neg   inv back ( +2)
+END-CODE
+
+CODE 2+ ( n -- n )
+  inv neg inv   neg back ( +2)
+END-CODE
+
+CODE COUNT ( a -- a c )( 6.1.0980 ( 0x84 )
+  ldai swap back ( +1)
+END-CODE
+
+CODE BOUNDS ( a u -- a+u a )( 0xAC )
+  over add nip   swap back ( +2)
+END-CODE
+
+CODE 2! ( d a -- )( 6.1.0310 ( 0x77 )
+  stai sta drop   back ( +2)
+END-CODE
+
+CODE 2@ ( a -- d )( 6.1.0350 ( 0x76 )
+  ldai lda drop   swap back ( +2)
+END-CODE
+
+\ ==============================================================
+
+CODE -1 ( -- -1 )
+  zero inv back ( +1)
+END-CODE
+
+CODE 1 ( -- 1 )
+  zero inv neg   back ( +2)
+END-CODE
+
+CODE BL ( -- 32 )
+  32 # swap back ( +2)
+END-CODE
+
+\ ==============================================================
+

@@ -1,0 +1,54 @@
+CR .( ++++ eForth btc x86 Meta Extensions ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110209 bee update macros
+\ 20110115 bee macros
+\ 20110115 bee remove E4- added to >IMAGE
+\ 20110108 bee add a= x= X=  change to !XTS 
+\ 20090729 bee change to INCLUDE"
+\ 20090727 bee add E4- to SAVEBIN
+\ 20071012 bee change to [a] :a search order
+\ 20070725 bee factor !XTS  XT!  rename as 'XT!  back to EXIT
+\ 20070724 bee remove EXIT use 0 token
+\ 20070719 bee remove code from meta
+\ 20070717 bee meta asm c18 x86
+\ ==============================================================
+
+DECIMAL
+
+\ ==============================================================
+
+ASM-WORDLIST +ORDER
+
+:a next, ( -- ) BOND next_xt  [a] jmp ;
+:a end-code ( -- ) [a] end-code  [O] ALIGN ;
+
+ASM-WORDLIST -ORDER
+
+\ name structure \xt\link\attribute+count\name_string\
+
+:O PROC ( 'name' -- ) [O] LABEL  ASM ;
+:O CODE ( 'name' -- )
+   CODEBIT HEADS  [O] ALIGN [O] HERE  DUP ."  a=" .H
+   OR  DUP ." x=" .H  !XTS  ASM ;
+
+\ ==============================================================
+
+:I [m_>adr_m] ( -- ( xt -- a ) [COMPILE] [m_>adr_m] ;
+:I [m_>xt_m] ( -- ( a -- xt ) ;
+:I [m_ascii_m] ( -- ( w -- ) [COMPILE] [m_ascii_m] ;
+:I [m_cell_m] ( -- ( w -- ) [COMPILE] [m_cell_m] ;
+
+\ ==============================================================
+
+:O 'XT! ( 'name' -- ) \ replace xt (alias)
+   [O] '  DUP ." X=" .H  !XTS ;
+
+:O INCLUDE" ( 'ccc'" -- ) INCLUDE" ;
+
+: SAVEBIN ( ca u -- ) \ save  .com  dos executable
+  2>R  H# 0100  DUP >R  >IMAGE  HERE[] R> -  2R> SAVEFILE ;
+
+\ ==============================================================
+

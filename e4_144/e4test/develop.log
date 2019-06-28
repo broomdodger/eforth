@@ -1,0 +1,170 @@
+-------------------------
+2011.02.10 status:
+
+The extended memory and simplified (?) serial code seems to be working. Reorganization seems to help, too.
+
+Some notes:
+
+The new sram driver, with board rewiring, will access all of any size sram as contiguous addresses. The e4_144/e4test/filldump.e4 file will exercise it all. The delay-loop counts for reading and writing in block 724 are values that work for me--you may need to increase them; fine tuning awaits scope access.
+
+The e4th sram access words are described in e4_144/usercode.e4.
+
+The serial driver implements EMIT? to 'simplify' the interface. It does restrict the baud rate to 9600 or larger, because the bit-timing count must be a 16-bit positive number. With my current usb serial cable it works well all the way up to 460800 baud. The e4_144/e4test/bps-test.e4 code exercises this, while the bps-test.log documents my results.
+
+ArrayForth shadows are updated.
+
+-------------------------
+2011.01.11 status:
+
+I've inverted the serial terminal code so that its serial card jumpers are the same as on the ide card. The code could be simplified further...
+
+Still getting extraneous characters on input--all seem to be 255, so it must be a glitch/noise coming in through getchar (block 734). If anyone has ideas...
+
+-------------------------
+2011.01.10 status:
+
+Well, eForth seems to be working!! The serial getchar still generates extra characters, which will sometimes cause a listing to think a key's been hit to pause the output--pressing the space bar continues, while 'enter' quits.
+
+my procedure--
+
+* power up ga144 and serial cards (terminal with all inverters in to J5, ide to J4)
+* plug in ide usb cable first (check com port in batch file and block 116)
+* plug in terminal usb cable
+* start okadwork
+  * type:  compile   e4th  and wait for 'live' panel in node 106 (initializes pins)
+  * type:  !e4th  (takes 4+ minutes to copy 5K words to sram)
+* start terminal program (Swift4th one gets confused if lines not initialized)
+  * type   0 fff  to see low 8 words of sram (hex): 9bf 6262 c00f 0 4 45 58 49
+  * type   e4go  to show startup message and OK prompt on terminal
+* type eForth code on terminal (remind yourself to use the <enter> key)
+
+** note that nodes 108 and 207 can talk to sram independently from eForth. Only 64K words currently addressable.
+
+*** to modify the metacompiled image, make changes to *.e4 files and run make.*** in e4_144 folder, recopy to sram as above.
+
+Still to do:
+
+== check memory timing, which I think is overly generous.
+== rewrite terminal serial to remove inverters in tx/rx lines
+== figure out why serial glitches
+== add extended memory access to sram driver
+
+-------------------------------
+2010.12.31 status:
+
+WOW! it's running! still a bit cranky, probably due to the slow serial usb or other serial issues. But given my record on spotting bugs, it could be anywhere. Symptoms are that WORDS ends prematurely, as does SEE. Output of single numbers is fine, but not in a loop.
+
+I've cleaned up the shadows a little, but understanding it still takes perserverance. I won't bark or bite if you ask questions.
+
+The key discovery today was that I've been jumping to stack node subroutines instead of calling them. Everything else (after the wrong name -> bad address for tx! and rx?) seems to have been a side effect. The ide seems to leave a return address that was consumed to return most of the time.
+
+Skip soldered a couple of resistors which should keep memory clean--I tried writing, resetting, and read&compare throughout memory a few times--no mismatches.
+
+Both Bill and I are available for questions and support.
+
+HAPPY NEW YEAR!!
+
+------------------------------
+
+2010.12.30 status:
+
+Just a quick note--not much has changed:
+
+  -- rearranged for two versions
+  -- cleaned up user code for sram and serial, so only one block of each is needed
+  -- wrote code routine to read/write memory from ide--much faster, no errors over 64K block.
+
+Still working on approach for bitsy bug: put single stepper in bitsy node.
+
+Going to Skip's tomorrow to get pull-up resistors installed (and shoot the s**t).
+
+
+2010.12.27 status:
+
+Serial and memory still seem to be working; the bit count for the serial is pretty ragged--it gets nearly the same values as with the s40 (~2500 for 115200 baud), but both the putchar and getchar routines are a little different, so the count is a bit high. 2400 seems to be better, but checking isn't easy until eforth is working.
+
+I've put ide single-step words in block 748; they allow all the action between XT fetches to be done silently, leaving the current IP address on the host stack.
+
+eForth crashes just before it gets to the autobaud part of WARM.
+
+------------------------------
+Here's my current procedure:
+
+turn on (or restart) pc
+
+power-up ga144, plug in both usb serial cables (faster is for ide)
+
+launch okad (uses com4)
+
+launch the terminal program (uses com13)
+
+hold pwr button down to reset chip (I note that the two always-on leds get dimmer after pwr is released, up until the ide starts).
+
+700 load (currently leaves ide in node 108, all nodes loaded but stack node not started)
+
+I usually type  0 0 10 sss   0 fff  to see  0 1 2 3 4 5 6 7  just to check
+
+0 path  puts the ide in node 106, where I repeat  0 fff  to make sure it's also connected.
+
+!e4th  takes about 5 min to load 6K words!!  can be done here, or from 108 as the script has it.
+
+then I start typing  s  and following along in the (OLD) eforth.txt hex dump or list.e4 source and meta.log (which has LIST XTs, not addresses, after the a=xxxx notation)
+
+the external stacks and variables check out ok.
+
+---------
+
+Sometimes I type the 'start eforth' script at the bottom of block 700 and press the space bar in the terminal window in hopes of it working. No luck.
+
+The terminal code can be run from the stack node by feeding in a code.b xt when bitsy asks (c038 = !io  c03b = @io  c03d = tx!  c03f = rx? ) and then supplying/taking the data.
+
+
+--------------------
+
+2010.12.19 status:
+
+the serial terminal now works! Because of the pipeline between the terminal
+node 104 and the in/out nodes 200/100 there are 4 characters buffered on
+input, three on output. takes getting used to.
+
+Test words in 716 all work; bit count (0 baud) worked between 2350 and 2450,
+so default set to 2400.
+
+The e4core (bitsy, stack) nodes have not been run.
+
+The eforth.bin file loads correctly, but has not been executed.
+
+--------------------
+
+2010.12.16 status:
+
+The sram works; use ide words in 714 (after 700 load or 0 108 hook) to play
+
+Serial communication works; use ide words in 716 to exercise it:
+   the baud-rate delay count is around 2300 (900 hex), but was calculated
+   for the s40, so may need to be adjusted differently for ga144.
+
+The serial terminal code has not been run.
+
+The e4core (bitsy, stack) nodes have not been run.
+
+The eforth.bin file loads correctly, but has not been executed.
+
+--------------------
+
+configure ga144 board:
+   'standard' ide serial into J4
+   serial board with all four jumpers plugged in into J5 (rst not used)
+   e4term (swiftforth) terminal program or equivalent
+
+Configure com ports:
+   Edit OKAD.BAT file for correct ide com port
+   initialize the variable SPORT on block 116 to the same port
+   connect terminal program to the correct com port
+
+start the ide:
+   '700 load' processes the scripts shown there
+   block 1302 controls what is compiled; block 702 loads eForth code
+
+-------------------------
+

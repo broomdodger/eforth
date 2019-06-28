@@ -1,0 +1,334 @@
+CR .( ++++ eForth 'spasm' - sp2 assembler disassembler ++++ )
+    \ copyright Bill Muench <e4th@sandpipers.com>
+    \ Permission is granted for individual non-commercial use,
+    \ provided this notice is included.
+    \ Contact the author concerning any other use.
+
+\ ==============================================================
+\ todo     remove inline/separate code
+\ ==============================================================
+\ 20080323 bee changes for new sp2
+\ 20071010 bee change disassembler parsing  search-wordlist
+\ 20071009 bee add :a [a] change to ASSEMBLER-WORDLIST remove ',
+\ 20071009 bee change allot[a] to +org  remove org[a]
+\ 20071009 bee ]a a[ immediate
+\ 20071001 bee add char display to lm
+\ 20070917 bee add mask to @[a] ![a]
+\ 20070828 jwr experiment with decompiler, 2k->8k buffer, ,[a]
+\ 20070827 jwr lit -> ldpi
+\ 20070823 bee change org[a]  add .ish  label equ prints name
+\ 20070822 bee list in LIST error  change to da.r words
+\ 20070821 bee remove +sc -sc  add +org
+\ 20070820 bee add EQU  add inside name list code
+\ 20070819 bee LIST a[ ]a align[a] NAME
+\ 20070817 bee ( DS\da.r/RS ) stack template
+\ 20070730 bee separate code space, jmp+1 for fill
+\ 20070730 bee boot copy to local ram
+\ 20070729 bee remove -s2  change jsr words  even addresses
+\ 20070726 bee change opcodes again  repeat slot 2 fill
+\ 20070722 bee vector words for meta
+\ 20070720 bee Bradley directory
+\ 20070717 bee add | to END-CODE  csswap=2swap
+\ 20070715 bee remove DOES>  fix fn f0 f1
+\ 20070714 bee wordlist  debug gforth DOES>  +sc  +op
+\ 20070712 bee rewrite slot1 jump
+\ 20070709 bee works gforth swiftforth  add disassembler
+\ 20070707 bee start sp2 assembler, spasm
+\ o--------o----------------o----------------o----------------o
+\ | bit 15 | bits 14:10     | bits 9:5       | bits 4:0       |
+\ | slot 3 | slot 0 opcode  | slot 1 opcode  | slot 2 opcode  |
+\ o--------o----------------o----------------o----------------o
+\ | 0 jump | jump[pc6+ip10] | ip 9:0 ( 10 )                   |
+\ | 1 call o----------------o----------------o----------------o
+\ | no ret | opcode         | jump[pc11+ip5] | ip 4:0 ( 5 )   |
+\ o--------o----------------o----------------o----------------o
+\ ( DS\da.r/RS ) from: circulate to last, to: last lost
+
+\ words available OUTSIDE and INSIDE assembler =================
+\ +cm   -cm    cm        \ conditional  dump code memory
+\ +lm   -lm    lm        \ conditional  dump list memory
+\ +op   -op              \ conditional slot 1 2 optimization
+\ org   +org        equ  \ set assembler address or data
+\ ]a    assembler        \ add assembler to search order
+\ asm                    \ begin un-named assembly
+\ name  code  list       \ begin named assembly
+
+\ words available ONLY INSIDE assembler ========================
+\ get   pop   copy  push \ move group
+\ ldpi  ldri  lda   ldai \ memory, address=a|r, load  to   d
+\ str   stri  sta   stai \ memory, address=a|r, store from d
+\ swap  nop   neg   inv  \ alu group
+\ add   lsl              \        d.a <- 0
+\ asr                    \ d15 -> d.a
+\ lsr                    \ 0   -> d.a
+\ over  dup   zero  ucmp
+\ drop  nip   ors   ands
+\ into  repd  repp  repz \ repeat group
+\ jmp   jmpd  jmpp  jmpz \ jump group
+\ jsr   jsrn  jsrp  jsrz \ call group
+\ |     ,     #          \ macros
+\ if else then  -if zif  \ forth structures
+\ ahead begin            \   indefinite
+\ again until   -until
+\ while repeat  -while
+\ for next               \   counted
+\ back              ret  \ return to list, return to code
+\ label                  \ address marker
+\ here                   \ get current assembler address
+\ a[                     \ remove assembler from search order
+\ end-asm                \ end assembly, no disassemble
+\ end-code    end-list   \ end assembly, conditional disassemble
+\ ==============================================================
+\
+\ NOTE: define @[a] and ![a] prior to loading assembler
+
+HEX
+
+\ ==============================================================
+
+WORDLIST CONSTANT ASSEMBLER-WORDLIST ( assembler user words )
+
+: assembler ( -- ) ASSEMBLER-WORDLIST +order ;
+: ]a ( -- ) assembler ; immediate
+
+WORDLIST CONSTANT ASM-WORDLIST ( assembler internal words )
+
+GET-CURRENT ( wid )   ASM-WORDLIST SET-CURRENT
+
+: [a] ( 'name' -- ) ( compile next word in ASSEMBLER-WORDLIST )
+  parse-word ASSEMBLER-WORDLIST search-wordlist 0= abort" [a]?"
+  compile, ; immediate
+
+: :a ( 'name' -- ) ( compile word into ASSEMBLER-WORDLIST )
+  get-current >r  ASSEMBLER-WORDLIST set-current  :
+  r> set-current ;
+
+ASM-WORDLIST +ORDER
+
+:a a[ ( -- ) ASSEMBLER-WORDLIST -order ; immediate
+
+\ ==============================================================
+
+variable ip   variable slot   variable h   variable ret?
+: h@ ( -- a ) h @ ;
+: h+! ( n -- ) h +! ; ( target cell offset )
+
+\ ==============================================================
+\ bbb if always separate code, then remove these vectors ???
+
+variable 'allot[a]  ' h+! 'allot[a] !
+variable 'here[a]   ' h@   'here[a] !
+: here[a] ( -- a ) 'here[a] @ execute ;
+
+\ ==============================================================
+
+: hu. ( n -- ) base @ hex swap u. base ! ;
+: serr ( n a u -- )
+  cr rot hu. type ."  at a=" here[a] hu. abort ;
+
+:a .ish ( -- ) ( display status )
+   ip @ ." ip=" hu.  slot @ ." slot=" hu.  here[a] ." h=" hu. ;
+
+( disassembler )   4 constant opsize
+: op: ( n table 'name' -- )( fill name table, compile literal )
+  over opsize * chars + ( n dst ) dup >r opsize BL fill
+  >in @  parse-word ( n n src u ) r> swap chars move
+  >in !  >r  :a  r> ( n ) [compile] literal ;
+
+create 'i  020 opsize * chars allot
+: :i ( n 'name' -- ) 'i op: ;
+create 'r  004 opsize * chars allot
+: :r ( n 'name' -- ) 'r op: ;
+
+: 2# ( n -- ) 01F and 0 <#  # #  [char] . hold #> type ;
+: 4# ( n -- ) 0 <#  # #  # #  #> type 3 spaces ;
+
+: .op ( i table -- )
+  swap 01F and dup 01C and ( ? control group )
+  if nip 'i swap then opsize * chars + opsize type 2 spaces ;
+
+: .code ( n -- ) ( display opcodes, hex and text )
+  dup 0F rshift dup >r [char] 0 + emit
+  dup 0A rshift dup >r 2# dup 5 rshift dup 2# over 2# 3 spaces
+  r> 'i .op  'i .op  'r .op  r> if ." ret" then ;
+
+: .list ( n -- ) ( display if ascii )
+  dup 07F BL within if drop bl then emit ; \ bbb ??? >char emit
+
+variable 'dm ( display memory vector )
+: .mem ( a n xt -- ) 'dm !  base @ >r hex  nuf @ >r 0 nuf !
+  begin dup while cr over 4#
+    over @[a] dup 4# ( address and data )
+    'dm @ execute  1 /string  nuf?
+  until then  2drop  r> nuf !  r> base ! ;
+
+( wid ) DUP SET-CURRENT ( add to host, not assembler or spasm )
+
+: cm ( a n -- ) ['] .code .mem ; ( dump code memory )
+: lm ( a n -- ) ['] .list .mem ; ( dump list memory )
+
+: +org ( n -- ) 'allot[a] @ execute ; ( relative org )
+
+ASM-WORDLIST SET-CURRENT
+
+( assembler )
+:a , ( n -- ) here[a]  ![a]  1 +org ; ( the opcode compiler )
+
+: +iw ( n a -- ) dup >r  @[a] +  r> ![a] ; ( update iw )
+: ix ( a -- ) slot @ cells + @ execute ;
+: -| ( -- ) 3 slot ! ;
+: s2 ( n -- ) ip @ +iw  1 slot +! ;
+: s1 ( n -- ) 5 lshift s2 ;
+: s0 ( n -- ) here[a] ip !  0A lshift  [a] ,  1 slot ! ;
+create 'i ( opcode slots ) ' s0 , ' s1 , ' s2 , ' s0 ,
+: i, ( n -- ) 0 ret? !  'i ix ;
+
+( Move group )
+04 :i get i, ;  05 :i pop i, ;  06 :i copy i, ;  07 :i push i, ;
+
+( Memory group )
+08 :i ldpi i, ;  09 :i ldri i, ;
+0A :i lda  i, ;  0B :i ldai i, ;
+0C :i str  i, ;  0D :i stri i, ;
+0E :i sta  i, ;  0F :i stai i, ;
+:a # ( n -- ) [a] ldpi [a] , ; ( literal )
+
+( ALU group )
+10 :i swap i, ;  11 :i nop  i, ;
+12 :i neg  i, ;  13 :i inv  i, ;
+14 :i add  i, ;  15 :i lsl  i, ;
+16 :i asr  i, ;  17 :i lsr  i, ;
+18 :i over i, ;  19 :i dup  i, ;
+1A :i zero i, ;  1B :i ucmp i, ;
+1C :i drop i, ;  1D :i nip  i, ;
+1E :i ors  i, ;  1F :i ands i, ;
+
+:a or   ( -- ) [a] ors  [a] drop ;
+:a xor  ( -- ) [a] ors  [a] nip ;
+:a iand ( -- ) [a] ands [a] drop ;
+:a and  ( -- ) [a] ands [a] nip ;
+
+:a | ( -- ) ( force new iw )
+  begin slot @ 3 xor while [a] nop repeat ;
+
+( Control group )
+( Repeat - Slot 2 only )
+  ( [op][op]rexx )
+
+variable ?op ( conditional slot 1 slot 2 optimization )
+: r, ( n -- )
+  begin slot @ 2 xor ( ? fill nop to slot 2 )
+  while ?op @ if s" repx slot 2?" serr then [a] nop
+  repeat i, ;
+
+00 :r into r, ;  01 :r repd r, ;
+02 :r repp r, ;  03 :r repz r, ;
+
+( Return )
+: +| ( n -- ) ip @ +iw  ret? dup !  -| ;
+: +ret ( -- ) 08000 +| ;
+
+:a ret ( -- ) ret? @ if [a] nop then [a] | +ret ; ( from jsr )
+:a back ( -- ) [a] into [a] ret ; ( from code )
+
+( Jump Call - Slot 0 )
+  ( jump[pc6+ip10] pc=ip=h )
+
+: j0? ( a -- f ) here[a] xor 03FF invert and ( ?>1024 ) ;
+: -j0? ( a -- a )
+  dup j0? if drop s" j0 page?" serr then 03FF and ;
+: j0 ( a n -- ) i, -j0? +| ;
+: j2 ( a n -- )( [op][op]repeat or jump[pc11+ip5] )
+  over 1 + here[a] xor
+  if [a] | j0 exit then ( repeat ) i, drop ;
+
+( Jump Call - Slot 1 )
+  ( [nop]jump[pc11+ip5] pc=ip+1=h )
+  ( [lit]jump[pc11+ip5] pc=ip+2=h )
+
+: j1? ( a -- f ) here[a] xor 01F invert and ( ?>32 ) ;
+: -j1? ( a -- a f ) dup j1?   ?op @ ( ? manual slot 1 branch )
+  if dup if drop s" j1 page?" serr then then ;
+: j1 ( a n -- )
+  >r -j1? if [a] | r> j0 exit then 01F and r> i, +| ;
+create 'j ( jump slots ) ' j0 , ' j1 , ' j2 , ' j0 ,
+: j, ( a n -- ) 'j ix ;
+
+00 :i jmp  j, ;  01 :i jmpd j, ;
+02 :i jmpp j, ;  03 :i jmpz j, ;
+
+:a jsr  ( a -- ) [a] jmp  +ret ;
+:a jsrn ( a -- ) [a] jmpd +ret ;
+:a jsrp ( a -- ) [a] jmpp +ret ;
+:a jsrz ( a -- ) [a] jmpz +ret ;
+
+( misc )
+
+variable ?cm ( conditional disassemble memory )
+variable ?lm ( conditional dump list memory )
+: @an ( a -- a a n ) dup here[a] over - 0 max ;
+
+0c0de constant sc@ ( -- n ) ( stack check magic number )
+:a end-asm ( n a -- ) drop  [a] |  [a] a[  sc@ over xor
+   if s" stack?" serr then drop ;
+:a end-code ( n a -- ) ?cm @ if @an cm cr then  [a] end-asm ;
+:a end-list ( n a -- ) ?lm @ if @an lm cr then  [a] end-asm ;
+
+:a here ( -- a ) [a] | here[a] ;
+: align[a] ( 0|1 -- )
+  [a] here 1 and xor if here[a] 1 + [a] jmp then ;
+
+: .name ( 'name' -- ) 2 spaces  >in @  parse-word type  >in ! ;
+: sname ( n a u 'name' -- ) .name space type dup hu.  constant ;
+:a label ( 'name' -- ) [a] here s" l=" sname ; ( no align )
+:a name  ( 'name' -- ) [a] here s" n=" sname ; ( no align )
+:a code  ( 'name' -- ) ( align even )
+   0 align[a] here[a] s" c=" sname ;
+:  list  ( 'name' -- ) ( align odd )
+   1 align[a] here[a] s" x=" sname ;
+:a list  ( 'name' -- ) ( not legal )
+   .name sc@ s" list in LIST?" serr ;
+
+( Control group - Forth )
+( Forward branch )
+: mark ( n -- a n ) slot @ 2 and ( encode [slot*4][offset] )
+  if [a] | then i, ip @  here[a] over -  slot @ 4 *  +  -| ;
+: fn ( a n -- ) here[a] and swap +iw ;
+: f0 ( a n -- ) over + j0? if s" f0 page?" serr then 03FF fn ;
+: f1 ( a n -- ) over + j1? if s" f1 page?" serr then 001F fn ;
+
+:a then ( a n -- )
+   [a] | 4 /mod ( n slot ) 2 xor if f0 exit then f1 ;
+:a ahead ( -- a n ) 00 mark ; ( jmp )
+:a zif ( -- a n )
+   01 mark ; ( jmpd ) ( r=0: pop drop   r<>0: r-- )
+:a -if ( -- a n ) 02 mark ; ( jmpp )
+:a if ( -- a n ) 03 mark ; ( jmpz )
+:a -while ( a n -- A N a n ) [a] -if 2swap ;
+:a while ( a n -- A N a n ) [a] if 2swap ;
+:a else ( a n -- A N ) [a] ahead 2swap [a] then ;
+
+( Backward branch )
+:a begin ( -- a n ) [a] here dup ;
+:a again ( a n -- ) drop [a] jmp ;
+:a -until ( a n -- ) drop [a] jmpp ;
+:a until ( a n -- ) drop [a] jmpz ;
+:a repeat ( a n a n -- ) [a] again [a] then ;
+:a for ( -- a n ) [a] push [a] begin ;
+:a next ( a n -- ) drop [a] jmpd ;
+
+( wid ) SET-CURRENT
+: +cm ( -- ) -1 ?cm ! ; : -cm ( -- )  0 ?cm ! ; +cm ( default )
+: +lm ( -- ) -1 ?lm ! ; : -lm ( -- )  0 ?lm ! ; +lm ( default )
+: +op ( -- )  0 ?op ! ; : -op ( -- ) -1 ?op ! ; +op ( default )
+: ORG ( a -- ) h !  -| ;                      0 ORG ( default )
+: EQU  ( n 'name' -- ) s" e=" sname ;
+: ASM  ( -- n a ) assembler  sc@  [a] here ; ( init assembler )
+: NAME ( 'name' -- n a ) [a] name ASM ; ( no align )
+: LIST ( 'name' -- n a )     list ASM ; ( align odd )
+: CODE ( 'name' -- n a ) [a] code ASM ; ( align even )
+
+ASM-WORDLIST -ORDER
+
+DECIMAL
+

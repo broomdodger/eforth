@@ -1,0 +1,86 @@
+CR .( ++++ eForth btc ga144 user CODE optimization ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110201 jwr pull NEG - 0= (save space), rest to codecpu.e4
+\ 20110105 jwr add CHAR/ CELL/ ALIGNED ALIGN
+\ 20110104 bee change to CODE.B
+\ 20110102 jwr moved CODE words with LIST definitions here
+\ 20110102 jwr moved CODE words from user.e4 here
+\ ==============================================================
+
+CR .( CODE optimizations of LIST words ) CR
+
+CODE.B _VAR ( -- a )( 0xB9 )
+   H# 00e XTXT! ( *var ) END-CODE COMPILE-ONLY
+CODE.B _CON ( -- n )( 0xBA )
+   H# 00d XTXT! ( *con ) END-CODE COMPILE-ONLY
+
+CODE.B _ELSE ( -- )( 0x13 )
+   H# 006 XTXT! ( 'ip@ ) END-CODE COMPILE-ONLY
+CODE.B _LIT ( -- n )( 0x10 )
+   H# 032 XTXT! ( *lit ) END-CODE COMPILE-ONLY
+
+CODE.S INVERT ( n -- n )( 6.1.1720 ( 0x26 )
+   H# 028 XTXT! ( *inv ) END-CODE
+CODE.S + ( n n -- n )( 6.1.0120 ( 0x1E )
+   H# 035 XTXT! ( *+ ) END-CODE
+
+CODE.S 1+ ( n -- n )( 6.1.0290 ) H# 000 XTXT! ( '1+ ) END-CODE
+CODE.S 1- ( n -- n )( 6.1.0300 ) H# 00e XTXT! ( '1- ) END-CODE
+
+CODE.S CELL/ ( n -- n ) H# 031 XTXT! ( 'nop ) END-CODE IMMEDIATE
+CODE.S CHAR/ ( n -- n ) H# 031 XTXT! ( 'nop ) END-CODE IMMEDIATE
+CODE.S ALIGN ( -- )( 6.1.0705 )
+   H# 031 XTXT! ( 'nop ) END-CODE IMMEDIATE
+CODE.S ALIGNED ( a -- a )( 6.1.0706 ( 0xAE )
+   H# 031 XTXT! ( 'nop ) END-CODE IMMEDIATE
+CODE.S NOOP ( -- )( 0x7B ) H# 031 XTXT! ( 'nop ) END-CODE
+
+CODE.S 2* ( n -- n )( 6.1.0320 ( 0x59 )
+   H# 024 XTXT! ( *2* ) END-CODE
+CODE.S 2/ ( n -- n )( 6.1.0330 ( 0x57 )
+   H# 004 XTXT! ( *2/ ) END-CODE
+
+CR .( User application CODE words ) CR
+
+0 [if] ---------------------------------------------------------
+       eForth access beyond 64K (words)
+
+   These words treat the 1 MW (20 address bit) extended memory
+   space as a linear region accessed with a double-number
+   address. The compare-and-exchnge operation compares the value
+   at address da to w1. If the same, w2 is stored and TRUE is
+   returned; otherwise w2 is discarded and FALSE is returned.
+
+   NOTE: the current implementation will switch reading/writing
+   if the address has bit 20 = 1. If there is any chance of the
+   address overflowing, the user's code must mask it so that bit
+   20 = 0.
+--------------------------------------------------------- [then]
+
+CODE.S XM! ( w da -- ) H# 01c XTXT! ( .ex! ) END-CODE
+CODE.S XM@ ( da -- w ) H# 01f XTXT! ( .ex@ ) END-CODE
+CODE.S XCX ( w2 da w1 -- f ) H# 021 XTXT! ( .cx? ) END-CODE
+\ compare and exchange: if mem[da] = w1, store w2 and return T
+\                       otherwise drop w2 and return F
+
+0 [if] ---------------------------------------------------------
+       eForth access to neighbor nodes
+
+   NOTE: using these words without supporting code in the
+   neighbor node will hang eForth. Experimentation and
+   documentation is forthcoming.
+--------------------------------------------------------- [then]
+
+\ call neighbor-provided machine code from node 105
+
+CODE.B BTC.DN ( -- ) H# 115 XTXT! ( down )END-CODE  \ node 5
+CODE.B BTC.UP ( -- ) H# 145 XTXT! ( up ) END-CODE   \ node 205
+
+\ call neighbor-provided machine code from node 106
+
+CODE.S STK.DN ( -- ) H# 115 XTXT! ( down ) END-CODE \ node 6
+CODE.S STK.UP ( -- ) H# 145 XTXT! ( up ) END-CODE   \ node 206
+
+\ ==============================================================

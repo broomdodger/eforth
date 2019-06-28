@@ -1,0 +1,74 @@
+CR .( ++++ eForth btc ga144 Meta Extensions ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110209 bee update macros
+\ 20110115 bee macros  remove [EVEN] [ODD?]
+\ 20110108 bee add a= x=  change to !XTS
+\ 20110105 jwr add [EVEN]
+\ 20110104 bee change to CODE.B and CODEBIT.B
+\ 20101208 bee 16bit ga144
+\ 20090729 bee change to INCLUDE"
+\ 20081226 bee finished restoring auto XT
+\ 20081101 jwr began to restore Bill's automatic XT assignment
+\ 20080702 bee re-start
+\ 20070829 jwr SAVEHEX ( s d u -)
+\ 20070804 bee fix 'XT!
+\ 20070803 bee rewrite 'XT! for separate sp2 code
+\ 20070725 bee factor 'XT!  XT!
+\ 20070717 bee meta asm c18
+\ ==============================================================
+
+DECIMAL
+
+\ ==============================================================
+\ target assembler extensions
+
+VARIABLE ASM-NODE
+
+: TASM ( n -- ) DUP 0< ABORT" assembler?"  ASM-NODE ! ;
+
+:O END-CODE ( -- ) [O] ALIGN ;
+
+\ ==============================================================
+\ name structure: \xt\link\attribute+count\name string\
+
+: CODE[T] ( n 'name' -- ) HEADS  [O] HERE  OR  !XTS ;
+
+\ ==============================================================
+\ defining words
+
+H# 0C000 CONSTANT CODEBIT.B \ bitsy node
+H# 08000 CONSTANT CODEBIT.S \ stack node
+
+:O CODE.S ( 'name' -- ) CODEBIT.S CODE[T] 106 TASM ; \ stack
+:O CODE.B ( 'name' -- ) CODEBIT.B CODE[T] 105 TASM ; \ bitsy
+
+:O CODE ( 'name' -- ) -1 TASM ; \ trap errors bbb
+:O PROC ( 'name' -- ) -1 TASM ; \ trap errors bbb
+
+\ ==============================================================
+
+:I [m_>adr_m] ( -- ( xt -- a ) [COMPILE] [m_>adr_m] ;
+:I [m_>xt_m] ( -- ( a -- xt )
+   S" D# 1 AND IF D# 0 , THEN HERE D# 1 RSHIFT" EVALUATE ;
+:I [m_ascii_m] ( -- ( w -- ) [COMPILE] [m_ascii_m] ;
+:I [m_cell_m] ( -- ( w -- ) [COMPILE] [m_cell_m] ;
+
+\ ==============================================================
+
+: ?XT ( a -- xt ) \ ga144 list xt
+  1 AND                        \ odd?
+  IF 1 wasteXT +!  H# BBBB XT, \ record waste, make even
+  THEN [O] HERE 1 RSHIFT ;     \ even and shifted
+' ?XT '?XT ! \ init vector
+
+:O XTXT! ( xt -- )
+   DUP ."  a=" .H  XT[H] @ @              \ get old xt
+   [ CODEBIT.S CODEBIT.B OR ] LITERAL AND \ mask off address
+   OR  DUP ." x=" .H  !XTS ;              \ add bits
+
+\ ==============================================================
+
+:O INCLUDE" ( 'ccc'" -- ) INCLUDE" ;
+

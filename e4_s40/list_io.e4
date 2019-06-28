@@ -1,0 +1,39 @@
+CR .( ++++ eForth btc s40 io LIST words ++++ )
+\ This file contains io LIST words that are metacompiled and
+\ put in the e4th kernel binary file loaded at startup.
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110205 jwr change io vectors and initialization
+\ 20110122 bee vector emit to 'echo
+\ 20110120 bee move console i/o
+\ ==============================================================
+\ chain load, not nestable like INCLUDE
+
+: PACER ( -- ) [CTRL] Q EMIT ;
+
+: !IOA ( a -- ) [ =ioa ] LITERAL [ #ioa ] LITERAL MOVE ;
+
+\ init io ---- =rx? =tx? echo .cr  .ok  pacer   ibuf  obuf
+CREATE HAND[] ] RX?  TX? EMIT CR   .OK  NOOP  [ D# 0 ,L D# 0 ,L
+CREATE FILE[] ] RX?  TX? DROP NOOP NOOP PACER [ D# 0 ,L D# 0 ,L
+: FILE ( -- ) FILE[] !IOA ;
+: HAND ( -- ) HAND[] !IOA ;
+
+VARIABLE IO#       \ terminal status command
+: IOS ( n -- n ) [ =tx? ] LITERAL @ EXECUTE ;
+
+: WARM ( -- n ) \ default initial behavior
+  ONLY  DEFINITIONS  DECIMAL
+  IO# @ IOS
+  CR .VERSION
+  CR .OK  QUIT ;
+
+\ ==============================================================
+
+' HAND  =HAND ! \ init console i/o in COLD and QUIT
+' WARM  'WARM ! \ init default startup for COLD
+  D# 0    IO# ! \ terminal status autobaud for WARM
+
+\ ==============================================================
+

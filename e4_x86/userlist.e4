@@ -1,0 +1,25 @@
+CR .( ++++ eForth btc x86 user LIST definitions ++++ )
+\ This file contains user LIST words that are metacompiled and
+\ put in the e4th kernel binary file loaded at startup.
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110203 bee separate io
+\ ==============================================================
+
+: E4.LIB ( -- ) \ do-loop, needed for Tetris and Random
+  S" ../../../e4demo/lib.e4" SFILE ;
+
+\ ==============================================================
+
+: E4.HANOI ( -- ) \ Towers of Hanoi
+  S" ../../../e4demo/hanoi.e4" SFILE ;
+
+: E4.TETRIS ( -- ) \ Tetris for terminals
+  S" ../../../e4demo/tetris.e4" SFILE ;
+
+: E4.RANDOM ( -- ) \ random color and position
+  S" ../../../e4demo/random.e4" SFILE ;
+
+\ ==============================================================
+

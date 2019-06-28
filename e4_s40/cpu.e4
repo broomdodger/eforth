@@ -1,0 +1,44 @@
+CR .( ++++ eForth btc s40 cpu definition ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110209 bee update macros
+\ 20110115 bee add word% ?char >adr
+\ 20101208 jwr update as bee did
+\ 20080702 bee start
+\ ==============================================================
+
+D# 18 CONSTANT BITS/CELL      \ target bits per cell
+D# 18 CONSTANT BITS/CHAR      \ target bits per char
+
+D# 1 CONSTANT AU/CELL[T]      \ target address units per cell
+D# 1 CONSTANT AU/CHAR[T]      \ target address units per char
+
+H# 00000 CONSTANT CODEBIT     \ >ADR test code
+H# 01FFF CONSTANT CODEBIT&    \ >ADR AND mask
+
+H# 20000 CONSTANT LISTBIT     \ >ADR test hilevel
+H# 3FFFF CONSTANT LISTBIT&    \ >ADR AND mask
+H# 00002 CONSTANT LISTBIT'    \ >ADR OR  mask
+
+D# 4 CONSTANT AU/CHAR[H]      \ host address units per char
+D# 4 CONSTANT AU/CELL[H]      \ host address units per cell
+
+H# 3FFFF CONSTANT DATABIT&    \ target word AND mask
+
+\ ==============================================================
+\ macros for list.e4 and see.f
+
+: [m_cell_m] ( -- ( w -- )
+  S" D# 5 U.R SPACE" EVALUATE ; IMMEDIATE
+
+: [m_ascii_m] ( -- ( w -- )
+  S" RIVE >CHAR EMIT  >CHAR EMIT" EVALUATE ; IMMEDIATE
+
+: [m_>adr_m] ( -- ( xt -- a )
+  S" DUP [ LISTBIT ] LITERAL AND" EVALUATE
+  S" IF [ LISTBIT& ] LITERAL AND EXIT" EVALUATE
+  S" THEN [ CODEBIT& ] LITERAL AND" EVALUATE ; IMMEDIATE
+
+\ ==============================================================
+

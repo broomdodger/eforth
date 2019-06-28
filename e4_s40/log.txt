@@ -1,0 +1,99 @@
+eForth Development Module Journal
+(add to end)
+----------------------------------------------------------------
+Owner: Bill Muench <forth@calcentral.com>
+Second: John Rible <e4th@sandpipers.com>
+----------------------------------------------------------------
+This module represents a work in progress, not a release area.
+
+Changes are made here without regard to any client's needs.
+
+It is used to checkpoint work and to integrate collaborative
+work from multiple sources.
+
+In general things are not checked in unless they have been
+tested and are known to work, although the level of testing need
+not be rigorous but functional.
+
+There may be exceptions to this when agreed to by the members of
+a collaboration as convenient.
+
+This file will attempt to discuss the purpose and goals of
+changes and progress.
+
+Do not depend upon this as a complete statement and do not
+expect this code to fix anything unless you are told so.
+
+It is far more likely that using this code will break something
+you depend upon without warning.
+
+Releases are never found here, at least not on the main branch.
+In general releases are posted to the wiki, web or emails.
+
+----------------------------------------------------------------
+20080713-09xx
+This initial check in is the 20080709 version that was sent to
+Anser
+----------------------------------------------------------------
+20080713-11xx
+these changes are to improve the serial terminal code so that it
+can handle different USB Serial Adapters.
+
+The main issue seems to be the slope of the bit transistions: by
+changing from timing a single 1-bit (rising-edge to rising-edge)
+to timing both the 1-bit and following 0-bits (rising-edge to
+rising-edge) the disparate loop-counts matched!
+
+Changed the start-up back to autobaud (requires spacebar press
+to get startup message and 'ok' prompt).
+----------------------------------------------------------------
+20080714-2354
+Finally getting the day's changes into cvs: this time it's for
+
+1) serial terminal testing
+2) editorial cleanups
+3) shifting okad blocks so Greg's redaction blocks go where he
+   wanted
+----------------------------------------------------------------
+20080720-19xx
+
+1) did more serial terminal fixing and tweaking on both ends of
+   the cable--was a little off-center in start bit and needed
+   more host delay during first word (FILE) of file transfers.
+   Also made the demo files a bit more consistent.
+2) added neighbor-node access to eForth (includes IDE)
+3) updated the ventureforth files to match the working
+   colorforth code
+4) added some text to the readme file.
+----------------------------------------------------------------
+20080818-1238
+Move eForth base address to himem (H# 20000) using colorForth
+IDE
+----------------------------------------------------------------
+20080823-1300
+VentureForth IDE will now compile eForth himem model
+----------------------------------------------------------------
+20080929-0930
+e4xram.vf and e4core.vf were moved to */e4 from */e4dist/e4docs.
+
+Dual-access paged SDRAM is working under both ColorForth and
+VentureForth IDEs.
+
+There's a short description of paged access in
+e4dist/eforth/user.e4 and the sdram details are in e4/e4xram.vf
+----------------------------------------------------------------
+200800930-1100
+included bank bits in paging, increasing pages from 32 to 128
+(16MW)
+----------------------------------------------------------------
+200801108-2100
+1) changed sdram control from chip-select to NOP-command to free
+   a pin for DM, allowing expansion to 32MW (requires wiring
+   change to the first 7j boards).
+2) factor the sdram code into a separate project (serial soon
+   also)
+3) move e4dist folder up a level (out of projects folder)
+3) After it was working in VentureForth, ported back to
+   ColorForth/OKAD
+----------------------------------------------------------------
+

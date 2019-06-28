@@ -1,0 +1,170 @@
+CR .( ++++ eForth btc x86 user CODE optimization  cell=32 ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110125 bee fix ?DUP 0=
+\ 20070916 bee add CODE-VERSION  split out code.lib.e4
+\ 20070725 bee back to EXIT  'XT! CHARS C! C@
+\ 20070724 bee remove EXIT use 0 token
+\ 20070517 bee char=8 cell=32
+\ 20070516 bee add char=8 cell=32 to CHARS CELLS
+\ 20070516 bee add 1+ 1-  fix CHAR+ CHAR-
+\ 20070511 bee add ATTRIBUTE&  add optimizations
+\ 20070423 bee separate code and list
+\ ==============================================================
+
+CR .( CODE optimizations of LIST words ) CR
+
+CODE _LIT ( -- n )( 0x10 )
+  D# 2 ip [] push  D# 0 ip [] push
+  D# 1 CELLS ## ip add  next, \ ip+ -> ip \ fake32
+END-CODE COMPILE-ONLY
+
+CODE NOOP ( -- )( 0x7B )
+  next,
+END-CODE
+
+CODE NIP ( n1 n2 -- n2 )( 6.2.1930 ( 0x4D )
+  ax pop dx pop  bx pop cx pop  dx push ax push  next,
+END-CODE
+
+CODE 2DROP ( n n -- )( 6.1.0370 ( 0x52 )
+  ax pop dx pop  ax pop dx pop  next,
+END-CODE
+
+CODE 2DUP ( n1 n2 -- n1 n2 n1 n2 )( 6.1.0380 ( 0x53 )
+  ax pop dx pop  bx pop cx pop
+  cx push bx push  dx push ax push
+  cx push bx push  dx push ax push  next,
+END-CODE
+
+CODE ?DUP ( n -- n n | 0 )( 6.1.0630 ( 0x50 )
+  ax pop dx pop  ax bx mov  dx bx or
+  z= ~ if  dx push ax push  then  dx push ax push  next,
+END-CODE
+
+CODE INVERT ( n -- n )( 6.1.1720 ( 0x26 )
+  ax pop dx pop  ax not dx not  dx push ax push  next,
+END-CODE
+
+CODE + ( u u -- u )( 6.1.0120 ( 0x1E )
+  ax pop dx pop  bx pop cx pop
+  bx ax add  cx dx adc  dx push ax push  next,
+END-CODE
+
+CODE NEGATE ( n -- n )( 6.1.1910 ( 0x2C )
+  bx pop cx pop  bx not cx not   \ invert
+  D# 1 ## bx add  D# 0 ## cx adc \ 1 +
+  cx push bx push  next,
+END-CODE
+
+CODE - ( n n -- n )( 6.1.0160 ( 0x1F )
+  bx pop cx pop  ax pop dx pop
+  bx ax sub  cx dx sbb  dx push ax push  next,
+END-CODE
+
+CODE SWAP- ( n n -- n )
+  ax pop dx pop  bx pop cx pop
+  bx ax sub  cx dx sbb  dx push ax push  next,
+END-CODE
+
+CODE 0= ( n -- f )( 6.1.0270 ( 0x34 )
+  ax ax xor  bx pop cx pop  bx cx or
+  z= if  ax dec  then  ax push ax push  next,
+END-CODE
+
+CODE LSHIFT ( u n -- u )( 6.1.1805 ( 0x27 )
+  cx pop bx pop
+  cx? if  ax pop dx pop
+    begin  D# 1 ## ax shl  D# 1 ## dx rcl
+    cx? ~ until  dx push ax push
+  then  next,
+END-CODE
+
+CODE RSHIFT ( u n -- u )( 6.1.2162 ( 0x28 )
+  cx pop bx pop
+  cx? if  ax pop dx pop
+    begin  D# 1 ## dx shr  D# 1 ## ax rcr
+    cx? ~ until  dx push ax push
+  then  next,
+END-CODE
+
+CODE +! ( n a -- )( 6.1.0130 ( 0x6C )
+  bx pop cx pop  ax pop dx pop \ fake32
+  ax D# 0 bx [] add  dx D# 2 bx [] adc  next,
+END-CODE
+
+CODE 2! ( d a -- )( 6.1.0310 ( 0x77 )
+  bx pop cx pop \ fake32
+  D# 0 bx [] pop  D# 2 bx [] pop
+  D# 4 bx [] pop  D# 6 bx [] pop  next,
+END-CODE
+
+CODE 2@ ( a -- d )( 6.1.0350 ( 0x76 )
+  bx pop cx pop \ fake32
+  D# 6 bx [] push  D# 4 bx [] push
+  D# 2 bx [] push  D# 0 bx [] push  next,
+END-CODE
+
+CODE 2/ ( n -- n )( 6.1.0330 ( 0x57 )
+  ax pop dx pop  D# 1 ## dx sar  D# 1 ## ax rcr
+  dx push ax push  next,
+END-CODE
+
+CODE 2* ( n -- n )( 6.1.0320 ( 0x59 )
+  ax pop dx pop  D# 1 ## ax shl  D# 1 ## dx rcl
+  dx push ax push  next,
+END-CODE
+
+CODE 1+ ( n -- n )( 6.1.0290 )
+  ax pop dx pop  D# 1 ## ax add  D# 0 ## dx adc
+  dx push ax push  next,
+END-CODE
+
+CODE 1- ( n -- n )( 6.1.0300 )
+  ax pop dx pop  D# 1 ## ax sub  D# 0 ## dx sbb
+  dx push ax push  next,
+END-CODE
+
+CODE +* ( n1 n2 -- n1 n3 ) \ c18 signed multiply step
+  ax pop dx pop   ax bx mov   D# 1 ## bx and \ test bit0 of t
+  z= ~ if   bx pop cx pop   cx push bx push
+    bx ax add   cx dx adc
+  then
+  D# 1 ## dx sar   D# 1 ## ax rcr   dx push ax push   next,
+END-CODE
+
+CODE -1 ( -- -1 )
+  D# -1 ## ax mov  ax push  ax push  next,
+END-CODE
+
+\ CODE 0 ( -- 0 )
+\   ax ax xor  ax push  ax push  next,
+\ END-CODE
+
+\ CODE 1 ( -- 1 )
+\   D# 1 ## ax mov  ax push  ax ax xor  ax push  next,
+\ END-CODE
+
+D# 0000 [IF]
+
+\ ==============================================================
+CR .( debug words ) CR
+
+CODE xxx ( -- )
+  CHAR b ## dl mov  \ char in dl
+  D# 2 ## ah mov    \ MS-DOS Character Output
+  H# 021 int        \ ^C terminate
+  next,
+END-CODE
+
+CODE hang ( -- )
+  begin again
+END-CODE
+
+\ ==============================================================
+
+[THEN]
+
+  D# 60000 EQU =MSA   \ MilliSecond Adjust 1600Mhz Intel T2300
+

@@ -1,0 +1,466 @@
+CR .( ++++ x86 Assembler ++++ )
+\ ==============================================================
+\ todo
+\          tracks ==============================================
+\ 20071012 bee change to [a] :a search order
+\ 20070720 bee change search order
+\ 20070128 bee change u< to cy
+\ 20061210 bee gforth case insensitive
+\ 19930731 bee well, its smaller, about half, and simpler
+\ 19930723 bee restart, change direction, but why?
+\          coyote ==============================================
+
+\ assembler restrictions =======================================
+\ word mode is default, override with "byte"
+
+\ mm == 0018-FFFF   0000-0017 not addressable as mm
+\ ## == 0000-FFFF   literal data, full range
+\ pp == 0000-00F7   io, full range
+
+\ rx == 0000-0007   registers data16
+\ rn == 0000-0007   registers data08
+\ sr == 0008-000B   registers segment
+\ [] == 0010-0017   registers indexed
+
+\ FYI ==========================================================
+
+\ pc clone  segment relative locations
+\ 0000-00FF program segment prefix as follows
+\ 0000-0001 int 020 instruction
+\ 0002-0003 segment, end of allocation block
+\ 0004      reserved
+\ 0005-0009 long call to function dispatcher
+\ 000A-000D previous int 022 vector
+\ 000E-0011 previous int 023 vector
+\ 0012-0015 previous int 024 vector
+\ 0016-002B reserved
+\ 002C-002D seg addr of environment block
+\ 002E-005D reserved
+\ 005C-006D default fcb1
+\ 006C-007F default fcb2
+\ 0080-00FF command tail, dta, buffers
+\ 0100-FFFF program, data
+
+\ absolute memory locations
+\ 00000-0007F interrupt vectors
+\ FFFF0-FFFF8 system reset
+\ FFFF8-FFFFF reserved
+
+\ io locations
+\ 0000-00F7 open io
+\ 00F8-00FF reserved
+\ 0100-FFFF open io
+
+\ regular   special
+\ -----------------
+\ ## rr     ## an
+\ ## mm
+\ ## []
+\ -----------------
+\ mm rr     mm an
+\           mm ss
+\ [] rr     [] ss
+\ rr rr     ss rr
+\ -----------------
+\ rr mm     an mm
+\           ss mm
+\ rr []     rr ss
+\           ss []
+\ ==============================================================
+\
+\ NOTE: define TC!  TC@  TC,  THERE  before loading assembler
+\
+
+MARKER M.ASM86
+BASE @ !CSP   HEX \ all of this assembler is written in HEX
+
+WORDLIST CONSTANT ASSEMBLER-WORDLIST ( assembler user words )
+
+: assembler ( -- ) ASSEMBLER-WORDLIST +order ;
+
+WORDLIST CONSTANT ASM-WORDLIST ( assembler internal words )
+
+GET-CURRENT ( wid )   ASM-WORDLIST SET-CURRENT
+
+: [a] ( 'name' -- ) ( compile next word in ASSEMBLER-WORDLIST )
+  parse-word ASSEMBLER-WORDLIST search-wordlist 0= abort" [a]?"
+  state @ if compile, exit then execute ; immediate
+
+: :a ( 'name' -- ) ( compile word into assembler-wordlist )
+  get-current >r  ASSEMBLER-WORDLIST set-current  :
+  r> set-current ;
+
+ASM-WORDLIST +ORDER
+
+: =xa ( -- ) does> ( compile word into assembler-wordlist )
+  get-current >r  ASSEMBLER-WORDLIST set-current
+  @ execute                       r> set-current ;
+
+create creata  ' create , =xa ( 'name' -- )
+create :a      ' :      , =xa ( 'name' -- )
+
+\ debug tools ================================================
+
+0 [IF]
+: (" ( "ccc" -- ) [ ' ." ] LITERAL EXECUTE ; IMMEDIATE
+[ELSE]
+: (" ( "ccc" -- ) [ CHAR " ] LITERAL PARSE 2DROP ; IMMEDIATE
+[THEN]
+
+\ internals ====================================================
+
+\ Intel == lobyte hibyte
+\ : T, ( n -- ) 0 0100 UM/MOD 0FF AND SWAP TC, TC, ;
+: T, ( n -- ) DUP TC,  8 RSHIFT TC, ;
+
+VARIABLE OP  \ opcode pointer
+VARIABLE FL  \ flags, [] ## rg rg  fr sg by by
+VARIABLE SX? \ sign extend
+
+: !ASM ( -- ) 0 DUP FL ! SX? ! ;          \ reset assembler
+: ?ASM ( f -- ) IF !ASM  -3 THROW THEN ;  \ bbb ANS
+
+: OP, ( op -- ) THERE OP ! TC, ;          \ set opcode pointer
+: _OP ( n a -- ) DUP >R  TC@ +  R> TC! ;  \ update opcode
+: OP+ ( n -- ) OP @    _OP ;              \ update opcode
+: RM+ ( n -- ) OP @ 1+ _OP ;              \ update byte2
+: FL+ ( n -- ) FL +! ;                    \ update flags
+: FL@ ( n -- n ) FL @ AND ;               \ get masked flags
+: B+ ( op -- op ) 3 FL@ IF -2 AND THEN ;  \ update byte mode
+: SX.W? ( n -- n f ) 017F OVER 080 + U< ; \ sign extend
+: RANGE? ( a a -- f ) 1+ - SX.W? ;        \ convert to relative
+
+:a byte ( n -- n ) 1 FL+ ; \ explicit byte mode
+:a far ( -- ) 8 FL+ ;      \ intersegment, ret call jmp
+:a ## ( n -- ) 040 FL+ ;   \ immediate mode
+:a sx ( -- ) -1 SX? ! ;    \ sign extend
+
+\ registers ====================================================
+
+: =RG ( -- ) DOES> COUNT FL+ C@ ;
+
+  creata ax 010 C, 00 C, =RG \ free
+  creata cx 010 C, 01 C, =RG \ free or loop
+  creata dx 010 C, 02 C, =RG \ free
+  creata bx 010 C, 03 C, =RG \ free
+
+  creata sp 010 C, 04 C, =RG \ data stack pointer
+  creata bp 010 C, 05 C, =RG \ base pointer
+  creata rp 010 C, 05 C, =RG \ return stack pointer
+  creata si 010 C, 06 C, =RG \ src index
+  creata ip 010 C, 06 C, =RG \ src index  \ interpreter pointer
+  creata di 010 C, 07 C, =RG \ dst index  \ free
+
+  creata al 011 C, 00 C, =RG \ free
+  creata cl 011 C, 01 C, =RG \ free
+  creata dl 011 C, 02 C, =RG \ free
+  creata bl 011 C, 03 C, =RG \ free
+
+  creata ah 011 C, 04 C, =RG \ free
+  creata ch 011 C, 05 C, =RG \ free
+  creata dh 011 C, 06 C, =RG \ free
+  creata bh 011 C, 07 C, =RG \ free
+
+  creata es 014 C, 08 C, =RG \ extra segment  \ free
+  creata cs 014 C, 09 C, =RG \ code segment   \ code segment
+  creata ss 014 C, 0A C, =RG \ stack segment  \ stack segment
+  creata ds 014 C, 0B C, =RG \ data segment   \ list segment
+
+CREATE RITT \ register indirect translation table
+  ( 00 ax    )   0 C,  ( 01 cx    )   0 C,  ( 02 dx    )   0 C,
+  ( 03 bx    ) 017 C,  ( 04 sp    )   0 C,  ( 05 bp    ) 016 C,
+  ( 06 si    ) 014 C,  ( 07 di    ) 015 C,  ( 08       )   0 C,
+  ( 09 bx+si ) 010 C,  ( 0A bx+di ) 011 C,  ( 0B bp+si ) 012 C,
+  ( 0C bp+di ) 013 C,
+
+:a [] ( n -- n ) \ indirect, displacement required
+   DUP [ [a] bp  [a] di  + 1 + ] LITERAL U<
+   IF [ [a] di ] LITERAL OVER U<
+     IF -010 FL+ THEN ( update rg count )
+     RITT + C@  DUP 0= ?ASM
+   THEN 080 FL+ ;
+
+\ extension assembler ==========================================
+
+: ,## ( n op -- ) 1 AND IF T, ELSE TC, THEN ;
+
+: ,SX ( n op -- ) \ SX sign extend BUT not logic
+  SX? @
+  IF 1 AND
+    IF SX.W? IF T, ELSE TC, 2 OP+ THEN
+    ELSE TC, ( byte opcode )
+    THEN
+  ELSE ,##
+  THEN ;
+
+: R/M ( r/m -- )
+  030 FL@ ( rg ? )
+  IF 080 FL@ ( [] ? )
+    IF SWAP  OVER [ [a] bp  [a] [] ] LITERAL = OVER OR
+      IF SX.W?
+        IF T, 070 ("  word" ELSE TC, 030 ("  byte" THEN
+      ELSE DROP -010 ("  zero"
+      THEN ("  displacement"
+    ELSE 0C0 ("  rg"
+    THEN
+  ELSE T,  0 6 ("  mm"
+  THEN + RM+ ;
+
+: RG, ( r/m rg -- ) 8 * TC, -010 FL+  R/M ;
+
+: RS, ( r/m rg op -- )
+  OVER [ [a] es ] LITERAL  AND
+  IF 3 + OP, 3 AND ("  sr" ELSE B+ OP, ("  rg" THEN RG, ;
+
+\ instruction assembler ========================================
+
+:a int ( n -- ) \ interrupt table order == offset segment
+   DUP 3 XOR IF 0CD TC, ELSE DROP 0CC THEN TC, !ASM ;
+
+( n int )
+
+:a ret ( [n] -- )
+   0C2 8 FL@ ( far ) OR OP, 040 FL@ ( ## ? )
+   IF T, ELSE 1 OP+ THEN !ASM ;
+
+( {##} {far} ret )
+
+:a in ( pp an | dx an -- ) \ port access
+   0E5 B+ OP,  DROP  020 FL@ ( 2rg ? )
+   IF [ [a] dx ] LITERAL XOR ?ASM  8 OP+ ( variable )
+   ELSE TC, ( fixed )
+   THEN !ASM ;
+:a out ( an pp | an dx -- ) SWAP  [a] in  2 OP+ ;
+
+( an dx out  pp an in )
+
+:a xchg ( r/m rg -- )
+   087 B+ OP,  DUP  093 FL@  OR ( [] 1rg byte ? )
+   IF RG, ( r/m rg )
+   ELSE DROP  9 + OP+ ( rg ax )
+   THEN !ASM ;
+
+( rg rg xchg  [] rg xchg  mm rg xchg )
+( ax ax xchg == nop  rg ax xchg smaller )
+
+: =JC ( -- ) \ jump call
+  DOES> 0B0 FL@ ( [] rg ? )
+  IF 0FF OP,  C@ 8 FL@ OR TC,  R/M ( indirect )
+  ELSE 8 FL@ ( fr ? )
+    IF 2 + C@ OP, SWAP ( offset ) T, ( segment ) T, ("  far"
+    ELSE 1+ C@  DUP >R OP,
+      THERE RANGE?  R> 0E8 = OR ( short jmp only )
+      IF 1- T, ("  near"
+      ELSE TC,  2 OP+ ("  short"
+  THEN THEN THEN !ASM ;
+
+creata call 010 C, 0E8 C, 09A C, =JC
+creata jmp  020 C, 0E9 C, 0EA C, =JC
+
+( intrasegment, within segment )
+( rg    jmp  register indirect )
+( mm    jmp  offset )
+( mm [] jmp  memory indirect )
+( rg [] jmp  memory indirect )
+
+( intersegment, outside segment )
+( rg    far jmp  register indirect )
+( mm ss far jmp  offset segment )
+( mm [] far jmp  memory indirect )
+( rg [] far jmp  memory indirect )
+
+: =FX ( -- ) DOES> C@ OP, ; \ fixed opcodes
+
+  creata es:   026 C, =FX   creata cs:   02E C, =FX
+  creata ss:   036 C, =FX   creata ds:   03E C, =FX
+
+  creata nop   090 C, =FX ( ax ax xchg )
+\ creata wait  09B C, =FX
+  creata pushf 09C C, =FX   creata popf  09D C, =FX
+  creata sahf  09E C, =FX   creata lahf  09F C, =FX
+
+\ creata into  0CE C, =FX
+  creata iret  0CF C, =FX   creata xlat  0D7 C, =FX
+
+\ creata lock  0F0 C, =FX
+  creata repnz 0F2 C, =FX   creata repz  0F3 C, =FX
+  creata hlt   0F4 C, =FX   creata cmc   0F5 C, =FX
+  creata clc   0F8 C, =FX   creata stc   0F9 C, =FX
+  creata cli   0FA C, =FX   creata sti   0FB C, =FX
+  creata cld   0FC C, =FX   creata std   0FD C, =FX
+
+: =BF ( -- ) DOES> C@ B+ OP, !ASM ; \ {byte} fixed opcodes
+
+( creata cbw   098 C, =FX ) creata cwd   099 C, =BF
+  creata movs  0A5 C, =BF   creata ip@+  0AD C, =BF \ bbb
+  creata stos  0AB C, =BF   creata lods  0AD C, =BF
+  creata cmps  0A7 C, =BF   creata scas  0AF C, =BF
+
+( {byte} movs  {byte} cwd )
+
+: =LD ( -- ) DOES> C@ OP, RG, !ASM ; \ load
+
+  creata lea 08D C, =LD
+  creata les 0C4 C, =LD   creata lds 0C5 C, =LD
+
+( [] rx lea  mm rx lea )
+
+: =MD ( -- ) \ multiply divide
+  DOES> 0F7 B+ OP, C@ TC, R/M !ASM ;
+
+  creata not  010 C, =MD   creata neg  018 C, =MD
+  creata mul  020 C, =MD   creata imul 028 C, =MD
+  creata div  030 C, =MD   creata idiv 038 C, =MD
+
+( rg not  [] {byte} mul  mm {byte} neg )
+
+: =SH ( -- ) \ shift
+  DOES> 0D1  040 FL@ 0= ( ## ? )
+  IF 2 +  -011 FL+ ("  variable"
+  THEN B+ OP, C@ TC, R/M DROP !ASM ;
+
+  creata rol 000 C, =SH   creata ror 008 C, =SH
+  creata rcl 010 C, =SH   creata rcr 018 C, =SH
+  creata shl 020 C, =SH   creata shr 028 C, =SH
+  creata sal 020 C, =SH   creata sar 038 C, =SH
+
+( ## rg rol  ## [] {byte} rol  ## mm {byte} rol )
+( cl rg rol  cl [] {byte} rol  cl mm {byte} rol )
+
+: =ID ( -- ) \ increment decrement
+  DOES> C@  083 FL@  030 FL@ 0=  OR ( [] mm ? )
+  IF 0FF B+ OP, TC, R/M ( r/m )
+  ELSE + 040 + OP, ("  rx only"
+  THEN !ASM ;
+
+  creata inc 0 C, =ID   creata dec 8 C, =ID
+
+( rg inc  [] {byte} inc  mm {byte} inc )
+
+: =PP ( -- ) \ push pop
+  DOES> 03C FL@  080 FL@ 0=  AND ( rg sg -[] )
+  IF 0C FL@ ( sg ? )
+    IF 1+ C@ OP,  3 AND 8 * ("  sg" ( cs pop == illegal )
+    ELSE C@ OP, ("  rg"
+    THEN OP+
+  ELSE 2 + C@ DUP OP,  030 AND TC,  R/M ( mm [] )
+  THEN !ASM ;
+
+  creata push 050 C, 6 C, 0FF C, =PP
+  creata pop  058 C, 7 C, 08F C, =PP
+
+( rg pop  [] pop  mm pop )
+
+:a test ( u u -- )
+   0A9 B+ OP,  040 FL@ ( ## ? )
+   IF DUP 0=  010 FL@  AND ( ax | al ? )
+     IF DROP ("  ## ax | ## al"
+     ELSE 0 TC,  R/M  04E OP+ ("  ## r/m"
+     THEN 1 B+ ,##
+   ELSE RG,  -024 OP+ ("  r/m rg "
+   THEN !ASM ;
+
+( ## rg test  ## [] {byte} test  ## mm {byte} test )
+( rg rg test  [] rg test  mm rg test )
+( ## an test smaller )
+
+:a mov ( ## r/m | rg r/m | r/m rg -- )
+   040 FL@ ( ## ? )
+   IF 080 FL@  030 FL@ 0=  OR ( [] -rg ? )
+     IF 0C7 B+ OP,  0 TC,  R/M  1 B+ ,## ("  ## mm"
+     ELSE 0B8 + OP, 3 FL@ ( byte ? ) ("  ## rg"
+       IF TC, -8 OP+ ELSE T, THEN ( w flag has moved ! )
+     THEN
+   ELSE [ [a] bx  [a] [] ] LITERAL OVER U< ( mm ? )
+     IF SWAP DUP ( mm dst ) ( an src ? )
+       IF 089 RS, ("  mm"
+       ELSE DROP 0A3 B+ OP, T, ("  an mm"
+       THEN
+     ELSE 080 FL@ ( [] ? )
+       IF DUP [ [a] bx  [a] si  +  [a] [] ] LITERAL AND ( [] ? )
+         IF ROT 089 ("  []" ELSE 08B ("  rg" THEN RS,
+       ELSE 030 FL@ 020 XOR ( 2rg ? )
+         IF DUP ( 1 rg ) ( an dst ? )
+           IF 08B ("  mm" RS,
+           ELSE DROP 0A1 B+ OP, T, ("  mm an" THEN
+         ELSE DUP [ [a] es ] LITERAL  AND
+           IF 08B ELSE SWAP 089 THEN RS, ("  rg"
+   THEN THEN THEN THEN !ASM ;
+
+( ## rg mov  ## [] {byte} mov  ## mm {byte} mov )
+( rg rg mov  [] rg mov  rg [] mov  mm rg mov  rg mm mov )
+
+: ALU ( -- ) \ arithmetic logic
+  DOES> C@ B+ DUP >R 07F AND OP,
+    DUP 0=  040 FL@  AND ( ## ax al ? )
+  IF 2 OP+  DROP  R> ,## ("  ## an"
+  ELSE 040 FL@ ( ## ? )
+    IF 080 R@ 07E AND - OP+  R@ 038 AND TC,
+      R/M  R> DUP 080 AND ( no SX with logic )
+      IF ,SX ELSE ,## THEN
+    ELSE [ [a] di ] LITERAL OVER U< ( r/m dst ? )
+      IF 080 FL@ ( [] ? ) ( change form )
+        IF ROT ELSE SWAP THEN -2 OP+ ( direction )
+      THEN RG,  R> DROP
+  THEN THEN !ASM ;
+
+  creata add 083 C, ALU  creata adc 093 C, ALU
+  creata sbb 09B C, ALU  creata sub 0AB C, ALU
+  creata cmp 0BB C, ALU
+  creata or  00B C, ALU  creata and 023 C, ALU
+  creata xor 033 C, ALU
+
+( ## rg add  ## [] {byte} add  ## mm {byte} add )
+( rg rg add  rg [] add  [] rg add  rg mm add  mm rg add )
+( ## an add smaller )
+
+\ condition codes and control flow =============================
+: =CC ( -- ) DOES> C@ ; ( conditional codes )
+creata cx? 083 C, =CC ( jcxz  cx? ~ == loop )
+creata lz  081 C, =CC ( loopz  lz ~ == loopnz )
+creata v=  011 C, =CC ( JNO )   creata p=  01B C, =CC ( JNP )
+creata cy  013 C, =CC ( JNC )   creata u>  016 C, =CC ( JNA )
+creata z=  015 C, =CC ( JNZ )   creata z<  019 C, =CC ( JNS )
+creata s<  01D C, =CC ( JNL )   creata s>  01E C, =CC ( JNG )
+
+:a ~ ( cc -- cc )( reverse cc ) 1 XOR ;
+:a begin ( -- a ) THERE ;
+: CC, ( cc -- a )
+  DUP [ 09F INVERT ] LITERAL AND ?ASM 060 OR TC, [a] begin ;
+
+\ forward branch
+:a if ( cc -- a ) CC, 0 TC, ;
+:a while ( a -- a a ) [a] if SWAP ;
+:a ahead ( -- a ) 08B [a] if ;
+:a then ( a -- ) [a] begin OVER RANGE? ?ASM SWAP TC! ;
+:a else ( a -- a ) [a] ahead SWAP [a] then ;
+:a aft ( a -- a a ) DROP [a] ahead [a] begin SWAP ;
+\ backward branch
+:a until ( a cc -- ) CC, RANGE? ?ASM TC, ;
+:a again ( a -- ) 08B [a] until ;
+:a repeat ( a a -- ) [a] again [a] then ;
+
+\ macros =======================================================
+\ example: 4 ## cx mov  cx? if  begin ... lz until then
+\
+\ :a loop ( a -- ) [a] cx? [a] ~ [a] until ;
+\ :a loopz ( a -- ) [a] lz [a] until ;
+\ :a loopnz ( a -- ) [a] lz [a] ~ [a] until ;
+\ :a next, ( -- ) next, ;
+\
+\ ==============================================================
+
+:a end-code ( -- ) ASSEMBLER-WORDLIST -order ;
+
+( wid ) SET-CURRENT
+
+: ASM ( -- ) ASSEMBLER !ASM ;
+: PROC ( "name" -- ) CREATE  ASM ;
+\ : CODE ( "name" -- ) CODE    ASM ;
+
+\ ==============================================================
+
+ASM-WORDLIST -ORDER
+
+?CSP BASE !
+

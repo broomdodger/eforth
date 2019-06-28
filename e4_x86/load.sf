@@ -1,0 +1,26 @@
+CR .( ++++ eForth load file for swiftforth ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20090729 bee add INCLUDE"
+\ 20090726 bee update
+\ ==============================================================
+
+ONLY  FORTH  DEFINITIONS
+EMPTY
+
+DECIMAL
+
+\ ==============================================================
+
+0 defext ! \ disable default extension
+
+: INCLUDE" ( 'ccc'" -- ) [CHAR] " PARSE INCLUDED ;
+
+\ ==============================================================
+
+INCLUDE" ../../../e4meta/platform.sf"
+INCLUDE" ../../../e4meta/radixio.f"
+INCLUDE" ../../../e4meta/savefile.f"
+INCLUDE" ../../../e4meta/nuf.f"
+INCLUDE" ../../eforth.f"

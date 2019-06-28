@@ -1,0 +1,18 @@
+CR .( ++++ eForth btc s40 io CODE words ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110125 bee move io
+\ ==============================================================
+
+CR .( Terminal I/O ) CR
+
+CODE.B TX? ( c -- )
+  H# 037 XTXT! ( tx! ) END-CODE \ send character
+
+CODE.B IOS ( u -- u )
+  H# 034 XTXT! ( ios ) END-CODE \ I/O status
+
+CODE.B RX? ( -- -c|0 )
+  H# 03c XTXT! ( rx? ) END-CODE \ maybe receive character
+

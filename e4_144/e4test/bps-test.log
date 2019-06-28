@@ -1,0 +1,117 @@
+
+ok  FILE .
+USB-serial adapter test routines ...........................................
+=====================.
+   bps     est count .
+---------------------.
+   9600        30000 .
+  19200        15000 .
+  38400         7500 .
+  57600         5000 .
+ 115200         2500 .
+ 230400         1250 .
+ 460800          625 .
+=====================.
+example:   2500 25 ttx <enter>  .\ pressing <enter> twice stops output.
+Upload Finished
+ok .S 2343
+ok dup 23 ttx 
+ 2343 abcdefghijklmnopqrstuvwxyz   2343 abcdefghijklmnopqrstuvwxyz
+ 2320 abcdefghijklmnopqrstuvwxyz   2366 abcdefghijklmnopqrstuvwxyz
+ 2297 abcdefghijklmnopqrstuvwxyz   2389 abcdefghijklmnopqrstuvwxyz
+ 2274 áâãäåæçèéêë¬­®ïðqòóôõöw¸¹ú   2412 abcdefghijklmnopqrstuvwxyz
+ 2251 ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º   2435 abcdefghijklmnopqrstuvwxyz
+ 2228 ±¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º   2458 abcdefghijklmnopqrstuvwxyz
+ 2205 ¡¢³´µ¶·¸¹º«¼½¾¿°±²³´µ¶·¸¹º   2481 abcdefghijklmnopqrstuvwxyz
+ 2182 ±²³´µ¶·¸¹²»´µ¾·°±º³¼µ¶¿¸¹º   2504 abcdefghijklmnopqrstuvwxyz
+ 2159 ±²³´µ¶·°±²³´µ¶·¸¹º»¼½¾¿¸¹º   2527 abcdefghijklmnopqrstuvwxyz
+ 2136 ±²³´µ¶·°±²³´µ¶·¸¹º»¼½º»¸¹º   2550 abcdefghijklmnopqrstuvwxyz
+ 2113 ±²³°±²³°µ¶·´µ¶·¸¹º»¼¹º»¼½¾   2573 áâcdefgèéjëlíîïðñrótõvwxùú
+ok \ 115K -2% +9%
+ok 
+ok 0 ios .s 2343 1173
+ok dup 12 ttx 
+ 1173 abcdefghijklmnopqrstuvwxyz   1173 abcdefghijklmnopqrstuvwxyz
+ 1161 abcdefghijklmnopqrstuvwxyz   1185 abcdefghijklmnopqrstuvwxyz
+ 1149 abcdefghijklmnopqrstuvwxyz   1197 abcdefghijklmnopqrstuvwxyz
+ 1137 aâcdeæghijklíîïðñrsôuvwxyz   1209 abcdefghijklmnopqrstuvwxyz
+ 1125 ¡¢£¤¥¦çè©ª«¬­®ï°±²³ôµö·øyú   1221 abcdefghijklmnopqrstuvwxyz
+ 1113 ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º   1233 abcdefghijklmnopqrstuvwxyz
+ 1101 ±¢£´¥¦§¨©º»¼½¾¯°±²³´µ¶·¸¹º   1245 abcdefghijklmnopqrstuvwxyz
+ 1089 ±²³´µ¶·¸±º»¼½¾¿°±º³´µ¶·¸¹º   1257 abcdefghijklmnopqrstuvwxyz
+ 1077 ±²³´µ¶·°±²»¼µ¶·¸¹º»¼½¾·¸¹º   1269 abcdefgèijklmnopqrsôuvwxyz
+ok \ 230K -2% +7%
+ok 
+ok 0 ios .s 2343 1173 577
+ok dup 6 ttx 
+  577 abcdefghijklmnopqrstuvwxyz    577 abcdefghijklmnopqrstuvwxyz
+  571 aâcdeæghiêklmîopqrstuvwxyú    583 abcdefghijklmnopqrstuvwxyz
+  565 abãdeæçhiêëlmîÿpqrótõö÷øyz    589 abcdefghijklmnopqrstuvwxyz
+  559 áâãäåæç aâëì½þïð±òóôµö÷øùú    595 abcdefghijklmnopqrstuvwxyz
+  553 á¢£¤¥¦§ ©ªëì½¾¿°ñ²³´µ¾·¸¹ú    601 abcdefghijklmnopqrstuvwxyz
+  547 ±¢£¤¡¦§°±¢«¼½¾¿°ñ°³´±¶¿¸½º    607 abcdefghijklmnopqrstuvwxyz
+  541 ¡°£ ±¶·°±°³¼½¾¿°±°³¸¹¾·¸¹¸    613 abcdefghijklmnopqrstuvwxyz
+  535 ±°³°±¶·°±°·´µ¾¿°±°³°¹¾¿¸¹¸    619 abcdefghijklmnopqrstuvwxyz
+  529 ±²³°±¶·°µ°·´µ¶¿°¹¸»°¹¾¿¸¹¸    625 abcdefghijklmnopqrótõvwxyz
+ok \ 460K -0% +7%
+ok 
+ok 0 ios .s 2343 1173 577 4690
+ok dup 47 ttx 
+ 4690 abcdefghijklmnopqrstuvwxyz   4690 abcdefghijklmnopqrstuvwxyz
+ 4643 abcdefghijklmnopqrstuvwxyz   4737 abcdefghijklmnopqrstuvwxyz
+ 4596 abcdefghijklmnopqrstuv÷øyz   4784 abcdefghijklmnopqrstuvwxyz
+ 4549 á¢ãä¥¦ç¨©êë¬íî¯°ñ²³ôµ¶÷¸¹º   4831 abcdefghijklmnopqrstuvwxyz
+ 4502 ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º   4878 abcdefghijklmnopqrstuvwxyz
+ 4455 ¡¢³¤¥¶§¨¹º«¼½¾¯°±²³´µ¶·¸¹º   4925 abcdefghijklmnopqrstuvwxyz
+ 4408 ±²³´µ¶·¸¹º»¼½¾¿°±²³´µ¶·¸¹º   4972 abcdefghijklmnopqrstuvwxyz
+ 4361 ±²³´µ¶·°±º³´µ¶·¸¹²³¼½¾¿¸¹º   5019 abcdefghijklmnopqrstuvwxyz
+ 4314 ±²³´µ¶·°±²³´µ¶·¸¹º»¼½¾¿¸¹º   5066 abcdefghijklmnopqrstuvwxyz
+ 4267 ±²³°µ¶³´µ²·´µ¶·¸¹º»¸½º¿¸½¾   5113 abcdefghijklmnopqrstuvwxyz
+ 4220 ±²³°±²³´µ¶·´µ¶·¸¹º»¸¹º»¼½¾   5160 aâãäefgèéêëlmîïðqróôõöwøyú
+ok \ 56K -1% +9%
+ok 
+ok 0 ios .s 2343 1173 577 4690 7023
+ok dup 70 ttx 
+ 7023 abcdefghijklmnopqrstuvwxyz   7023 abcdefghijklmnopqrstuvwxyz
+ 6953 abcdefghijklmnopqrstuvwxyz   7093 abcdefghijklmnopqrstuvwxyz
+ 6883 áâãdefghijëìíîïpqrstuö÷xùú   7163 abcdefghijklmnopqrstuvwxyz
+ 6813 ¡¢£¤¥¦§¨éª«¬í®¯°ñ²³´µö·¸¹º   7233 abcdefghijklmnopqrstuvwxyz
+ 6743 ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º   7303 abcdefghijklmnopqrstuvwxyz
+ 6673 ¡²³´µ¦§¸¹º»¬­¾¿°±²³´µ¶·¸¹º   7373 abcdefghijklmnopqrstuvwxyz
+ 6603 ±²³´µ¶·¸¹º³´½¾¿°±²»´µ¶·¸¹º   7443 abcdefghijklmnopqrstuvwxyz
+ 6533 ±²³´µ¶·°±²³´½¶·¸¹º»¼½¾¿¸¹º   7513 abcdefghijklmnopqrstuvwxyz
+ 6463 ±²³´µ¶·°±²³´µ¶·¸¹º»¼½¾¿¸¹º   7583 abcdefghijklmnopqrstuvwxyz
+ 6393 ±²³°µ¶·°±²³´µ¶·¸¹º»¸¹º»¼½¾   7653 abcdefghijklmnopqrstuvwxyz
+ 6323 ±²³°±²³´µ¶·´µ¶·¸¹º»¸¹º»¼½¾   7723 abcdåfghijklmnopqrstuvwxyz
+ok \ 38K -1% +9%
+ok 
+ok 0 ios .s 2343 1173 577 4690 7023 14064
+ok dup 141 ttx 
+14064 abcdefghijklmnopqrstuvwxyz  14064 abcdefghijklmnopqrstuvwxyz
+13923 abcdefghijklmnopqrstuvwxyz  14205 abcdefghijklmnopqrstuvwxyz
+13782 ábcdefçèéjklmnïðñrstuv÷øyú  14346 abcdefghijklmnopqrstuvwxyz
+13641 ¡â£¤¥¦§è©ª«¬­î¯°±²³ôµ¶·¸¹º  14487 abcdefghijklmnopqrstuvwxyz
+13500 ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º  14628 abcdefghijklmnopqrstuvwxyz
+13359 ¡²³´¥¦·¸¹ª»¼½®¿°±²³´µ¶·¸¹º  14769 abcdefghijklmnopqrstuvwxyz
+13218 ±²³´µ¶·¸¹²³´µ¶·°±²³´µ¶·¸¹º  14910 abcdefghijklmnopqrstuvwxyz
+13077 ±²³´µ¶·°±²³´µ¶·¸¹²»¼½¾¿¸¹º  15051 abcdefghijklmnopqrstuvwxyz
+12936 ±²³´µ¶·°±²³´µ¶·¸¹º»¼½¾¿¸¹º  15192 abcdefghijklmnopqrstuvwxyz
+12795 ±²³°±²³´µ¶·´µ¶·¸¹º»¸¹º»¼¹¾  15333 abcdefghijklmnopqrstuvwxyz
+12654 ±²³°±²³´µ¶·´µ¶·¸¹º»¸¹º»¼½¾  15474 aâcdåfgèijëlmnopqrstõvwxyz
+ok \ 19K -1% +9%
+ok 
+ok 0 ios .s 2343 1173 577 4690 7023 14064 28128
+ok dup 281 ttx 
+28128 abcdefghijklmnopqrstuvwxyz  28128 abcdefghijklmnopqrstuvwxyz
+27847 abcdefghijklmnopqrstuvwxyz  28409 abcdefghijklmnopqrstuvwxyz
+27566 aâãäefçèijëìínoðñrsôõöwøyú  28690 abcdefghijklmnopqrstuvwxyz
+27285 ¡¢£¤¥¦§è©ª«¬­®¯°±²³´µ¶·¸¹º  28971 abcdefghijklmnopqrstuvwxyz
+27004 ¡¢£¤¥¦§¨©ª«¬­®¯°±²³´µ¶·¸¹º  29252 abcdefghijklmnopqrstuvwxyz
+26723 ±²³´¥¶·¨¹º«¼½®¿°±²³´µ¶·¸¹º  29533 abcdefghijklmnopqrstuvwxyz
+26442 ±²³´µ¶·¸¹º³´µ¶·¸¹º»¼½¾¿¸¹º  29814 abcdefghijklmnopqrstuvwxyz
+26161 ±²³´µ¶·°±²³´µ¶·¸¹º»¼½¾¿¸¹º  30095 abcdefghijklmnopqrstuvwxyz
+25880 ±²³´µ¶·°±²³´µ¶·¸¹º»¼½¾¿¼¹º  30376 abcdefghijklmnopqrstuvwxyz
+25599 ±²³°µ¶·´µ¶·´µ¶·¸¹º»¸¹¾¿¼½º  30657 abcdefghijklmnopqrstuvwxyz
+25318 ±²³°±²³´µ¶·´µ¶·¸¹º»¸¹º»¼½¾  30938 abãdefghijklmnoðqrstuvwxyz
+ok \ 9600 -1% +9%
+ok 

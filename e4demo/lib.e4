@@ -1,0 +1,93 @@
+CR .( eForth DEMO library )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110209 bee add PACER at eof, keep final cr
+\ 20081014 jwr moved color words here for multiple users
+\ 20080814 bee add test for marker M.DEMO
+\ 20080623 bee runs s40 eForth
+\ ==============================================================
+
+[DEFINED] M.DEMO 0= IF\ M.DEMO
+[DEFINED] M.LIB 0= IF\ M.LIB
+MARKER M.LIB
+DECIMAL
+
+\ ==============================================================
+\ DO ?DO LOOP +LOOP LEAVE ?LEAVE UNLOOP I J
+
+\ [?]DO pushes the address of a1 to the
+\       Return Stack for [?]LEAVE and [+]LOOP
+\
+\          v-------------------<<
+\ [?]DO a1 ... [?]LEAVE ... [+]LOOP ...
+\       >>--------+>----------------^
+\
+\          v-------------------------------------<<
+\ [?]DO a1 ... IF a2 ... UNLOOP EXIT THEN ... [+]LOOP ...
+\                 >>----------------------^
+\       >>--------------------------------------------^
+\
+\          v-----------------<<
+\ [?]DO a1 ...WHILE a2 ...[+]LOOP ...ELSE a4 ...UNLOOP THEN ...
+\       >>------------------------^       >>----------------^
+\                   >>-----------------------^
+
+: _DO ( l i -- (R a -- a l i )
+  BEGIN  SWAP  R> CELL+  DUP >R  SWAP >R  SWAP >R  >R ;
+: _?DO ( l i -- (R a -- a l i ) 2DUP = UNTIL  2DROP  R> @ >R ;
+
+: _LOOP ( -- (R a l i  a -- a l i | )
+  R>  R> 1+ R>  OVER OVER XOR
+  IF R@  SWAP >R  SWAP >R  >R  DROP  EXIT
+  THEN 2DROP  R> DROP  >R ;
+
+: _+LOOP ( n -- (R a l i  a -- a l i | )
+  R> SWAP  DUP R@ +  SWAP
+  DUP  R> NEGATE R@ +  NEGATE UM+ >R DROP \ l i - n - save carry
+  INVERT 0< R> + \ overflow ? sign of n and carry
+  IF R> R@  SWAP >R  SWAP >R  >R  DROP  EXIT
+  THEN R> 2DROP  R> DROP  >R ;
+
+: DO ( -- a )( 6.1.1240 ( 0x17 )
+  ['] _DO  COMPILE,  MARK ; IMMEDIATE
+: ?DO ( -- a )( 6.2.0620 ( 0x18 )
+  ['] _?DO COMPILE,  MARK ; IMMEDIATE
+
+: LOOP ( a -- )( 6.1.1800 ( 0x15 )
+  ['] _LOOP  COMPILE,  [COMPILE] THEN ; IMMEDIATE
+: +LOOP ( a -- )( 6.1.0140 ( 0x16 )
+  ['] _+LOOP COMPILE,  [COMPILE] THEN ; IMMEDIATE
+
+: UNLOOP ( -- ( R: a l i  a -- )( 6.1.2380 ( 0x89 )
+  R>   R> R> 2DROP  R> DROP    >R ;
+: LEAVE ( -- (R a l i  a -- )( 6.1.1760 ( 0x1B )
+  R> DROP  R> R> 2DROP  R> CELL- @ >R ;
+: ?LEAVE ( f -- ) IF R> DROP LEAVE THEN ;
+
+: I ( -- n )( 6.1.1680 ( 0x19 ) R> R@ SWAP >R ;
+
+: J ( -- n )( 6.1.1730 ( 0x1A )
+  R>  R> R> R>  R@  SWAP >R  SWAP >R  SWAP >R  SWAP >R ;
+
+\ ==============================================================
+\ swiftforth color attributes
+
+: INVERSE [CTRL] [ EMIT ." [7m" ;
+
+: NORMAL  [CTRL] [ EMIT ." [0m" ;
+: BRIGHT  [CTRL] [ EMIT ." [41;37m" ;
+: BOLD    [CTRL] [ EMIT ." [1m" ;
+
+\ : BLACK   [CTRL] [ EMIT ." [30m" ; \ NORMAL
+\ : RED     [CTRL] [ EMIT ." [31m" ; \ BRIGHT
+\ : BLUE    [CTRL] [ EMIT ." [34m" ; \ BOLD
+
+: CYAN    [CTRL] [ EMIT ." [36m" ;
+: MAGENTA [CTRL] [ EMIT ." [35m" ;
+: YELLOW  [CTRL] [ EMIT ." [33m" ;
+: GREEN   [CTRL] [ EMIT ." [32m" ;
+
+\ ==============================================================
+HAND
+

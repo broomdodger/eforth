@@ -1,0 +1,113 @@
+CR .( ++++ eForth btc sp2 Meta Extensions ++++ )
+\ ==============================================================
+\ todo     memory map, tib
+\ ==============================================================
+\ 20110209 bee update macros
+\ 20110117 bee sp2 rom/ram variables allocation in list.e4
+\ 20110115 bee add macros  remove [ODD?]
+\ 20110108 bee change to !XTS  add XT!
+\ 20090729 bee change to INCLUDE"
+\ 20090726 bee E4* fixup
+\ 20071114 bee rom/ram variables
+\ 20071009 bee save/restore search order
+\ 20070917 bee add @TARGET
+\ 20070905 bee add ]a
+\ 20070831 bee search order change for CODE
+\ 20070802 bee ORG[CODE] inline and separate heads
+\ 20070801 bee better factoring of XT! and friends
+\ 20070725 bee factor !XT  XT!  rename 'XT!
+\ 20070725 bee back to EXIT use 0 XT! remove even/odd, all even
+\ 20070724 bee remove EXIT use 0 token
+\ 20070723 bee reorganize code.e4 and metacpu.e4
+\ 20070722 bee !XT
+\ 20070722 bee AU! AU@ C! C@ CHAR- CHAR+ CHARS
+\ 20070722 bee RP! RP@ SP! SP@ TX! RX?
+\ 20070716 bee catch throw with no sp@
+\ 20070706 bee slot/branch info from john
+\ 20070705 bee sp2 start 6
+\ ==============================================================
+
+:I [m_>adr_m] ( -- ( xt -- a ) [COMPILE] [m_>adr_m] ;
+:I [m_>xt_m] ( -- ( a -- xt )
+   S" D# 1 AND D# 1 XOR IF D# 0 , THEN HERE" EVALUATE ;
+:I [m_ascii_m] ( -- ( w -- ) [COMPILE] [m_ascii_m] ;
+:I [m_cell_m] ( -- ( w -- ) [COMPILE] [m_cell_m] ;
+
+\ ==============================================================
+
+: ?XT ( a -- xt ) \ sp2 list xt odd
+  1 AND  1 XOR IF 1 wasteXT +!  0 XT, THEN [O] HERE ;
+' ?XT '?XT ! \ init vector
+
+:O +cm ( -- ) +cm ;   :O -cm ( -- ) -cm ;
+:O +lm ( -- ) +lm ;   :O -lm ( -- ) -lm ;
+:O +op ( -- ) +op ;   :O -op ( -- ) -op ;
+
+\ ==============================================================
+\ assembler extensions
+
+' @[a] 'TA@ ! ( set SAVEHEX execution vector and )
+2 NBYTES !    ( number of bytes for 16-bit hex record )
+
+GET-CURRENT ( wid )
+ASM-WORDLIST SET-CURRENT ( assembler internal wordlist )
+
+\ inline heads and code
+: here[t]  ( -- a ) HERE[] AU/ ;
+: allot[t] ( n -- ) AU* ALLOT[] ;
+
+variable 'org[code]
+
+ASM-WORDLIST +ORDER
+
+\ separate heads and code
+: code-heads ( a -- ) ( code minus heads )
+  ['] h@   'here[a]    !
+  ['] h+!  'allot[a]   !
+  ['] org  'org[code]  !  org ;
+
+\ init meta assembler execution vectors
+' here[t]     'here[a]    !
+' allot[t]    'allot[a]   !
+' code-heads  'org[code]  !
+
+: ?align[a] ( 0|1 -- )
+  here[a]  swap align[a]  here[a] swap - wasteXT +! ;
+
+( wid ) SET-CURRENT
+
+:a name ( 'name' -- ) sc@ S" code name?" SERR ; \ not allowed
+:a list ( 'name' -- ) sc@ S" code list?" SERR ; \ not allowed
+:a code ( 'name' -- ) HEADS  0 ?align[a]
+   CODEBIT here[a]  DUP ."  a=" .H OR  DUP ." x=" .H !XTS ;
+
+\ ==============================================================
+\ sp2 rom/ram variables
+\ 20110117 bee allocate more space in code.e4 bbb ???
+
+:O CREATE ( 'name' -- )
+   DUO BIND _CON  [I] [[  here[a]  DUP  [O] EQU  ,[] ;
+:O VARIABLE ( 'name' -- ) [O] CREATE  0 [a] , ; \ bbb
+:O , ( n -- ) [a] , ; \ bbb
+
+\ ==============================================================
+
+:O ORG[CODE] ( a -- ) 'org[code] @ execute ;
+:O CODE ( 'name' -- n ) [a] code asm ;
+
+ASM-WORDLIST -ORDER
+
+:O ]a ( -- ) [compile] ]a ;
+:O ASM ( -- n a ) asm ;
+
+0 org \ init defaults
++cm   \ enable disassembly
++lm   \ enable list dump
++op   \ enable slot 1 and slot 2 optimization
+
+:O XT! ( xt -- ) DUP ." z=" .H  !XTS ;
+
+\ ==============================================================
+
+:O INCLUDE" ( 'ccc'" -- ) INCLUDE" ;
+

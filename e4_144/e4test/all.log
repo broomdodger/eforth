@@ -1,0 +1,5298 @@
+all 
+   0 138A   
+   1    0   
+   2 1378 x 
+   3    0   
+   4    0   
+   5  963 c  COLD
+   6  9AE    HAND
+   7 6262 bb
+   8 6262 bb
+   9 6262 bb
+   A 6262 bb
+   B 6262 bb
+   C 6262 bb
+   D 6262 bb
+   E 6262 bb
+
+   F C00F    EXIT
+  10    0   
+  11    4   
+  12   45 E 
+  13   58 X 
+  14   49 I 
+  15   54 T 
+
+  16 C01E    EXECUTE
+  17   11   
+  18    7   
+  19   45 E 
+  1A   58 X 
+  1B   45 E 
+  1C   43 C 
+  1D   55 U 
+  1E   54 T 
+  1F   45 E 
+
+  20 C00A    RP@
+  21   18   
+  22    3   
+  23   52 R 
+  24   50 P 
+  25   40 @ 
+
+  26 C02F /  RP!
+  27   22 " 
+  28   43 C 
+  29   52 R 
+  2A   50 P 
+  2B   21 ! 
+
+  2C C011    R@
+  2D   28 ( 
+  2E    2   
+  2F   52 R 
+  30   40 @ 
+
+  31 C02C ,  >R
+  32   2E . 
+  33   42 B 
+  34   3E > 
+  35   52 R 
+
+  36 C014    R>
+  37   33 3 
+  38   42 B 
+  39   52 R 
+  3A   3E > 
+  3B 8000    1+
+  3C   38 8 
+  3D    5   
+  3E   43 C 
+  3F   48 H 
+  40   41 A 
+  41   52 R 
+  42   2B + 
+  43 8000    1+
+  44   3D = 
+  45    5   
+  46   43 C 
+  47   45 E 
+  48   4C L 
+  49   4C L 
+  4A   2B + 
+  4B 800E    1-
+  4C   45 E 
+  4D    5   
+  4E   43 C 
+  4F   48 H 
+  50   41 A 
+  51   52 R 
+  52   2D - 
+  53 800E    1-
+  54   4D M 
+  55    5   
+  56   43 C 
+  57   45 E 
+  58   4C L 
+  59   4C L 
+  5A   2D - 
+  5B 8031 1  NOOP
+  5C   55 U 
+  5D   85   
+  5E   43 C 
+  5F   48 H 
+  60   41 A 
+  61   52 R 
+  62   53 S 
+  63 8031 1  NOOP
+  64   5D ] 
+  65   85   
+  66   43 C 
+  67   45 E 
+  68   4C L 
+  69   4C L 
+  6A   53 S 
+  6B 803C <  AU@
+  6C   65 e 
+  6D    1   
+  6E   40 @ 
+  6F 803C <  AU@
+  70   6D m 
+  71    2   
+  72   43 C 
+  73   40 @ 
+
+  74 803C <  AU@
+  75   71 q 
+  76    3   
+  77   41 A 
+  78   55 U 
+  79   40 @ 
+  7A 8008    AU!
+  7B   76 v 
+  7C    1   
+  7D   21 ! 
+  7E 8008    AU!
+  7F   7C | 
+  80    2   
+  81   43 C 
+  82   21 ! 
+
+  83 8008    AU!
+  84   80   
+  85    3   
+  86   41 A 
+  87   55 U 
+  88   21 ! 
+
+  89 C034 4  _IF
+  8A   85   
+  8B   43 C 
+  8C   5F _ 
+  8D   49 I 
+  8E   46 F 
+
+  8F 8015    SP@
+  90   8B   
+  91    3   
+  92   53 S 
+  93   50 P 
+  94   40 @ 
+
+  95 8018    SP!
+  96   91   
+  97    3   
+  98   53 S 
+  99   50 P 
+  9A   21 ! 
+
+  9B 801A    DROP
+  9C   97   
+  9D    4   
+  9E   44 D 
+  9F   52 R 
+  A0   4F O 
+  A1   50 P 
+
+  A2 801B    OVER
+  A3   9D   
+  A4    4   
+  A5   4F O 
+  A6   56 V 
+  A7   45 E 
+  A8   52 R 
+
+  A9 8032 2  DUP
+  AA   A4   
+  AB    3   
+  AC   44 D 
+  AD   55 U 
+  AE   50 P 
+
+  AF 8033 3  SWAP
+  B0   AB   
+  B1    4   
+  B2   53 S 
+  B3   57 W 
+  B4   41 A 
+  B5   50 P 
+
+  B6 802C ,  UM+
+  B7   B1   
+  B8    3   
+  B9   55 U 
+  BA   4D M 
+  BB   2B + 
+
+  BC 802A *  0<
+  BD   B8   
+  BE    2   
+  BF   30 0 
+  C0   3C < 
+
+  C1 8025 %  OR
+  C2   BE   
+  C3    2   
+  C4   4F O 
+  C5   52 R 
+
+  C6 8026 &  XOR
+  C7   C3   
+  C8    3   
+  C9   58 X 
+  CA   4F O 
+  CB   52 R 
+
+  CC 8027 '  AND
+  CD   C8   
+  CE    3   
+  CF   41 A 
+  D0   4E N 
+  D1   44 D 
+  D2    E   
+  D3   67 g 
+  D4   61 a 
+  D5   31 1 
+  D6   34 4 
+  D7   34 4 
+  D8   3A : 
+  D9   32 2 
+  DA   30 0 
+  DB   31 1 
+  DC   31 1 
+  DD   30 0 
+  DE   32 2 
+  DF   30 0 
+  E0   35 5 
+
+  E1 C03C <  RX?
+  E2   CE   
+  E3    3   
+  E4   52 R 
+  E5   58 X 
+  E6   3F ? 
+
+  E7 C03D =  TX?
+  E8   E3    STATE
+  E9    3   
+  EA   54 T 
+  EB   58 X 
+  EC   3F ? 
+
+  ED C00E    _VAR
+  EE   E9   
+  EF   44 D 
+  F0   5F _ 
+  F1   56 V 
+  F2   41 A 
+  F3   52 R 
+
+  F4 C00D    _CON
+  F5   EF   
+  F6   44 D 
+  F7   5F _ 
+  F8   43 C 
+  F9   4F O 
+  FA   4E N 
+
+  FB C006    _ELSE
+  FC   F6    #TIB
+  FD   45 E 
+  FE   5F _ 
+  FF   45 E 
+ 100   4C L 
+ 101   53 S 
+ 102   45 E 
+
+ 103 C032 2  _LIT
+ 104   FD   
+ 105   44 D 
+ 106   5F _ 
+ 107   4C L 
+ 108   49 I 
+ 109   54 T 
+
+ 10A 8028 (  INVERT
+ 10B  105   
+ 10C    6   
+ 10D   49 I 
+ 10E   4E N 
+ 10F   56 V 
+ 110   45 E 
+ 111   52 R 
+ 112   54 T 
+
+ 113 8035 5  +
+ 114  10C   
+ 115    1   
+ 116   2B + 
+
+ 117 8000    1+
+ 118  115    ROT
+ 119    2   
+ 11A   31 1 
+ 11B   2B + 
+
+ 11C 800E    1-
+ 11D  119   
+ 11E    2   
+ 11F   31 1 
+ 120   2D - 
+ 121 8031 1  NOOP
+ 122  11E   
+ 123   85   
+ 124   43 C 
+ 125   45 E 
+ 126   4C L 
+ 127   4C L 
+ 128   2F / 
+ 129 8031 1  NOOP
+ 12A  123 # 
+ 12B   85   
+ 12C   43 C 
+ 12D   48 H 
+ 12E   41 A 
+ 12F   52 R 
+ 130   2F / 
+ 131 8031 1  NOOP
+ 132  12B + 
+ 133   85   
+ 134   41 A 
+ 135   4C L 
+ 136   49 I 
+ 137   47 G 
+ 138   4E N 
+ 139 8031 1  NOOP
+ 13A  133 3 
+ 13B   87   
+ 13C   41 A 
+ 13D   4C L 
+ 13E   49 I 
+ 13F   47 G 
+ 140   4E N 
+ 141   45 E 
+ 142   44 D 
+
+ 143 8031 1  NOOP
+ 144  13B ; 
+ 145    4   
+ 146   4E N 
+ 147   4F O 
+ 148   4F O 
+ 149   50 P 
+
+ 14A 8024 $  2*
+ 14B  145 E 
+ 14C    2   
+ 14D   32 2 
+ 14E   2A * 
+
+ 14F 8004    2/
+ 150  14C L 
+ 151    2   
+ 152   32 2 
+ 153   2F / 
+
+ 154 801C    XM!
+ 155  151 Q 
+ 156    3   
+ 157   58 X 
+ 158   4D M 
+ 159   21 ! 
+
+ 15A 801F    XM@
+ 15B  156 V 
+ 15C    3   
+ 15D   58 X 
+ 15E   4D M 
+ 15F   40 @ 
+
+ 160 8021 !  XCX
+ 161  15C \ 
+ 162    3   
+ 163   58 X 
+ 164   43 C 
+ 165   58 X 
+
+ 166 C115    BTC.DN
+ 167  162 b  U<
+ 168    6   
+ 169   42 B 
+ 16A   54 T 
+ 16B   43 C 
+ 16C   2E . 
+ 16D   44 D 
+ 16E   4E N 
+
+ 16F C145 E  BTC.UP
+ 170  168 h 
+ 171    6   
+ 172   42 B 
+ 173   54 T 
+ 174   43 C 
+ 175   2E . 
+ 176   55 U 
+ 177   50 P 
+
+ 178 8115    STK.DN
+ 179  171 q 
+ 17A    6   
+ 17B   53 S 
+ 17C   54 T 
+ 17D   4B K 
+ 17E   2E . 
+ 17F   44 D 
+ 180   4E N 
+
+ 181 8145 E  STK.UP
+ 182  17A z 
+ 183    6   
+ 184   53 S 
+ 185   54 T 
+ 186   4B K 
+ 187   2E . 
+ 188   55 U 
+ 189   50 P 
+
+ 18A   C9    BASE
+ 18B  183   
+ 18C    4   
+ 18D   42 B 
+ 18E   41 A 
+ 18F   53 S 
+ 190   45 E 
+ 191 BBBB   
+ 192 C00E    _VAR
+ 193    0   
+
+ 194   CD    DPL
+ 195  18C   
+ 196    3   
+ 197   44 D 
+ 198   50 P 
+ 199   4C L 
+ 19A C00E    _VAR
+ 19B    0   
+
+ 19C   D1    HLD
+ 19D  196   
+ 19E    3   
+ 19F   48 H 
+ 1A0   4C L 
+ 1A1   44 D 
+ 1A2 C00E    _VAR
+ 1A3    0   
+
+ 1A4   D5    >IN
+ 1A5  19E   
+ 1A6    3   
+ 1A7   3E > 
+ 1A8   49 I 
+ 1A9   4E N 
+ 1AA C00E    _VAR
+ 1AB    0   
+
+ 1AC   D9    #IN
+ 1AD  1A6    M*
+ 1AE    3   
+ 1AF   23 # 
+ 1B0   49 I 
+ 1B1   4E N 
+ 1B2 C00E    _VAR
+ 1B3    0   
+ 1B4 7F70 p 
+
+ 1B5   DE    CSP
+ 1B6  1AE   
+ 1B7    3   
+ 1B8   43 C 
+ 1B9   53 S 
+ 1BA   50 P 
+ 1BB BBBB   
+ 1BC C00E    _VAR
+ 1BD    0   
+
+ 1BE   E3    STATE
+ 1BF  1B7   
+ 1C0    5   
+ 1C1   53 S 
+ 1C2   54 T 
+ 1C3   41 A 
+ 1C4   54 T 
+ 1C5   45 E 
+ 1C6 C00E    _VAR
+ 1C7   28 ( 
+ 1C8   20   
+
+ 1C9   E7    DP
+ 1CA  1C0   
+ 1CB    2   
+ 1CC   44 D 
+ 1CD   50 P 
+ 1CE C00E    _VAR
+ 1CF   5C \ 
+ 1D0   20   
+ 1D1   64 d 
+ 1D2   69 i 
+ 1D3   63 c 
+
+ 1D4   ED    SUP
+ 1D5  1CB   
+ 1D6    3   
+ 1D7   53 S 
+ 1D8   55 U 
+ 1D9   50 P 
+ 1DA C00E    _VAR
+ 1DB 7EB0  ~
+ 1DC 7F70 p 
+
+ 1DD   F1    BL
+ 1DE  1D6   
+ 1DF    2   
+ 1E0   42 B 
+ 1E1   4C L 
+ 1E2 C00D    _CON
+ 1E3   20   
+
+ 1E4   F6    #TIB
+ 1E5  1DF   
+ 1E6    4   
+ 1E7   23 # 
+ 1E8   54 T 
+ 1E9   49 I 
+ 1EA   42 B 
+ 1EB BBBB   
+ 1EC C00D    _CON
+ 1ED   90   
+
+ 1EE   FA    \r
+ 1EF  1E6   
+ 1F0    2   
+ 1F1   5C \ 
+ 1F2   72 r 
+ 1F3 BBBB   
+ 1F4 C00D    _CON
+ 1F5    D   
+
+ 1F6   FE    \n
+ 1F7  1F0   
+ 1F8    2   
+ 1F9   5C \ 
+ 1FA   6E n 
+ 1FB BBBB   
+ 1FC C00D    _CON
+ 1FD    A   
+
+ 1FE  102    HEX
+ 1FF  1F8   
+ 200    3   
+ 201   48 H 
+ 202   45 E 
+ 203   58 X 
+ 204 C032 2  _LIT
+ 205   10   
+ 206   C9    BASE
+ 207 8008    AU!
+ 208 C00F    EXIT
+
+ 209  10A    DECIMAL
+ 20A  200   
+ 20B    7   
+ 20C   44 D 
+ 20D   45 E 
+ 20E   43 C 
+ 20F   49 I 
+ 210   4D M 
+ 211   41 A 
+ 212   4C L 
+ 213 BBBB   
+ 214 C032 2  _LIT
+ 215    A   
+ 216   C9    BASE
+ 217 8008    AU!
+ 218 C00F    EXIT
+
+ 219  110    NIP
+ 21A  20B    /MOD
+ 21B    3   
+ 21C   4E N 
+ 21D   49 I 
+ 21E   50 P 
+ 21F BBBB   
+ 220 8033 3  SWAP
+ 221 801A    DROP
+ 222 C00F    EXIT
+
+ 223  115    ROT
+ 224  21B    */MOD
+ 225    3   
+ 226   52 R 
+ 227   4F O 
+ 228   54 T 
+ 229 BBBB   
+ 22A C02C ,  >R
+ 22B 8033 3  SWAP
+ 22C C014    R>
+ 22D 8033 3  SWAP
+ 22E C00F    EXIT
+
+ 22F  11C    2DROP
+ 230  225 % 
+ 231    5   
+ 232   32 2 
+ 233   44 D 
+ 234   52 R 
+ 235   4F O 
+ 236   50 P 
+ 237 BBBB   
+ 238 801A    DROP
+ 239 801A    DROP
+ 23A C00F    EXIT
+
+ 23B  121 !  2DUP
+ 23C  231 1 
+ 23D    4   
+ 23E   32 2 
+ 23F   44 D 
+ 240   55 U 
+ 241   50 P 
+ 242 801B    OVER
+ 243 801B    OVER
+ 244 C00F    EXIT
+
+ 245  126 &  ?DUP
+ 246  23D = 
+ 247    4   
+ 248   3F ? 
+ 249   44 D 
+ 24A   55 U 
+ 24B   50 P 
+ 24C 8032 2  DUP
+ 24D C034 4  _IF
+ 24E  250 P 
+ 24F 8032 2  DUP
+ 250 C00F    EXIT
+
+ 251  12D -  NEGATE
+ 252  247 G 
+ 253    6   
+ 254   4E N 
+ 255   45 E 
+ 256   47 G 
+ 257   41 A 
+ 258   54 T 
+ 259   45 E 
+ 25A 8028 (  INVERT
+ 25B 8000    1+
+ 25C C00F    EXIT
+
+ 25D  131 1  -
+ 25E  253 S 
+ 25F    1   
+ 260   2D - 
+ 261 BBBB   
+ 262  12D -  NEGATE
+ 263 8035 5  +
+ 264 C00F    EXIT
+
+ 265  136 6  ABS
+ 266  25F _ 
+ 267    3   
+ 268   41 A 
+ 269   42 B 
+ 26A   53 S 
+ 26B BBBB   
+ 26C 8032 2  DUP
+ 26D 802A *  0<
+ 26E C034 4  _IF
+ 26F  271 q 
+ 270  12D -  NEGATE
+ 271 C00F    EXIT
+
+ 272  13C <  S>D
+ 273  267 g 
+ 274    3   
+ 275   53 S 
+ 276   3E > 
+ 277   44 D 
+ 278 8032 2  DUP
+ 279 802A *  0<
+ 27A C00F    EXIT
+
+ 27B  140 @  D+
+ 27C  274 t  FILL
+ 27D    2   
+ 27E   44 D 
+ 27F   2B + 
+ 280 C02C ,  >R
+ 281 8033 3  SWAP
+ 282 C02C ,  >R
+ 283 802C ,  UM+
+ 284 C014    R>
+ 285 8035 5  +
+ 286 C014    R>
+ 287 8035 5  +
+ 288 C00F    EXIT
+
+ 289  14A J  DNEGATE
+ 28A  27D } 
+ 28B    7   
+ 28C   44 D 
+ 28D   4E N 
+ 28E   45 E 
+ 28F   47 G 
+ 290   41 A 
+ 291   54 T 
+ 292   45 E 
+ 293 BBBB   
+ 294 8028 (  INVERT
+ 295 C02C ,  >R
+ 296 8028 (  INVERT
+ 297 C032 2  _LIT
+ 298    1   
+ 299 802C ,  UM+
+ 29A C014    R>
+ 29B 8035 5  +
+ 29C C00F    EXIT
+
+ 29D  152 R  DABS
+ 29E  28B   
+ 29F    4   
+ 2A0   44 D 
+ 2A1   41 A 
+ 2A2   42 B 
+ 2A3   53 S 
+ 2A4 8032 2  DUP
+ 2A5 802A *  0<
+ 2A6 C034 4  _IF
+ 2A7  2A9   
+ 2A8  14A J  DNEGATE
+ 2A9 C00F    EXIT
+
+ 2AA  158 X  0=
+ 2AB  29F    UPPER
+ 2AC    2   
+ 2AD   30 0 
+ 2AE   3D = 
+ 2AF BBBB   
+ 2B0 C034 4  _IF
+ 2B1  2B5    FOLLOWER
+ 2B2 C032 2  _LIT
+ 2B3    0   
+ 2B4 C00F    EXIT
+ 2B5 C032 2  _LIT
+ 2B6 FFFF   
+ 2B7 C00F    EXIT
+
+ 2B8  15E ^  =
+ 2B9  2AC    _USR
+ 2BA    1   
+ 2BB   3D = 
+ 2BC 8026 &  XOR
+ 2BD  158 X  0=
+ 2BE C00F    EXIT
+
+ 2BF  162 b  U<
+ 2C0  2BA   
+ 2C1    2   
+ 2C2   55 U 
+ 2C3   3C < 
+ 2C4  121 !  2DUP
+ 2C5 8026 &  XOR
+ 2C6 802A *  0<
+ 2C7 C034 4  _IF
+ 2C8  2CC   
+ 2C9  110    NIP
+ 2CA 802A *  0<
+ 2CB C00F    EXIT
+ 2CC  131 1  -
+ 2CD 802A *  0<
+ 2CE C00F    EXIT
+
+ 2CF  16A j  <
+ 2D0  2C1   
+ 2D1    1   
+ 2D2   3C < 
+ 2D3 BBBB   
+ 2D4  121 !  2DUP
+ 2D5 8026 &  XOR
+ 2D6 802A *  0<
+ 2D7 C034 4  _IF
+ 2D8  2DC    _WAKE
+ 2D9 801A    DROP
+ 2DA 802A *  0<
+ 2DB C00F    EXIT
+ 2DC  131 1  -
+ 2DD 802A *  0<
+ 2DE C00F    EXIT
+
+ 2DF  173 s  MIN
+ 2E0  2D1   
+ 2E1    3   
+ 2E2   4D M 
+ 2E3   49 I 
+ 2E4   4E N 
+ 2E5 BBBB   
+ 2E6  121 !  2DUP
+ 2E7  16A j  <
+ 2E8 C034 4  _IF
+ 2E9  2F6   
+ 2EA 801A    DROP
+ 2EB C00F    EXIT
+
+ 2EC  179 y  MAX
+ 2ED  2E1   
+ 2EE    3   
+ 2EF   4D M 
+ 2F0   41 A 
+ 2F1   58 X 
+ 2F2  121 !  2DUP
+ 2F3  16A j  <
+ 2F4 C034 4  _IF
+ 2F5  2EA   
+ 2F6  110    NIP
+ 2F7 C00F    EXIT
+
+ 2F8  181    WITHIN
+ 2F9  2EE   
+ 2FA    6   
+ 2FB   57 W 
+ 2FC   49 I 
+ 2FD   54 T 
+ 2FE   48 H 
+ 2FF   49 I 
+ 300   4E N 
+ 301 BBBB   
+ 302 801B    OVER
+ 303  131 1  -
+ 304 C02C ,  >R
+ 305  131 1  -
+ 306 C014    R>
+ 307  162 b  U<
+ 308 C00F    EXIT
+
+ 309  189    LSHIFT
+ 30A  2FA   
+ 30B    6   
+ 30C   4C L 
+ 30D   53 S 
+ 30E   48 H 
+ 30F   49 I 
+ 310   46 F 
+ 311   54 T 
+ 312 8032 2  DUP
+ 313 C034 4  _IF
+ 314  31C   
+ 315 C02C ,  >R
+ 316 8032 2  DUP
+ 317 8035 5  +
+ 318 C014    R>
+ 319 800E    1-
+ 31A C006    _ELSE
+ 31B  312   
+ 31C 801A    DROP
+ 31D C00F    EXIT
+
+ 31E  192    UM*
+ 31F  30B    ACTIVATE
+ 320    3   
+ 321   55 U 
+ 322   4D M 
+ 323   2A * 
+ 324 C032 2  _LIT
+ 325    0   
+ 326 8033 3  SWAP
+ 327 C032 2  _LIT
+ 328   10   
+ 329 8032 2  DUP
+ 32A C034 4  _IF
+ 32B  341 A 
+ 32C C02C ,  >R
+ 32D 8032 2  DUP
+ 32E 802C ,  UM+
+ 32F C02C ,  >R
+ 330 C02C ,  >R
+ 331 8032 2  DUP
+ 332 802C ,  UM+
+ 333 C014    R>
+ 334 8035 5  +
+ 335 C014    R>
+ 336 C034 4  _IF
+ 337  33D = 
+ 338 C02C ,  >R
+ 339 801B    OVER
+ 33A 802C ,  UM+
+ 33B C014    R>
+ 33C 8035 5  +
+ 33D C014    R>
+ 33E 800E    1-
+ 33F C006    _ELSE
+ 340  329 ) 
+ 341 801A    DROP
+ 342 C02C ,  >R
+ 343  110    NIP
+ 344 C014    R>
+ 345 C00F    EXIT
+
+ 346  1A6    M*
+ 347  320   
+ 348    2   
+ 349   4D M 
+ 34A   2A * 
+ 34B BBBB   
+ 34C  121 !  2DUP
+ 34D 8026 &  XOR
+ 34E 802A *  0<
+ 34F C02C ,  >R
+ 350  136 6  ABS
+ 351 8033 3  SWAP
+ 352  136 6  ABS
+ 353  192    UM*
+ 354 C014    R>
+ 355 C034 4  _IF
+ 356  358 X 
+ 357  14A J  DNEGATE
+ 358 C00F    EXIT
+
+ 359  1AF    *
+ 35A  348 H 
+ 35B    1   
+ 35C   2A * 
+ 35D BBBB   
+ 35E  192    UM*
+ 35F 801A    DROP
+ 360 C00F    EXIT
+
+ 361  1B5    RSHIFT
+ 362  35B [ 
+ 363    6   
+ 364   52 R 
+ 365   53 S 
+ 366   48 H 
+ 367   49 I 
+ 368   46 F 
+ 369   54 T 
+ 36A C032 2  _LIT
+ 36B    0   
+ 36C 8033 3  SWAP
+ 36D 8028 (  INVERT
+ 36E C032 2  _LIT
+ 36F   11   
+ 370 8035 5  +
+ 371 8032 2  DUP
+ 372 C034 4  _IF
+ 373  37B { 
+ 374 C02C ,  >R
+ 375  121 !  2DUP
+ 376  140 @  D+
+ 377 C014    R>
+ 378 800E    1-
+ 379 C006    _ELSE
+ 37A  371 q 
+ 37B 801A    DROP
+ 37C  110    NIP
+ 37D C00F    EXIT
+
+ 37E  1C3    RIVE
+ 37F  363 c 
+ 380    4   
+ 381   52 R 
+ 382   49 I 
+ 383   56 V 
+ 384   45 E 
+ 385 BBBB   
+ 386 8032 2  DUP
+ 387 C032 2  _LIT
+ 388    8   
+ 389  1B5    RSHIFT
+ 38A 8033 3  SWAP
+ 38B C032 2  _LIT
+ 38C   FF   
+ 38D 8027 '  AND
+ 38E C00F    EXIT
+
+ 38F  1CC    UM/MOD
+ 390  380   
+ 391    6   
+ 392   55 U 
+ 393   4D M 
+ 394   2F / 
+ 395   4D M 
+ 396   4F O 
+ 397   44 D 
+ 398  121 !  2DUP
+ 399  162 b  U<
+ 39A C034 4  _IF
+ 39B  3C5   
+ 39C  12D -  NEGATE
+ 39D C032 2  _LIT
+ 39E   10   
+ 39F 8032 2  DUP
+ 3A0 C034 4  _IF
+ 3A1  3C2   
+ 3A2 C02C ,  >R
+ 3A3 C02C ,  >R
+ 3A4 8032 2  DUP
+ 3A5 802C ,  UM+
+ 3A6 C02C ,  >R
+ 3A7 C02C ,  >R
+ 3A8 8032 2  DUP
+ 3A9 802C ,  UM+
+ 3AA C014    R>
+ 3AB 8035 5  +
+ 3AC 8032 2  DUP
+ 3AD C014    R>
+ 3AE C011    R@
+ 3AF 8033 3  SWAP
+ 3B0 C02C ,  >R
+ 3B1 802C ,  UM+
+ 3B2 C014    R>
+ 3B3 8025 %  OR
+ 3B4 C034 4  _IF
+ 3B5  3BC   
+ 3B6 C02C ,  >R
+ 3B7 801A    DROP
+ 3B8 8000    1+
+ 3B9 C014    R>
+ 3BA C006    _ELSE
+ 3BB  3BD    <#
+ 3BC 801A    DROP
+ 3BD C014    R>
+ 3BE C014    R>
+ 3BF 800E    1-
+ 3C0 C006    _ELSE
+ 3C1  39F   
+ 3C2  11C    2DROP
+ 3C3 8033 3  SWAP
+ 3C4 C00F    EXIT
+ 3C5 801A    DROP
+ 3C6  11C    2DROP
+ 3C7 C032 2  _LIT
+ 3C8 FFFF   
+ 3C9 8032 2  DUP
+ 3CA C00F    EXIT
+
+ 3CB  1EA    SM/REM
+ 3CC  391   
+ 3CD    6   
+ 3CE   53 S 
+ 3CF   4D M 
+ 3D0   2F / 
+ 3D1   52 R 
+ 3D2   45 E 
+ 3D3   4D M 
+ 3D4 801B    OVER
+ 3D5 C02C ,  >R
+ 3D6 C02C ,  >R
+ 3D7  152 R  DABS
+ 3D8 C011    R@
+ 3D9  136 6  ABS
+ 3DA  1CC    UM/MOD
+ 3DB C014    R>
+ 3DC C011    R@
+ 3DD 8026 &  XOR
+ 3DE 802A *  0<
+ 3DF C034 4  _IF
+ 3E0  3E2   
+ 3E1  12D -  NEGATE
+ 3E2 C014    R>
+ 3E3 802A *  0<
+ 3E4 C034 4  _IF
+ 3E5  3E9   
+ 3E6 C02C ,  >R
+ 3E7  12D -  NEGATE
+ 3E8 C014    R>
+ 3E9 C00F    EXIT
+
+ 3EA  1FA    FM/MOD
+ 3EB  3CD    HOLD
+ 3EC    6   
+ 3ED   46 F 
+ 3EE   4D M 
+ 3EF   2F / 
+ 3F0   4D M 
+ 3F1   4F O 
+ 3F2   44 D 
+ 3F3 BBBB   
+ 3F4 8032 2  DUP
+ 3F5 802A *  0<
+ 3F6 8032 2  DUP
+ 3F7 C02C ,  >R
+ 3F8 C034 4  _IF
+ 3F9  3FE   
+ 3FA  12D -  NEGATE
+ 3FB C02C ,  >R
+ 3FC  14A J  DNEGATE
+ 3FD C014    R>
+ 3FE C02C ,  >R
+ 3FF 8032 2  DUP
+ 400 802A *  0<
+ 401 C034 4  _IF
+ 402  405   
+ 403 C011    R@
+ 404 8035 5  +
+ 405 C014    R>
+ 406  1CC    UM/MOD
+ 407 C014    R>
+ 408 C034 4  _IF
+ 409  40D   
+ 40A C02C ,  >R
+ 40B  12D -  NEGATE
+ 40C C014    R>
+ 40D C00F    EXIT
+
+ 40E  20B    /MOD
+ 40F  3EC   
+ 410    4   
+ 411   2F / 
+ 412   4D M 
+ 413   4F O 
+ 414   44 D 
+ 415 BBBB   
+ 416 801B    OVER
+ 417 802A *  0<
+ 418 8033 3  SWAP
+ 419  1FA    FM/MOD
+ 41A C00F    EXIT
+
+ 41B  211    MOD
+ 41C  410   
+ 41D    3   
+ 41E   4D M 
+ 41F   4F O 
+ 420   44 D 
+ 421 BBBB   
+ 422  20B    /MOD
+ 423 801A    DROP
+ 424 C00F    EXIT
+
+ 425  215    /
+ 426  41D   
+ 427    1   
+ 428   2F / 
+ 429 BBBB   
+ 42A  20B    /MOD
+ 42B  110    NIP
+ 42C C00F    EXIT
+
+ 42D  21B    */MOD
+ 42E  427 ' 
+ 42F    5   
+ 430   2A * 
+ 431   2F / 
+ 432   4D M 
+ 433   4F O 
+ 434   44 D 
+ 435 BBBB   
+ 436 C02C ,  >R
+ 437  1A6    M*
+ 438 C014    R>
+ 439  1FA    FM/MOD
+ 43A C00F    EXIT
+
+ 43B  220    */
+ 43C  42F / 
+ 43D    2   
+ 43E   2A * 
+ 43F   2F / 
+ 440  21B    */MOD
+ 441  110    NIP
+ 442 C00F    EXIT
+
+ 443  224 $  +!
+ 444  43D = 
+ 445    2   
+ 446   2B + 
+ 447   21 ! 
+ 448 8032 2  DUP
+ 449 C02C ,  >R
+ 44A 803C <  AU@
+ 44B 8035 5  +
+ 44C C014    R>
+ 44D 8008    AU!
+ 44E C00F    EXIT
+
+ 44F  22C ,  COUNT
+ 450  445 E  EMIT
+ 451    5   
+ 452   43 C 
+ 453   4F O 
+ 454   55 U 
+ 455   4E N 
+ 456   54 T 
+ 457 BBBB   
+ 458 8032 2  DUP
+ 459 8000    1+
+ 45A 8033 3  SWAP
+ 45B 803C <  AU@
+ 45C C00F    EXIT
+
+ 45D  233 3  BOUNDS
+ 45E  451 Q 
+ 45F    6   
+ 460   42 B 
+ 461   4F O 
+ 462   55 U 
+ 463   4E N 
+ 464   44 D 
+ 465   53 S 
+ 466 801B    OVER
+ 467 8035 5  +
+ 468 8033 3  SWAP
+ 469 C00F    EXIT
+
+ 46A  23A :  /STRING
+ 46B  45F _ 
+ 46C    7   
+ 46D   2F / 
+ 46E   53 S 
+ 46F   54 T 
+ 470   52 R 
+ 471   49 I 
+ 472   4E N 
+ 473   47 G 
+ 474 8033 3  SWAP
+ 475 801B    OVER
+ 476  131 1  -
+ 477 C02C ,  >R
+ 478 8035 5  +
+ 479 C014    R>
+ 47A C00F    EXIT
+
+ 47B  240 @  2!
+ 47C  46C l 
+ 47D    2   
+ 47E   32 2 
+ 47F   21 ! 
+ 480 8033 3  SWAP
+ 481 801B    OVER
+ 482 8008    AU!
+ 483 8000    1+
+ 484 8008    AU!
+ 485 C00F    EXIT
+
+ 486  246 F  2@
+ 487  47D } 
+ 488    2   
+ 489   32 2 
+ 48A   40 @ 
+ 48B BBBB   
+ 48C 8032 2  DUP
+ 48D 8000    1+
+ 48E 803C <  AU@
+ 48F 8033 3  SWAP
+ 490 803C <  AU@
+ 491 C00F    EXIT
+
+ 492  24D M  MOVE
+ 493  488    _S"
+ 494    4   
+ 495   4D M 
+ 496   4F O 
+ 497   56 V 
+ 498   45 E 
+ 499 BBBB   
+ 49A C02C ,  >R
+ 49B  121 !  2DUP
+ 49C  162 b  U<
+ 49D C034 4  _IF
+ 49E  4B2   
+ 49F C014    R>
+ 4A0 8032 2  DUP
+ 4A1 C034 4  _IF
+ 4A2  4AF   
+ 4A3 800E    1-
+ 4A4 C02C ,  >R
+ 4A5 801B    OVER
+ 4A6 C011    R@
+ 4A7 8035 5  +
+ 4A8 803C <  AU@
+ 4A9 801B    OVER
+ 4AA C011    R@
+ 4AB 8035 5  +
+ 4AC 8008    AU!
+ 4AD C006    _ELSE
+ 4AE  49F   
+ 4AF 801A    DROP
+ 4B0  11C    2DROP
+ 4B1 C00F    EXIT
+ 4B2 C014    R>
+ 4B3 801B    OVER
+ 4B4 8035 5  +
+ 4B5 C02C ,  >R
+ 4B6 8032 2  DUP
+ 4B7 C011    R@
+ 4B8 8026 &  XOR
+ 4B9 C034 4  _IF
+ 4BA  4C5   
+ 4BB C02C ,  >R
+ 4BC 8032 2  DUP
+ 4BD 803C <  AU@
+ 4BE C011    R@
+ 4BF 8008    AU!
+ 4C0 8000    1+
+ 4C1 C014    R>
+ 4C2 8000    1+
+ 4C3 C006    _ELSE
+ 4C4  4B6    D.
+ 4C5 C014    R>
+ 4C6 801A    DROP
+ 4C7  11C    2DROP
+ 4C8 C00F    EXIT
+
+ 4C9  269 i  ERASE
+ 4CA  494    _ABORT"
+ 4CB    5   
+ 4CC   45 E 
+ 4CD   52 R 
+ 4CE   41 A 
+ 4CF   53 S 
+ 4D0   45 E 
+ 4D1 BBBB   
+ 4D2  233 3  BOUNDS
+ 4D3  121 !  2DUP
+ 4D4 8026 &  XOR
+ 4D5 C034 4  _IF
+ 4D6  4DE   
+ 4D7 C032 2  _LIT
+ 4D8    0   
+ 4D9 801B    OVER
+ 4DA 8008    AU!
+ 4DB 8000    1+
+ 4DC C006    _ELSE
+ 4DD  4D3    ACCEPT
+ 4DE  11C    2DROP
+ 4DF C00F    EXIT
+
+ 4E0  274 t  FILL
+ 4E1  4CB   
+ 4E2    4   
+ 4E3   46 F 
+ 4E4   49 I 
+ 4E5   4C L 
+ 4E6   4C L 
+ 4E7 BBBB   
+ 4E8 C02C ,  >R
+ 4E9  233 3  BOUNDS
+ 4EA  121 !  2DUP
+ 4EB 8026 &  XOR
+ 4EC C034 4  _IF
+ 4ED  4F4    SAME?
+ 4EE C011    R@
+ 4EF 801B    OVER
+ 4F0 8008    AU!
+ 4F1 8000    1+
+ 4F2 C006    _ELSE
+ 4F3  4EA   
+ 4F4 C014    R>
+ 4F5 801A    DROP
+ 4F6  11C    2DROP
+ 4F7 C00F    EXIT
+
+ 4F8  282    -TRAILING
+ 4F9  4E2   
+ 4FA    9   
+ 4FB   2D - 
+ 4FC   54 T 
+ 4FD   52 R 
+ 4FE   41 A 
+ 4FF   49 I 
+ 500   4C L 
+ 501   49 I 
+ 502   4E N 
+ 503   47 G 
+ 504 8032 2  DUP
+ 505 C034 4  _IF
+ 506  511   
+ 507 800E    1-
+ 508  121 !  2DUP
+ 509 8035 5  +
+ 50A 803C <  AU@
+ 50B   F1    BL
+ 50C 8033 3  SWAP
+ 50D  162 b  U<
+ 50E C034 4  _IF
+ 50F  504   
+ 510 8000    1+
+ 511 C00F    EXIT
+
+ 512  28D    >ADR
+ 513  4FA   
+ 514    4   
+ 515   3E > 
+ 516   41 A 
+ 517   44 D 
+ 518   52 R 
+ 519 BBBB   
+ 51A 8032 2  DUP
+ 51B C032 2  _LIT
+ 51C 8000    1+
+ 51D 8027 '  AND
+ 51E C034 4  _IF
+ 51F  524 $ 
+ 520 C032 2  _LIT
+ 521 1FFF   
+ 522 8027 '  AND
+ 523 C00F    EXIT
+ 524 C032 2  _LIT
+ 525 7FFF   
+ 526 8027 '  AND
+ 527 8024 $  2*
+ 528 C00F    EXIT
+
+ 529  299    >BODY
+ 52A  514   
+ 52B    5   
+ 52C   3E > 
+ 52D   42 B 
+ 52E   4F O 
+ 52F   44 D 
+ 530   59 Y 
+ 531 BBBB   
+ 532  28D    >ADR
+ 533 8000    1+
+ 534 C00F    EXIT
+
+ 535  29F    UPPER
+ 536  52B + 
+ 537    5   
+ 538   55 U 
+ 539   50 P 
+ 53A   50 P 
+ 53B   45 E 
+ 53C   52 R 
+ 53D BBBB   
+ 53E 8032 2  DUP
+ 53F C032 2  _LIT
+ 540   61 a 
+ 541 C032 2  _LIT
+ 542   7B { 
+ 543  181    WITHIN
+ 544 C034 4  _IF
+ 545  548 H 
+ 546   F1    BL
+ 547 8026 &  XOR
+ 548 C00F    EXIT
+
+ 549  2A7    UP
+ 54A  537 7 
+ 54B    2   
+ 54C   55 U 
+ 54D   50 P 
+ 54E C00E    _VAR
+ 54F    0   
+
+ 550  2AC    _USR
+ 551  54B K 
+ 552   44 D 
+ 553   5F _ 
+ 554   55 U 
+ 555   53 S 
+ 556   52 R 
+ 557 BBBB   
+ 558  2A7    UP
+ 559 803C <  AU@
+ 55A C014    R>
+ 55B 803C <  AU@
+ 55C 8035 5  +
+ 55D C00F    EXIT
+
+ 55E  2B5    FOLLOWER
+ 55F  552 R 
+ 560    8   
+ 561   46 F 
+ 562   4F O 
+ 563   4C L 
+ 564   4C L 
+ 565   4F O 
+ 566   57 W 
+ 567   45 E 
+ 568   52 R 
+ 569 BBBB   
+ 56A  2AC    _USR
+ 56B    0   
+
+ 56C  2BB    STATUS
+ 56D  560 ` 
+ 56E    6   
+ 56F   53 S 
+ 570   54 T 
+ 571   41 A 
+ 572   54 T 
+ 573   55 U 
+ 574   53 S 
+ 575 BBBB   
+ 576  2AC    _USR
+ 577 FFFF   
+
+ 578  2BF    TOS
+ 579  56E n 
+ 57A    3   
+ 57B   54 T 
+ 57C   4F O 
+ 57D   53 S 
+ 57E  2AC    _USR
+ 57F FFFE   
+
+ 580  2C3    TID
+ 581  57A z 
+ 582    3   
+ 583   54 T 
+ 584   49 I 
+ 585   44 D 
+ 586  2AC    _USR
+ 587 FFFD   
+
+ 588  2C7    TF
+ 589  582   
+ 58A    2   
+ 58B   54 T 
+ 58C   46 F 
+ 58D BBBB   
+ 58E  2AC    _USR
+ 58F FFFC   
+
+ 590  2CB    U1
+ 591  58A   
+ 592    2   
+ 593   55 U 
+ 594   31 1 
+ 595 BBBB   
+ 596  2AC    _USR
+ 597 FFFB   
+
+ 598  2CF    U2
+ 599  592   
+ 59A    2   
+ 59B   55 U 
+ 59C   32 2 
+ 59D BBBB   
+ 59E  2AC    _USR
+ 59F FFFA   
+
+ 5A0  2D4    PAUSE
+ 5A1  59A   
+ 5A2    5   
+ 5A3   50 P 
+ 5A4   41 A 
+ 5A5   55 U 
+ 5A6   53 S 
+ 5A7   45 E 
+ 5A8 C00A    RP@
+ 5A9 8015    SP@
+ 5AA  2BF    TOS
+ 5AB 8008    AU!
+ 5AC  2B5    FOLLOWER
+ 5AD 803C <  AU@
+ 5AE C02C ,  >R
+ 5AF C00F    EXIT
+
+ 5B0  2DC    _WAKE
+ 5B1  5A2   
+ 5B2   45 E 
+ 5B3   5F _ 
+ 5B4   57 W 
+ 5B5   41 A 
+ 5B6   4B K 
+ 5B7   45 E 
+ 5B8 C014    R>
+ 5B9  2A7    UP
+ 5BA 8008    AU!
+ 5BB  2BF    TOS
+ 5BC 803C <  AU@
+ 5BD 8018    SP!
+ 5BE C02F /  RP!
+ 5BF C00F    EXIT
+
+ 5C0  2E4    WAKE
+ 5C1  5B2   
+ 5C2    4   
+ 5C3   57 W 
+ 5C4   41 A 
+ 5C5   4B K 
+ 5C6   45 E 
+ 5C7 BBBB   
+ 5C8 C00D    _CON
+ 5C9  2DC    _WAKE
+
+ 5CA  2E9    PASS
+ 5CB  5C2   
+ 5CC    4   
+ 5CD   50 P 
+ 5CE   41 A 
+ 5CF   53 S 
+ 5D0   53 S 
+ 5D1 BBBB   
+ 5D2 C00D    _CON
+ 5D3 C006    _ELSE
+
+ 5D4  2ED    'S
+ 5D5  5CC   
+ 5D6    2   
+ 5D7   27 ' 
+ 5D8   53 S 
+ 5D9 BBBB   
+ 5DA  2B5    FOLLOWER
+ 5DB 8000    1+
+ 5DC  131 1  -
+ 5DD 8033 3  SWAP
+ 5DE 803C <  AU@
+ 5DF 8035 5  +
+ 5E0 C00F    EXIT
+
+ 5E1  2F5    AWAKE
+ 5E2  5D6   
+ 5E3    5   
+ 5E4   41 A 
+ 5E5   57 W 
+ 5E6   41 A 
+ 5E7   4B K 
+ 5E8   45 E 
+ 5E9 BBBB   
+ 5EA  2E4    WAKE
+ 5EB 8033 3  SWAP
+ 5EC  2BB    STATUS
+ 5ED  2ED    'S
+ 5EE 8008    AU!
+ 5EF C00F    EXIT
+
+ 5F0  2FC    SLEEP
+ 5F1  5E3   
+ 5F2    5   
+ 5F3   53 S 
+ 5F4   4C L 
+ 5F5   45 E 
+ 5F6   45 E 
+ 5F7   50 P 
+ 5F8  2E9    PASS
+ 5F9 8033 3  SWAP
+ 5FA  2BB    STATUS
+ 5FB  2ED    'S
+ 5FC 8008    AU!
+ 5FD C00F    EXIT
+
+ 5FE  303    STOP
+ 5FF  5F2   
+ 600   44 D 
+ 601   53 S 
+ 602   54 T 
+ 603   4F O 
+ 604   50 P 
+ 605 BBBB   
+ 606  2E9    PASS
+ 607  2BB    STATUS
+ 608 8008    AU!
+ 609  2D4    PAUSE
+ 60A C00F    EXIT
+
+ 60B  30B    ACTIVATE
+ 60C  600   
+ 60D   48 H 
+ 60E   41 A 
+ 60F   43 C 
+ 610   54 T 
+ 611   49 I 
+ 612   56 V 
+ 613   41 A 
+ 614   54 T 
+ 615   45 E 
+ 616 8032 2  DUP
+ 617  246 F  2@
+ 618 C014    R>
+ 619 801B    OVER
+ 61A 8008    AU!
+ 61B 801B    OVER
+ 61C 8008    AU!
+ 61D 801B    OVER
+ 61E  2BF    TOS
+ 61F  2ED    'S
+ 620 8008    AU!
+ 621  2F5    AWAKE
+ 622 C00F    EXIT
+
+ 623  316    BUILD
+ 624  60D   
+ 625    5   
+ 626   42 B 
+ 627   55 U 
+ 628   49 I 
+ 629   4C L 
+ 62A   44 D 
+ 62B BBBB   
+ 62C 8032 2  DUP
+ 62D  2FC    SLEEP
+ 62E  2B5    FOLLOWER
+ 62F 803C <  AU@
+ 630 801B    OVER
+ 631  2B5    FOLLOWER
+ 632  2ED    'S
+ 633 8008    AU!
+ 634 8032 2  DUP
+ 635  2BB    STATUS
+ 636  2ED    'S
+ 637  2B5    FOLLOWER
+ 638 8008    AU!
+ 639 8032 2  DUP
+ 63A  2C3    TID
+ 63B  2ED    'S
+ 63C 8008    AU!
+ 63D C00F    EXIT
+
+ 63E  322 "  GET
+ 63F  625 % 
+ 640    3   
+ 641   47 G 
+ 642   45 E 
+ 643   54 T 
+ 644  2D4    PAUSE
+ 645 8032 2  DUP
+ 646 803C <  AU@
+ 647  2BB    STATUS
+ 648 8026 &  XOR
+ 649 C034 4  _IF
+ 64A  656 V 
+ 64B 8032 2  DUP
+ 64C 803C <  AU@
+ 64D C034 4  _IF
+ 64E  652 R 
+ 64F  2D4    PAUSE
+ 650 C006    _ELSE
+ 651  64B K 
+ 652  2BB    STATUS
+ 653 8033 3  SWAP
+ 654 8008    AU!
+ 655 C00F    EXIT
+ 656 801A    DROP
+ 657 C00F    EXIT
+
+ 658  331 1  RELEASE
+ 659  640 @ 
+ 65A    7   
+ 65B   52 R 
+ 65C   45 E 
+ 65D   4C L 
+ 65E   45 E 
+ 65F   41 A 
+ 660   53 S 
+ 661   45 E 
+ 662 8032 2  DUP
+ 663 803C <  AU@
+ 664  2BB    STATUS
+ 665 8026 &  XOR
+ 666 C034 4  _IF
+ 667  66A j 
+ 668 801A    DROP
+ 669 C00F    EXIT
+ 66A C032 2  _LIT
+ 66B    0   
+ 66C 8033 3  SWAP
+ 66D 8008    AU!
+ 66E C00F    EXIT
+
+ 66F  33C <  CATCH
+ 670  65A Z 
+ 671    5   
+ 672   43 C 
+ 673   41 A 
+ 674   54 T 
+ 675   43 C 
+ 676   48 H 
+ 677 BBBB   
+ 678 8015    SP@
+ 679 C02C ,  >R
+ 67A  2C7    TF
+ 67B 803C <  AU@
+ 67C C02C ,  >R
+ 67D C00A    RP@
+ 67E  2C7    TF
+ 67F 8008    AU!
+ 680 C01E    EXECUTE
+ 681 C014    R>
+ 682  2C7    TF
+ 683 8008    AU!
+ 684 C014    R>
+ 685 801A    DROP
+ 686 C032 2  _LIT
+ 687    0   
+ 688 C00F    EXIT
+
+ 689  349 I  THROW
+ 68A  671 q 
+ 68B    5   
+ 68C   54 T 
+ 68D   48 H 
+ 68E   52 R 
+ 68F   4F O 
+ 690   57 W 
+ 691 BBBB   
+ 692  126 &  ?DUP
+ 693 C034 4  _IF
+ 694  6A1   
+ 695  2C7    TF
+ 696 803C <  AU@
+ 697 C02F /  RP!
+ 698 C014    R>
+ 699  2C7    TF
+ 69A 8008    AU!
+ 69B C014    R>
+ 69C 8033 3  SWAP
+ 69D C02C ,  >R
+ 69E 8018    SP!
+ 69F 801A    DROP
+ 6A0 C014    R>
+ 6A1 C00F    EXIT
+
+ 6A2  355 U  DEPTH
+ 6A3  68B   
+ 6A4    5   
+ 6A5   44 D 
+ 6A6   45 E 
+ 6A7   50 P 
+ 6A8   54 T 
+ 6A9   48 H 
+ 6AA 8015    SP@
+ 6AB  2C3    TID
+ 6AC 803C <  AU@
+ 6AD 8000    1+
+ 6AE 803C <  AU@
+ 6AF 8033 3  SWAP
+ 6B0  131 1  -
+ 6B1 C00F    EXIT
+
+ 6B2  35D ]  ABORT
+ 6B3  6A4   
+ 6B4    5   
+ 6B5   41 A 
+ 6B6   42 B 
+ 6B7   4F O 
+ 6B8   52 R 
+ 6B9   54 T 
+ 6BA C032 2  _LIT
+ 6BB FFFF   
+ 6BC  349 I  THROW
+ 6BD C00F    EXIT
+
+ 6BE  364 d  DIGIT?
+ 6BF  6B4   
+ 6C0    6   
+ 6C1   44 D 
+ 6C2   49 I 
+ 6C3   47 G 
+ 6C4   49 I 
+ 6C5   54 T 
+ 6C6   3F ? 
+ 6C7 BBBB   
+ 6C8 C02C ,  >R
+ 6C9 C032 2  _LIT
+ 6CA   30 0 
+ 6CB  131 1  -
+ 6CC C032 2  _LIT
+ 6CD    9   
+ 6CE 801B    OVER
+ 6CF  16A j  <
+ 6D0 C034 4  _IF
+ 6D1  6DA   
+ 6D2 C032 2  _LIT
+ 6D3 FFF9   
+ 6D4 8035 5  +
+ 6D5 8032 2  DUP
+ 6D6 C032 2  _LIT
+ 6D7    A   
+ 6D8  16A j  <
+ 6D9 8025 %  OR
+ 6DA 8032 2  DUP
+ 6DB C014    R>
+ 6DC  162 b  U<
+ 6DD C00F    EXIT
+
+ 6DE  374 t  >NUMBER
+ 6DF  6C0   
+ 6E0    7   
+ 6E1   3E > 
+ 6E2   4E N 
+ 6E3   55 U 
+ 6E4   4D M 
+ 6E5   42 B 
+ 6E6   45 E 
+ 6E7   52 R 
+ 6E8 8032 2  DUP
+ 6E9 C034 4  _IF
+ 6EA  708   
+ 6EB C02C ,  >R
+ 6EC 8032 2  DUP
+ 6ED C02C ,  >R
+ 6EE 803C <  AU@
+ 6EF  29F    UPPER
+ 6F0   C9    BASE
+ 6F1 803C <  AU@
+ 6F2  364 d  DIGIT?
+ 6F3 C034 4  _IF
+ 6F4  705   
+ 6F5 8033 3  SWAP
+ 6F6   C9    BASE
+ 6F7 803C <  AU@
+ 6F8  192    UM*
+ 6F9 801A    DROP
+ 6FA  115    ROT
+ 6FB   C9    BASE
+ 6FC 803C <  AU@
+ 6FD  192    UM*
+ 6FE  140 @  D+
+ 6FF C014    R>
+ 700 8000    1+
+ 701 C014    R>
+ 702 800E    1-
+ 703 C006    _ELSE
+ 704  6E8    ?UNIQUE
+ 705 801A    DROP
+ 706 C014    R>
+ 707 C014    R>
+ 708 C00F    EXIT
+
+ 709  38A    NUMBER?
+ 70A  6E0   
+ 70B    7   
+ 70C   4E N 
+ 70D   55 U 
+ 70E   4D M 
+ 70F   42 B 
+ 710   45 E 
+ 711   52 R 
+ 712   3F ? 
+ 713 BBBB   
+ 714 801B    OVER
+ 715 803C <  AU@
+ 716 C032 2  _LIT
+ 717   2D - 
+ 718  15E ^  =
+ 719 8032 2  DUP
+ 71A C02C ,  >R
+ 71B C034 4  _IF
+ 71C  720   
+ 71D C032 2  _LIT
+ 71E    1   
+ 71F  23A :  /STRING
+ 720 C02C ,  >R
+ 721 C02C ,  >R
+ 722 C032 2  _LIT
+ 723    0   
+ 724 8032 2  DUP
+ 725 C014    R>
+ 726 C014    R>
+ 727 C032 2  _LIT
+ 728 FFFF   
+ 729   CD    DPL
+ 72A 8008    AU!
+ 72B  374 t  >NUMBER
+ 72C 8032 2  DUP
+ 72D C034 4  _IF
+ 72E  746 F 
+ 72F 801B    OVER
+ 730 803C <  AU@
+ 731 C032 2  _LIT
+ 732   2E . 
+ 733 8026 &  XOR
+ 734 C034 4  _IF
+ 735  73E > 
+ 736  115    ROT
+ 737 801A    DROP
+ 738  115    ROT
+ 739 C014    R>
+ 73A  11C    2DROP
+ 73B C032 2  _LIT
+ 73C    0   
+ 73D C00F    EXIT
+ 73E 800E    1-
+ 73F   CD    DPL
+ 740 8008    AU!
+ 741 8000    1+
+ 742   CD    DPL
+ 743 803C <  AU@
+ 744 C006    _ELSE
+ 745  72B + 
+ 746  11C    2DROP
+ 747 C014    R>
+ 748 C034 4  _IF
+ 749  74B K  :NONAME
+ 74A  14A J  DNEGATE
+ 74B C032 2  _LIT
+ 74C FFFF   
+ 74D C00F    EXIT
+
+ 74E  3AB    HERE
+ 74F  70B   
+ 750    4   
+ 751   48 H 
+ 752   45 E 
+ 753   52 R 
+ 754   45 E 
+ 755 BBBB   
+ 756   E7    DP
+ 757 803C <  AU@
+ 758 C00F    EXIT
+
+ 759  3B0    PAD
+ 75A  750 P 
+ 75B    3   
+ 75C   50 P 
+ 75D   41 A 
+ 75E   44 D 
+ 75F BBBB   
+ 760  3AB    HERE
+ 761 C032 2  _LIT
+ 762   50 P 
+ 763 8035 5  +
+ 764 C00F    EXIT
+
+ 765  3B7    UNUSED
+ 766  75B [ 
+ 767    6   
+ 768   55 U 
+ 769   4E N 
+ 76A   55 U 
+ 76B   53 S 
+ 76C   45 E 
+ 76D   44 D 
+ 76E   ED    SUP
+ 76F  2CF    U2
+ 770  2ED    'S
+ 771  3AB    HERE
+ 772  131 1  -
+ 773 C00F    EXIT
+
+ 774  3BD    <#
+ 775  767 g  DOES>
+ 776    2   
+ 777   3C < 
+ 778   23 # 
+ 779 BBBB   
+ 77A  3B0    PAD
+ 77B   D1    HLD
+ 77C 8008    AU!
+ 77D C00F    EXIT
+
+ 77E  3C3    DIGIT
+ 77F  776 v 
+ 780    5   
+ 781   44 D 
+ 782   49 I 
+ 783   47 G 
+ 784   49 I 
+ 785   54 T 
+ 786 C032 2  _LIT
+ 787    9   
+ 788 801B    OVER
+ 789  16A j  <
+ 78A C032 2  _LIT
+ 78B    7   
+ 78C 8027 '  AND
+ 78D 8035 5  +
+ 78E C032 2  _LIT
+ 78F   30 0 
+ 790 8035 5  +
+ 791 C00F    EXIT
+
+ 792  3CD    HOLD
+ 793  780   
+ 794    4   
+ 795   48 H 
+ 796   4F O 
+ 797   4C L 
+ 798   44 D 
+ 799 BBBB   
+ 79A   D1    HLD
+ 79B 803C <  AU@
+ 79C 800E    1-
+ 79D 8032 2  DUP
+ 79E   D1    HLD
+ 79F 8008    AU!
+ 7A0 8008    AU!
+ 7A1 C00F    EXIT
+
+ 7A2  3D3    #
+ 7A3  794   
+ 7A4    1   
+ 7A5   23 # 
+ 7A6 C032 2  _LIT
+ 7A7    0   
+ 7A8   C9    BASE
+ 7A9 803C <  AU@
+ 7AA  1CC    UM/MOD
+ 7AB C02C ,  >R
+ 7AC   C9    BASE
+ 7AD 803C <  AU@
+ 7AE  1CC    UM/MOD
+ 7AF 8033 3  SWAP
+ 7B0  3C3    DIGIT
+ 7B1  3CD    HOLD
+ 7B2 C014    R>
+ 7B3 C00F    EXIT
+
+ 7B4  3DD    #S
+ 7B5  7A4   
+ 7B6    2   
+ 7B7   23 # 
+ 7B8   53 S 
+ 7B9 BBBB   
+ 7BA  3D3    #
+ 7BB  121 !  2DUP
+ 7BC 8025 %  OR
+ 7BD  158 X  0=
+ 7BE C034 4  _IF
+ 7BF  7BA   
+ 7C0 C00F    EXIT
+
+ 7C1  3E3    #>
+ 7C2  7B6   
+ 7C3    2   
+ 7C4   23 # 
+ 7C5   3E > 
+ 7C6  11C    2DROP
+ 7C7   D1    HLD
+ 7C8 803C <  AU@
+ 7C9  3B0    PAD
+ 7CA 801B    OVER
+ 7CB  131 1  -
+ 7CC C00F    EXIT
+
+ 7CD  3EA    SIGN
+ 7CE  7C3   
+ 7CF    4   
+ 7D0   53 S 
+ 7D1   49 I 
+ 7D2   47 G 
+ 7D3   4E N 
+ 7D4 802A *  0<
+ 7D5 C034 4  _IF
+ 7D6  7DA   
+ 7D7 C032 2  _LIT
+ 7D8   2D - 
+ 7D9  3CD    HOLD
+ 7DA C00F    EXIT
+
+ 7DB  3F1    IBUF
+ 7DC  7CF   
+ 7DD    4   
+ 7DE   49 I 
+ 7DF   42 B 
+ 7E0   55 U 
+ 7E1   46 F 
+ 7E2 C00D    _CON
+ 7E3    D   
+
+ 7E4  3F6    KEY?
+ 7E5  7DD   
+ 7E6    4   
+ 7E7   4B K 
+ 7E8   45 E 
+ 7E9   59 Y 
+ 7EA   3F ? 
+ 7EB BBBB   
+ 7EC  2D4    PAUSE
+ 7ED  3F1    IBUF
+ 7EE 803C <  AU@
+ 7EF C034 4  _IF
+ 7F0  7F4   
+ 7F1 C032 2  _LIT
+ 7F2 FFFF   
+ 7F3 C00F    EXIT
+ 7F4 C032 2  _LIT
+ 7F5    7   
+ 7F6 803C <  AU@
+ 7F7 C01E    EXECUTE
+ 7F8 8032 2  DUP
+ 7F9  3F1    IBUF
+ 7FA 8008    AU!
+ 7FB 802A *  0<
+ 7FC C00F    EXIT
+
+ 7FD  402    KEY
+ 7FE  7E6   
+ 7FF    3   
+ 800   4B K 
+ 801   45 E 
+ 802   59 Y 
+ 803 BBBB   
+ 804  3F6    KEY?
+ 805 C034 4  _IF
+ 806  804   
+ 807  3F1    IBUF
+ 808 803C <  AU@
+ 809 8028 (  INVERT
+ 80A C032 2  _LIT
+ 80B    0   
+ 80C  3F1    IBUF
+ 80D 8008    AU!
+ 80E C00F    EXIT
+
+ 80F  40B    MSA
+ 810  7FF   
+ 811    3   
+ 812   4D M 
+ 813   53 S 
+ 814   41 A 
+ 815 BBBB   
+ 816 C00E    _VAR
+ 817   C8   
+
+ 818  40F    MS
+ 819  811   
+ 81A    2   
+ 81B   4D M 
+ 81C   53 S 
+ 81D BBBB   
+ 81E  126 &  ?DUP
+ 81F C034 4  _IF
+ 820  82D - 
+ 821  2D4    PAUSE
+ 822  40B    MSA
+ 823 803C <  AU@
+ 824  126 &  ?DUP
+ 825 C034 4  _IF
+ 826  82A * 
+ 827 800E    1-
+ 828 C006    _ELSE
+ 829  824 $ 
+ 82A 800E    1-
+ 82B C006    _ELSE
+ 82C  81E   
+ 82D C00F    EXIT
+
+ 82E  41A    NUF
+ 82F  81A   
+ 830    3   
+ 831   4E N 
+ 832   55 U 
+ 833   46 F 
+ 834 C00E    _VAR
+ 835   10   
+ 836   10   
+
+ 837  41F    NUF?
+ 838  830 0 
+ 839    4   
+ 83A   4E N 
+ 83B   55 U 
+ 83C   46 F 
+ 83D   3F ? 
+ 83E  3F6    KEY?
+ 83F 8032 2  DUP
+ 840 C034 4  _IF
+ 841  854 T 
+ 842  402    KEY
+ 843 C032 2  _LIT
+ 844    A   
+ 845  364 d  DIGIT?
+ 846 C034 4  _IF
+ 847  84F O 
+ 848 C032 2  _LIT
+ 849    4   
+ 84A  189    LSHIFT
+ 84B  41A    NUF
+ 84C 8008    AU!
+ 84D  158 X  0=
+ 84E C00F    EXIT
+ 84F  11C    2DROP
+ 850  402    KEY
+ 851   FA    \r
+ 852  15E ^  =
+ 853 C00F    EXIT
+ 854  41A    NUF
+ 855 803C <  AU@
+ 856  40F    MS
+ 857 C00F    EXIT
+
+ 858  430 0  OBUF
+ 859  839 9 
+ 85A    4   
+ 85B   4F O 
+ 85C   42 B 
+ 85D   55 U 
+ 85E   46 F 
+ 85F BBBB   
+ 860 C00D    _CON
+ 861    E   
+
+ 862  435 5  EMIT?
+ 863  85A Z  RESOLVE
+ 864    5   
+ 865   45 E 
+ 866   4D M 
+ 867   49 I 
+ 868   54 T 
+ 869   3F ? 
+ 86A  2D4    PAUSE
+ 86B  430 0  OBUF
+ 86C 803C <  AU@
+ 86D 8032 2  DUP
+ 86E C034 4  _IF
+ 86F  878 x 
+ 870 C032 2  _LIT
+ 871    8   
+ 872 803C <  AU@
+ 873 C01E    EXECUTE
+ 874 8032 2  DUP
+ 875  430 0  OBUF
+ 876 8008    AU!
+ 877 802A *  0<
+ 878 8028 (  INVERT
+ 879 C00F    EXIT
+
+ 87A  440 @  C#
+ 87B  864 d  IF
+ 87C    2   
+ 87D   43 C 
+ 87E   23 # 
+ 87F BBBB   
+ 880 C00E    _VAR
+ 881    0   
+ 882   40 @ 
+
+ 883  445 E  EMIT
+ 884  87C | 
+ 885    4   
+ 886   45 E 
+ 887   4D M 
+ 888   49 I 
+ 889   54 T 
+ 88A 8028 (  INVERT
+ 88B  430 0  OBUF
+ 88C 8008    AU!
+ 88D  435 5  EMIT?
+ 88E C034 4  _IF
+ 88F  88D   
+ 890 C032 2  _LIT
+ 891    1   
+ 892  440 @  C#
+ 893  224 $  +!
+ 894 C00F    EXIT
+
+ 895  44F O  SPACE
+ 896  885   
+ 897    5   
+ 898   53 S 
+ 899   50 P 
+ 89A   41 A 
+ 89B   43 C 
+ 89C   45 E 
+ 89D BBBB   
+ 89E   F1    BL
+ 89F  445 E  EMIT
+ 8A0 C00F    EXIT
+ 8A1    6   
+ 8A2   63 c 
+ 8A3   6F o 
+ 8A4   79 y 
+ 8A5   6F o 
+ 8A6   74 t 
+ 8A7   65 e 
+
+ 8A8  458 X  EMITS
+ 8A9  897   
+ 8AA    5   
+ 8AB   45 E 
+ 8AC   4D M 
+ 8AD   49 I 
+ 8AE   54 T 
+ 8AF   53 S 
+ 8B0 8033 3  SWAP
+ 8B1 C032 2  _LIT
+ 8B2    0   
+ 8B3  179 y  MAX
+ 8B4 8032 2  DUP
+ 8B5 C034 4  _IF
+ 8B6  8BC   
+ 8B7 801B    OVER
+ 8B8  445 E  EMIT
+ 8B9 800E    1-
+ 8BA C006    _ELSE
+ 8BB  8B4   
+ 8BC  11C    2DROP
+ 8BD C00F    EXIT
+
+ 8BE  464 d  SPACES
+ 8BF  8AA   
+ 8C0    6   
+ 8C1   53 S 
+ 8C2   50 P 
+ 8C3   41 A 
+ 8C4   43 C 
+ 8C5   45 E 
+ 8C6   53 S 
+ 8C7 BBBB   
+ 8C8   F1    BL
+ 8C9  458 X  EMITS
+ 8CA C00F    EXIT
+
+ 8CB  469 i  TYPE
+ 8CC  8C0   
+ 8CD    4   
+ 8CE   54 T 
+ 8CF   59 Y 
+ 8D0   50 P 
+ 8D1   45 E 
+ 8D2  2D4    PAUSE
+ 8D3  233 3  BOUNDS
+ 8D4  121 !  2DUP
+ 8D5 8026 &  XOR
+ 8D6 C034 4  _IF
+ 8D7  8DC   
+ 8D8  22C ,  COUNT
+ 8D9  445 E  EMIT
+ 8DA C006    _ELSE
+ 8DB  8D4   
+ 8DC  11C    2DROP
+ 8DD C00F    EXIT
+
+ 8DE  472 r  CR
+ 8DF  8CD   
+ 8E0    2   
+ 8E1   43 C 
+ 8E2   52 R 
+ 8E3 BBBB   
+ 8E4   FA    \r
+ 8E5  445 E  EMIT
+ 8E6   FE    \n
+ 8E7  445 E  EMIT
+ 8E8 C032 2  _LIT
+ 8E9    0   
+ 8EA  440 @  C#
+ 8EB 8008    AU!
+ 8EC C00F    EXIT
+
+ 8ED  47A z  ?CR
+ 8EE  8E0   
+ 8EF    3   
+ 8F0   3F ? 
+ 8F1   43 C 
+ 8F2   52 R 
+ 8F3 BBBB   
+ 8F4  440 @  C#
+ 8F5  246 F  2@
+ 8F6  162 b  U<
+ 8F7 C034 4  _IF
+ 8F8  8FA   
+ 8F9  472 r  CR
+ 8FA C00F    EXIT
+
+ 8FB  480    _"
+ 8FC  8EF   
+ 8FD   42 B 
+ 8FE   5F _ 
+ 8FF   22 " 
+ 900 C014    R>
+ 901 C014    R>
+ 902 8032 2  DUP
+ 903  22C ,  COUNT
+ 904 8035 5  +
+ 905 C02C ,  >R
+ 906 8033 3  SWAP
+ 907 C02C ,  >R
+ 908 C00F    EXIT
+
+ 909  488    _S"
+ 90A  8FD   
+ 90B   43 C 
+ 90C   5F _ 
+ 90D   53 S 
+ 90E   22 " 
+ 90F BBBB   
+ 910  480    _"
+ 911  22C ,  COUNT
+ 912 C00F    EXIT
+
+ 913  48D    _."
+ 914  90B   
+ 915   43 C 
+ 916   5F _ 
+ 917   2E . 
+ 918   22 " 
+ 919 BBBB   
+ 91A  480    _"
+ 91B  22C ,  COUNT
+ 91C  469 i  TYPE
+ 91D C00F    EXIT
+
+ 91E  494    _ABORT"
+ 91F  915   
+ 920   47 G 
+ 921   5F _ 
+ 922   41 A 
+ 923   42 B 
+ 924   4F O 
+ 925   52 R 
+ 926   54 T 
+ 927   22 " 
+ 928 C034 4  _IF
+ 929  930 0 
+ 92A  480    _"
+ 92B   DE    CSP
+ 92C 8008    AU!
+ 92D C032 2  _LIT
+ 92E FFFE   
+ 92F  349 I  THROW
+ 930  480    _"
+ 931 801A    DROP
+ 932 C00F    EXIT
+
+ 933  49D    S.R
+ 934  920   
+ 935    3   
+ 936   53 S 
+ 937   2E . 
+ 938   52 R 
+ 939 BBBB   
+ 93A 801B    OVER
+ 93B  131 1  -
+ 93C  464 d  SPACES
+ 93D  469 i  TYPE
+ 93E C00F    EXIT
+
+ 93F  4A3    D.R
+ 940  935 5 
+ 941    3   
+ 942   44 D 
+ 943   2E . 
+ 944   52 R 
+ 945 BBBB   
+ 946 C02C ,  >R
+ 947 8032 2  DUP
+ 948 C02C ,  >R
+ 949  152 R  DABS
+ 94A  3BD    <#
+ 94B  3DD    #S
+ 94C C014    R>
+ 94D  3EA    SIGN
+ 94E  3E3    #>
+ 94F C014    R>
+ 950  49D    S.R
+ 951 C00F    EXIT
+
+ 952  4AC    U.R
+ 953  941 A 
+ 954    3   
+ 955   55 U 
+ 956   2E . 
+ 957   52 R 
+ 958 C032 2  _LIT
+ 959    0   
+ 95A 8033 3  SWAP
+ 95B  4A3    D.R
+ 95C C00F    EXIT
+
+ 95D  4B1    .R
+ 95E  954 T 
+ 95F    2   
+ 960   2E . 
+ 961   52 R 
+ 962 C02C ,  >R
+ 963  13C <  S>D
+ 964 C014    R>
+ 965  4A3    D.R
+ 966 C00F    EXIT
+
+ 967  4B6    D.
+ 968  95F _ 
+ 969    2   
+ 96A   44 D 
+ 96B   2E . 
+ 96C C032 2  _LIT
+ 96D    0   
+ 96E  4A3    D.R
+ 96F  44F O  SPACE
+ 970 C00F    EXIT
+
+ 971  4BB    U.
+ 972  969 i 
+ 973    2   
+ 974   55 U 
+ 975   2E . 
+ 976 C032 2  _LIT
+ 977    0   
+ 978  4B6    D.
+ 979 C00F    EXIT
+
+ 97A  4BF    .
+ 97B  973 s 
+ 97C    1   
+ 97D   2E . 
+ 97E   C9    BASE
+ 97F 803C <  AU@
+ 980 C032 2  _LIT
+ 981    A   
+ 982 8026 &  XOR
+ 983 C034 4  _IF
+ 984  987   
+ 985  4BB    U.
+ 986 C00F    EXIT
+ 987  13C <  S>D
+ 988  4B6    D.
+ 989 C00F    EXIT
+
+ 98A  4C7    ?
+ 98B  97C | 
+ 98C    1   
+ 98D   3F ? 
+ 98E 803C <  AU@
+ 98F  4BF    .
+ 990 C00F    EXIT
+
+ 991  4CC    ECHO
+ 992  98C   
+ 993    4   
+ 994   45 E 
+ 995   43 C 
+ 996   48 H 
+ 997   4F O 
+ 998 C032 2  _LIT
+ 999    9   
+ 99A 803C <  AU@
+ 99B C01E    EXECUTE
+ 99C C00F    EXIT
+
+ 99D  4D3    ACCEPT
+ 99E  993   
+ 99F    6   
+ 9A0   41 A 
+ 9A1   43 C 
+ 9A2   43 C 
+ 9A3   45 E 
+ 9A4   50 P 
+ 9A5   54 T 
+ 9A6 801B    OVER
+ 9A7 8035 5  +
+ 9A8 801B    OVER
+ 9A9 C032 2  _LIT
+ 9AA    C   
+ 9AB 803C <  AU@
+ 9AC C01E    EXECUTE
+ 9AD  402    KEY
+ 9AE 8032 2  DUP
+ 9AF   FA    \r
+ 9B0 8026 &  XOR
+ 9B1 C034 4  _IF
+ 9B2  9DB   
+ 9B3 8032 2  DUP
+ 9B4 C032 2  _LIT
+ 9B5    8   
+ 9B6  15E ^  =
+ 9B7 C034 4  _IF
+ 9B8  9CC   
+ 9B9 801A    DROP
+ 9BA C02C ,  >R
+ 9BB 801B    OVER
+ 9BC C011    R@
+ 9BD  16A j  <
+ 9BE 8032 2  DUP
+ 9BF C034 4  _IF
+ 9C0  9C8   
+ 9C1 C032 2  _LIT
+ 9C2    8   
+ 9C3 8032 2  DUP
+ 9C4  4CC    ECHO
+ 9C5   F1    BL
+ 9C6  4CC    ECHO
+ 9C7  4CC    ECHO
+ 9C8 C014    R>
+ 9C9 8035 5  +
+ 9CA C006    _ELSE
+ 9CB  9D9   
+ 9CC C02C ,  >R
+ 9CD  121 !  2DUP
+ 9CE 8026 &  XOR
+ 9CF C034 4  _IF
+ 9D0  9D7   
+ 9D1 C011    R@
+ 9D2 801B    OVER
+ 9D3 8008    AU!
+ 9D4 8000    1+
+ 9D5 C011    R@
+ 9D6  4CC    ECHO
+ 9D7 C014    R>
+ 9D8 801A    DROP
+ 9D9 C006    _ELSE
+ 9DA  9AD   
+ 9DB 801A    DROP
+ 9DC  110    NIP
+ 9DD 8033 3  SWAP
+ 9DE  131 1  -
+ 9DF C00F    EXIT
+
+ 9E0  4F4    SAME?
+ 9E1  99F   
+ 9E2    5   
+ 9E3   53 S 
+ 9E4   41 A 
+ 9E5   4D M 
+ 9E6   45 E 
+ 9E7   3F ? 
+ 9E8 8033 3  SWAP
+ 9E9 C02C ,  >R
+ 9EA 8032 2  DUP
+ 9EB C034 4  _IF
+ 9EC  A00   
+ 9ED 800E    1-
+ 9EE  121 !  2DUP
+ 9EF 8035 5  +
+ 9F0 803C <  AU@
+ 9F1  29F    UPPER
+ 9F2 801B    OVER
+ 9F3 C011    R@
+ 9F4 8035 5  +
+ 9F5 803C <  AU@
+ 9F6  29F    UPPER
+ 9F7 8026 &  XOR
+ 9F8 C034 4  _IF
+ 9F9  9EA   
+ 9FA C014    R>
+ 9FB 801A    DROP
+ 9FC  11C    2DROP
+ 9FD C032 2  _LIT
+ 9FE    0   
+ 9FF C00F    EXIT
+ A00 C014    R>
+ A01 801A    DROP
+ A02  11C    2DROP
+ A03 C032 2  _LIT
+ A04 FFFF   
+ A05 C00F    EXIT
+
+ A06  509    _DELIMIT
+ A07  9E2   
+ A08    8   
+ A09   5F _ 
+ A0A   44 D 
+ A0B   45 E 
+ A0C   4C L 
+ A0D   49 I 
+ A0E   4D M 
+ A0F   49 I 
+ A10   54 T 
+ A11 BBBB   
+ A12  233 3  BOUNDS
+ A13 8032 2  DUP
+ A14 C02C ,  >R
+ A15 800E    1-
+ A16 8000    1+
+ A17  121 !  2DUP
+ A18 8026 &  XOR
+ A19 C034 4  _IF
+ A1A  A3C < 
+ A1B   F1    BL
+ A1C 801B    OVER
+ A1D 803C <  AU@
+ A1E  16A j  <
+ A1F C034 4  _IF
+ A20  A16   
+ A21 8033 3  SWAP
+ A22 801B    OVER
+ A23 8000    1+
+ A24  121 !  2DUP
+ A25 8026 &  XOR
+ A26 C034 4  _IF
+ A27  A34 4 
+ A28 8032 2  DUP
+ A29 803C <  AU@
+ A2A   F1    BL
+ A2B 8000    1+
+ A2C  16A j  <
+ A2D C034 4  _IF
+ A2E  A23 # 
+ A2F  110    NIP
+ A30 8032 2  DUP
+ A31 8000    1+
+ A32 C006    _ELSE
+ A33  A36 6 
+ A34 801A    DROP
+ A35 8032 2  DUP
+ A36 C02C ,  >R
+ A37 801B    OVER
+ A38  131 1  -
+ A39 C014    R>
+ A3A C006    _ELSE
+ A3B  A40 @ 
+ A3C 801A    DROP
+ A3D C032 2  _LIT
+ A3E    0   
+ A3F 801B    OVER
+ A40 C014    R>
+ A41  131 1  -
+ A42 C00F    EXIT
+
+ A43  526 &  _PARSE
+ A44  A08   
+ A45    6   
+ A46   5F _ 
+ A47   50 P 
+ A48   41 A 
+ A49   52 R 
+ A4A   53 S 
+ A4B   45 E 
+ A4C C02C ,  >R
+ A4D 801B    OVER
+ A4E 8035 5  +
+ A4F 801B    OVER
+ A50 800E    1-
+ A51 8000    1+
+ A52  121 !  2DUP
+ A53 8026 &  XOR
+ A54 C034 4  _IF
+ A55  A64 d 
+ A56 8032 2  DUP
+ A57 803C <  AU@
+ A58 C011    R@
+ A59  15E ^  =
+ A5A C034 4  _IF
+ A5B  A51 Q 
+ A5C 8033 3  SWAP
+ A5D C014    R>
+ A5E  11C    2DROP
+ A5F 801B    OVER
+ A60  131 1  -
+ A61 8032 2  DUP
+ A62 8000    1+
+ A63 C00F    EXIT
+ A64 8033 3  SWAP
+ A65 C014    R>
+ A66  11C    2DROP
+ A67 801B    OVER
+ A68  131 1  -
+ A69 8032 2  DUP
+ A6A C00F    EXIT
+
+ A6B  53A :  NAME>
+ A6C  A45 E 
+ A6D    5   
+ A6E   4E N 
+ A6F   41 A 
+ A70   4D M 
+ A71   45 E 
+ A72   3E > 
+ A73 BBBB   
+ A74 800E    1-
+ A75 800E    1-
+ A76 803C <  AU@
+ A77 C00F    EXIT
+
+ A78  540 @  WID?
+ A79  A6D m 
+ A7A    4   
+ A7B   57 W 
+ A7C   49 I 
+ A7D   44 D 
+ A7E   3F ? 
+ A7F BBBB   
+ A80 8033 3  SWAP
+ A81 C02C ,  >R
+ A82 803C <  AU@
+ A83 8032 2  DUP
+ A84 C034 4  _IF
+ A85  AA3   
+ A86  22C ,  COUNT
+ A87 C032 2  _LIT
+ A88   3F ? 
+ A89 8027 '  AND
+ A8A C011    R@
+ A8B  15E ^  =
+ A8C C034 4  _IF
+ A8D  A9E   
+ A8E  121 !  2DUP
+ A8F C011    R@
+ A90  4F4    SAME?
+ A91 C034 4  _IF
+ A92  A9E   
+ A93 8033 3  SWAP
+ A94 C014    R>
+ A95  11C    2DROP
+ A96 800E    1-
+ A97 8032 2  DUP
+ A98  53A :  NAME>
+ A99 8033 3  SWAP
+ A9A 803C <  AU@
+ A9B C032 2  _LIT
+ A9C FFFF   
+ A9D C00F    EXIT
+ A9E 800E    1-
+ A9F 800E    1-
+ AA0 803C <  AU@
+ AA1 C006    _ELSE
+ AA2  A83   
+ AA3 801A    DROP
+ AA4 C014    R>
+ AA5 C032 2  _LIT
+ AA6    0   
+ AA7 C00F    EXIT
+
+ AA8  55D ]  FORTH-WORDLIST
+ AA9  A7A z 
+ AAA    E   
+ AAB   46 F 
+ AAC   4F O 
+ AAD   52 R 
+ AAE   54 T 
+ AAF   48 H 
+ AB0   2D - 
+ AB1   57 W 
+ AB2   4F O 
+ AB3   52 R 
+ AB4   44 D 
+ AB5   4C L 
+ AB6   49 I 
+ AB7   53 S 
+ AB8   54 T 
+ AB9 BBBB   
+ ABA C00D    _CON
+ ABB  1D1   
+
+ ABC  563 c  CONTEXT
+ ABD  AAA   
+ ABE    7   
+ ABF   43 C 
+ AC0   4F O 
+ AC1   4E N 
+ AC2   54 T 
+ AC3   45 E 
+ AC4   58 X 
+ AC5   54 T 
+ AC6 C00E    _VAR
+ AC7  1D1   
+ AC8    0   
+ AC9   73 s 
+ ACA   65 e 
+ ACB   61 a 
+ ACC   72 r 
+ ACD   63 c 
+ ACE   68 h 
+ ACF   20   
+ AD0   6F o 
+ AD1   72 r 
+ AD2  BEE   
+
+ AD3  56F o  CURRENT
+ AD4  ABE   
+ AD5    7   
+ AD6   43 C 
+ AD7   55 U 
+ AD8   52 R 
+ AD9   52 R 
+ ADA   45 E 
+ ADB   4E N 
+ ADC   54 T 
+ ADD BBBB   
+ ADE C00E    _VAR
+ ADF  1D1   
+ AE0  1D1   
+
+ AE1  575 u  SFIND
+ AE2  AD5   
+ AE3    5   
+ AE4   53 S 
+ AE5   46 F 
+ AE6   49 I 
+ AE7   4E N 
+ AE8   44 D 
+ AE9 BBBB   
+ AEA  563 c  CONTEXT
+ AEB 800E    1-
+ AEC C02C ,  >R
+ AED C014    R>
+ AEE 8000    1+
+ AEF 8032 2  DUP
+ AF0 C02C ,  >R
+ AF1 803C <  AU@
+ AF2 8032 2  DUP
+ AF3 C034 4  _IF
+ AF4  AFA   
+ AF5  540 @  WID?
+ AF6 C034 4  _IF
+ AF7  AED   
+ AF8 C032 2  _LIT
+ AF9 FFFF   
+ AFA C014    R>
+ AFB 801A    DROP
+ AFC C00F    EXIT
+
+ AFD  583    ?STACK
+ AFE  AE3   
+ AFF    6   
+ B00   3F ? 
+ B01   53 S 
+ B02   54 T 
+ B03   41 A 
+ B04   43 C 
+ B05   4B K 
+ B06  355 U  DEPTH
+ B07 802A *  0<
+ B08  494    _ABORT"
+ B09    6   
+ B0A   64 d 
+ B0B   65 e 
+ B0C   70 p 
+ B0D   74 t 
+ B0E   68 h 
+ B0F   3F ? 
+ B10 C00F    EXIT
+
+ B11  58B    _[
+ B12  AFF   
+ B13   42 B 
+ B14   5F _ 
+ B15   5B [ 
+ B16  575 u  SFIND
+ B17 C034 4  _IF
+ B18  B29 ) 
+ B19 C032 2  _LIT
+ B1A   40 @ 
+ B1B 8027 '  AND
+ B1C  494    _ABORT"
+ B1D    8   
+ B1E   63 c 
+ B1F   6F o 
+ B20   6D m 
+ B21   70 p 
+ B22   69 i 
+ B23   6C l 
+ B24   65 e 
+ B25   3F ? 
+ B26 C01E    EXECUTE
+ B27  583    ?STACK
+ B28 C00F    EXIT
+ B29  38A    NUMBER?
+ B2A C034 4  _IF
+ B2B  B33 3 
+ B2C   CD    DPL
+ B2D 803C <  AU@
+ B2E 802A *  0<
+ B2F C034 4  _IF
+ B30  B32 2 
+ B31 801A    DROP
+ B32 C00F    EXIT
+ B33 C032 2  _LIT
+ B34 FFF3   
+ B35  349 I  THROW
+ B36 C00F    EXIT
+
+ B37  59E    [
+ B38  B13   
+ B39   81   
+ B3A   5B [ 
+ B3B BBBB   
+ B3C C032 2  _LIT
+ B3D  58B    _[
+ B3E C032 2  _LIT
+ B3F    0   
+ B40   E3    STATE
+ B41  240 @  2!
+ B42 C00F    EXIT
+
+ B43  5A6    SOURCE
+ B44  B39 9 
+ B45    6   
+ B46   53 S 
+ B47   4F O 
+ B48   55 U 
+ B49   52 R 
+ B4A   43 C 
+ B4B   45 E 
+ B4C   D9    #IN
+ B4D  246 F  2@
+ B4E C00F    EXIT
+
+ B4F  5AE    PARSE-WORD
+ B50  B45 E 
+ B51    A   
+ B52   50 P 
+ B53   41 A 
+ B54   52 R 
+ B55   53 S 
+ B56   45 E 
+ B57   2D - 
+ B58   57 W 
+ B59   4F O 
+ B5A   52 R 
+ B5B   44 D 
+ B5C  5A6    SOURCE
+ B5D   D5    >IN
+ B5E 803C <  AU@
+ B5F  23A :  /STRING
+ B60  509    _DELIMIT
+ B61   D5    >IN
+ B62  224 $  +!
+ B63 C00F    EXIT
+
+ B64  5B8    EVALUATE
+ B65  B51 Q 
+ B66    8   
+ B67   45 E 
+ B68   56 V 
+ B69   41 A 
+ B6A   4C L 
+ B6B   55 U 
+ B6C   41 A 
+ B6D   54 T 
+ B6E   45 E 
+ B6F BBBB   
+ B70   D5    >IN
+ B71 803C <  AU@
+ B72 C02C ,  >R
+ B73 C032 2  _LIT
+ B74    0   
+ B75   D5    >IN
+ B76 8008    AU!
+ B77  5A6    SOURCE
+ B78 C02C ,  >R
+ B79 C02C ,  >R
+ B7A   D9    #IN
+ B7B  240 @  2!
+ B7C  5AE    PARSE-WORD
+ B7D 8032 2  DUP
+ B7E C034 4  _IF
+ B7F  B86   
+ B80   E3    STATE
+ B81 8000    1+
+ B82 803C <  AU@
+ B83 C01E    EXECUTE
+ B84 C006    _ELSE
+ B85  B7C | 
+ B86  11C    2DROP
+ B87 C014    R>
+ B88 C014    R>
+ B89   D9    #IN
+ B8A  240 @  2!
+ B8B C014    R>
+ B8C   D5    >IN
+ B8D 8008    AU!
+ B8E C00F    EXIT
+
+ B8F  5CB    .OK
+ B90  B66 f 
+ B91    3   
+ B92   2E . 
+ B93   4F O 
+ B94   4B K 
+ B95 BBBB   
+ B96  48D    _."
+ B97    3   
+ B98   6F o 
+ B99   6B k 
+ B9A   20   
+ B9B C00F    EXIT
+
+ B9C  5D3    ?THROW
+ B9D  B91   
+ B9E    6   
+ B9F   3F ? 
+ BA0   54 T 
+ BA1   48 H 
+ BA2   52 R 
+ BA3   4F O 
+ BA4   57 W 
+ BA5 BBBB   
+ BA6 C032 2  _LIT
+ BA7    0   
+ BA8  445 E  EMIT
+ BA9 8032 2  DUP
+ BAA C032 2  _LIT
+ BAB FFFF   
+ BAC 8026 &  XOR
+ BAD C034 4  _IF
+ BAE  BCD   
+ BAF  472 r  CR
+ BB0 8032 2  DUP
+ BB1 C032 2  _LIT
+ BB2 FFFE   
+ BB3  15E ^  =
+ BB4 C034 4  _IF
+ BB5  BBC   
+ BB6   DE    CSP
+ BB7 803C <  AU@
+ BB8  22C ,  COUNT
+ BB9  469 i  TYPE
+ BBA  44F O  SPACE
+ BBB C00F    EXIT
+ BBC  5A6    SOURCE
+ BBD 801A    DROP
+ BBE   D5    >IN
+ BBF 803C <  AU@
+ BC0  282    -TRAILING
+ BC1  469 i  TYPE
+ BC2  48D    _."
+ BC3    3   
+ BC4   20   
+ BC5   3F ? 
+ BC6   28 ( 
+ BC7 C032 2  _LIT
+ BC8    0   
+ BC9  4B1    .R
+ BCA  48D    _."
+ BCB    1   
+ BCC   29 ) 
+ BCD  44F O  SPACE
+ BCE C00F    EXIT
+
+ BCF  5EB    QUIT
+ BD0  B9E   
+ BD1    4   
+ BD2   51 Q 
+ BD3   55 U 
+ BD4   49 I 
+ BD5   54 T 
+ BD6   ED    SUP
+ BD7 803C <  AU@
+ BD8 C02F /  RP!
+ BD9  59E    [
+ BDA C032 2  _LIT
+ BDB    6   
+ BDC 803C <  AU@
+ BDD C01E    EXECUTE
+ BDE C032 2  _LIT
+ BDF 7F70 p 
+ BE0 8032 2  DUP
+ BE1   F6    #TIB
+ BE2  4D3    ACCEPT
+ BE3   F1    BL
+ BE4  4CC    ECHO
+ BE5 C032 2  _LIT
+ BE6  5B8    EVALUATE
+ BE7  33C <  CATCH
+ BE8  126 &  ?DUP
+ BE9 C034 4  _IF
+ BEA  BF1   
+ BEB  5D3    ?THROW
+ BEC   ED    SUP
+ BED 8000    1+
+ BEE 803C <  AU@
+ BEF 8018    SP!
+ BF0  5EB    QUIT
+ BF1 C032 2  _LIT
+ BF2    A   
+ BF3 803C <  AU@
+ BF4 C01E    EXECUTE
+ BF5   E3    STATE
+ BF6 803C <  AU@
+ BF7  158 X  0=
+ BF8 C034 4  _IF
+ BF9  BDE   
+ BFA C032 2  _LIT
+ BFB    B   
+ BFC 803C <  AU@
+ BFD C01E    EXECUTE
+ BFE C006    _ELSE
+ BFF  BDE   
+ C00 C00F    EXIT
+
+ C01  605    ALLOT
+ C02  BD1   
+ C03    5   
+ C04   41 A 
+ C05   4C L 
+ C06   4C L 
+ C07   4F O 
+ C08   54 T 
+ C09 BBBB   
+ C0A   E7    DP
+ C0B  224 $  +!
+ C0C C00F    EXIT
+
+ C0D  60A    AU,
+ C0E  C03   
+ C0F    3   
+ C10   41 A 
+ C11   55 U 
+ C12   2C , 
+ C13 BBBB   
+ C14  3AB    HERE
+ C15 C032 2  _LIT
+ C16    1   
+ C17  605    ALLOT
+ C18 8008    AU!
+ C19 C00F    EXIT
+
+ C1A  610    C,
+ C1B  C0F   
+ C1C    2   
+ C1D   43 C 
+ C1E   2C , 
+ C1F BBBB   
+ C20  3AB    HERE
+ C21 C032 2  _LIT
+ C22    1   
+ C23  605    ALLOT
+ C24 8008    AU!
+ C25 C00F    EXIT
+
+ C26  615    ,
+ C27  C1C   
+ C28    1   
+ C29   2C , 
+ C2A  3AB    HERE
+ C2B C032 2  _LIT
+ C2C    1   
+ C2D  605    ALLOT
+ C2E 8008    AU!
+ C2F C00F    EXIT
+
+ C30  61E    COMPILE,
+ C31  C28 ( 
+ C32    8   
+ C33   43 C 
+ C34   4F O 
+ C35   4D M 
+ C36   50 P 
+ C37   49 I 
+ C38   4C L 
+ C39   45 E 
+ C3A   2C , 
+ C3B BBBB   
+ C3C  615    ,
+ C3D C00F    EXIT
+
+ C3E  624 $  LITERAL
+ C3F  C32 2 
+ C40   87   
+ C41   4C L 
+ C42   49 I 
+ C43   54 T 
+ C44   45 E 
+ C45   52 R 
+ C46   41 A 
+ C47   4C L 
+ C48 C032 2  _LIT
+ C49 C032 2  _LIT
+ C4A  61E    COMPILE,
+ C4B  615    ,
+ C4C C00F    EXIT
+
+ C4D  62A *  CHAR
+ C4E  C40 @ 
+ C4F    4   
+ C50   43 C 
+ C51   48 H 
+ C52   41 A 
+ C53   52 R 
+ C54  5AE    PARSE-WORD
+ C55 801A    DROP
+ C56 803C <  AU@
+ C57 C00F    EXIT
+
+ C58  631 1  [CHAR]
+ C59  C4F O 
+ C5A   86   
+ C5B   5B [ 
+ C5C   43 C 
+ C5D   48 H 
+ C5E   41 A 
+ C5F   52 R 
+ C60   5D ] 
+ C61 BBBB   
+ C62  62A *  CHAR
+ C63  624 $  LITERAL
+ C64 C00F    EXIT
+
+ C65  636 6  CTRL
+ C66  C5A Z 
+ C67    4   
+ C68   43 C 
+ C69   54 T 
+ C6A   52 R 
+ C6B   4C L 
+ C6C  62A *  CHAR
+ C6D C032 2  _LIT
+ C6E   1F   
+ C6F 8027 '  AND
+ C70 C00F    EXIT
+
+ C71  63D =  [CTRL]
+ C72  C67 g 
+ C73   86   
+ C74   5B [ 
+ C75   43 C 
+ C76   54 T 
+ C77   52 R 
+ C78   4C L 
+ C79   5D ] 
+ C7A  636 6  CTRL
+ C7B  624 $  LITERAL
+ C7C C00F    EXIT
+
+ C7D  641 A  '
+ C7E  C73 s 
+ C7F    1   
+ C80   27 ' 
+ C81 BBBB   
+ C82  5AE    PARSE-WORD
+ C83  575 u  SFIND
+ C84 C034 4  _IF
+ C85  C88   
+ C86 801A    DROP
+ C87 C00F    EXIT
+ C88 C032 2  _LIT
+ C89 FFF3   
+ C8A  349 I  THROW
+ C8B C00F    EXIT
+
+ C8C  649 I  [']
+ C8D  C7F   
+ C8E   83   
+ C8F   5B [ 
+ C90   27 ' 
+ C91   5D ] 
+ C92  641 A  '
+ C93  624 $  LITERAL
+ C94 C00F    EXIT
+
+ C95  651 Q  [COMPILE]
+ C96  C8E   
+ C97   89   
+ C98   5B [ 
+ C99   43 C 
+ C9A   4F O 
+ C9B   4D M 
+ C9C   50 P 
+ C9D   49 I 
+ C9E   4C L 
+ C9F   45 E 
+ CA0   5D ] 
+ CA1 BBBB   
+ CA2  641 A  '
+ CA3  61E    COMPILE,
+ CA4 C00F    EXIT
+
+ CA5  659 Y  [DEFINED]
+ CA6  C97   
+ CA7   89   
+ CA8   5B [ 
+ CA9   44 D 
+ CAA   45 E 
+ CAB   46 F 
+ CAC   49 I 
+ CAD   4E N 
+ CAE   45 E 
+ CAF   44 D 
+ CB0   5D ] 
+ CB1 BBBB   
+ CB2 C032 2  _LIT
+ CB3  641 A  '
+ CB4  33C <  CATCH
+ CB5 C034 4  _IF
+ CB6  CB9   
+ CB7 C032 2  _LIT
+ CB8    0   
+ CB9 C00F    EXIT
+
+ CBA  661 a  PARSE
+ CBB  CA7   
+ CBC    5   
+ CBD   50 P 
+ CBE   41 A 
+ CBF   52 R 
+ CC0   53 S 
+ CC1   45 E 
+ CC2 C02C ,  >R
+ CC3  5A6    SOURCE
+ CC4   D5    >IN
+ CC5 803C <  AU@
+ CC6  23A :  /STRING
+ CC7 C014    R>
+ CC8  526 &  _PARSE
+ CC9   D5    >IN
+ CCA  224 $  +!
+ CCB C00F    EXIT
+
+ CCC  668 h  (
+ CCD  CBC   
+ CCE   81   
+ CCF   28 ( 
+ CD0 C032 2  _LIT
+ CD1   29 ) 
+ CD2  661 a  PARSE
+ CD3  11C    2DROP
+ CD4 C00F    EXIT
+
+ CD5  66D m  .(
+ CD6  CCE   
+ CD7   82   
+ CD8   2E . 
+ CD9   28 ( 
+ CDA C032 2  _LIT
+ CDB   29 ) 
+ CDC  661 a  PARSE
+ CDD  469 i  TYPE
+ CDE C00F    EXIT
+
+ CDF  672 r  \
+ CE0  CD7   
+ CE1   81   
+ CE2   5C \ 
+ CE3 BBBB   
+ CE4  5A6    SOURCE
+ CE5   D5    >IN
+ CE6 8008    AU!
+ CE7 801A    DROP
+ CE8 C00F    EXIT
+
+ CE9  677 w  .\
+ CEA  CE1   
+ CEB   82   
+ CEC   2E . 
+ CED   5C \ 
+ CEE C032 2  _LIT
+ CEF    0   
+ CF0  661 a  PARSE
+ CF1  469 i  TYPE
+ CF2 C00F    EXIT
+
+ CF3  67D }  IF\
+ CF4  CEB   
+ CF5   83   
+ CF6   49 I 
+ CF7   46 F 
+ CF8   5C \ 
+ CF9 BBBB   
+ CFA C034 4  _IF
+ CFB  CFD   
+ CFC  672 r  \
+ CFD C00F    EXIT
+
+ CFE  682    _S,
+ CFF  CF5   
+ D00    3   
+ D01   5F _ 
+ D02   53 S 
+ D03   2C , 
+ D04  3AB    HERE
+ D05 8033 3  SWAP
+ D06 8032 2  DUP
+ D07  605    ALLOT
+ D08  24D M  MOVE
+ D09 C00F    EXIT
+
+ D0A  68A    STRING,
+ D0B  D00   
+ D0C    7   
+ D0D   53 S 
+ D0E   54 T 
+ D0F   52 R 
+ D10   49 I 
+ D11   4E N 
+ D12   47 G 
+ D13   2C , 
+ D14 8032 2  DUP
+ D15  610    C,
+ D16  682    _S,
+ D17 C00F    EXIT
+
+ D18  68F    S,
+ D19  D0C   
+ D1A    2   
+ D1B   53 S 
+ D1C   2C , 
+ D1D BBBB   
+ D1E  68A    STRING,
+ D1F C00F    EXIT
+
+ D20  696    SLITERAL
+ D21  D1A   
+ D22   C8   
+ D23   53 S 
+ D24   4C L 
+ D25   49 I 
+ D26   54 T 
+ D27   45 E 
+ D28   52 R 
+ D29   41 A 
+ D2A   4C L 
+ D2B BBBB   
+ D2C C032 2  _LIT
+ D2D  488    _S"
+ D2E  61E    COMPILE,
+ D2F  68F    S,
+ D30 C00F    EXIT
+
+ D31  69B    S"
+ D32  D22 " 
+ D33   82   
+ D34   53 S 
+ D35   22 " 
+ D36 C032 2  _LIT
+ D37   22 " 
+ D38  661 a  PARSE
+ D39   E3    STATE
+ D3A 803C <  AU@
+ D3B C034 4  _IF
+ D3C  D3E > 
+ D3D  696    SLITERAL
+ D3E C00F    EXIT
+
+ D3F  6A3    "S,
+ D40  D33 3 
+ D41   43 C 
+ D42   22 " 
+ D43   53 S 
+ D44   2C , 
+ D45 BBBB   
+ D46  61E    COMPILE,
+ D47 C032 2  _LIT
+ D48   22 " 
+ D49  661 a  PARSE
+ D4A  68F    S,
+ D4B C00F    EXIT
+
+ D4C  6A9    ."
+ D4D  D41 A 
+ D4E   C2   
+ D4F   2E . 
+ D50   22 " 
+ D51 BBBB   
+ D52 C032 2  _LIT
+ D53  48D    _."
+ D54  6A3    "S,
+ D55 C00F    EXIT
+
+ D56  6B0    ABORT"
+ D57  D4E N 
+ D58   C6   
+ D59   41 A 
+ D5A   42 B 
+ D5B   4F O 
+ D5C   52 R 
+ D5D   54 T 
+ D5E   22 " 
+ D5F BBBB   
+ D60 C032 2  _LIT
+ D61  494    _ABORT"
+ D62  6A3    "S,
+ D63 C00F    EXIT
+
+ D64  6B5    _]
+ D65  D58 X 
+ D66   42 B 
+ D67   5F _ 
+ D68   5D ] 
+ D69 BBBB   
+ D6A  575 u  SFIND
+ D6B C034 4  _IF
+ D6C  D77 w 
+ D6D C032 2  _LIT
+ D6E   80   
+ D6F 8027 '  AND
+ D70 C034 4  _IF
+ D71  D75 u 
+ D72 C01E    EXECUTE
+ D73  583    ?STACK
+ D74 C00F    EXIT
+ D75  61E    COMPILE,
+ D76 C00F    EXIT
+ D77  38A    NUMBER?
+ D78 C034 4  _IF
+ D79  D85   
+ D7A   CD    DPL
+ D7B 803C <  AU@
+ D7C 8028 (  INVERT
+ D7D C034 4  _IF
+ D7E  D82   
+ D7F 8033 3  SWAP
+ D80 8032 2  DUP
+ D81  624 $  LITERAL
+ D82 801A    DROP
+ D83  624 $  LITERAL
+ D84 C00F    EXIT
+ D85 C032 2  _LIT
+ D86 FFF3   
+ D87  349 I  THROW
+ D88 C00F    EXIT
+
+ D89  6C7    ]
+ D8A  D66 f 
+ D8B    1   
+ D8C   5D ] 
+ D8D BBBB   
+ D8E C032 2  _LIT
+ D8F  6B5    _]
+ D90 C032 2  _LIT
+ D91 FFFF   
+ D92   E3    STATE
+ D93  240 @  2!
+ D94 C00F    EXIT
+
+ D95  6CE    LAST
+ D96  D8B   
+ D97    4   
+ D98   4C L 
+ D99   41 A 
+ D9A   53 S 
+ D9B   54 T 
+ D9C C00E    _VAR
+ D9D    0   
+ D9E    0   
+ D9F    0   
+ DA0    0   
+
+ DA1  6D8    GET-CURRENT
+ DA2  D97   
+ DA3    B   
+ DA4   47 G 
+ DA5   45 E 
+ DA6   54 T 
+ DA7   2D - 
+ DA8   43 C 
+ DA9   55 U 
+ DAA   52 R 
+ DAB   52 R 
+ DAC   45 E 
+ DAD   4E N 
+ DAE   54 T 
+ DAF BBBB   
+ DB0  56F o  CURRENT
+ DB1 803C <  AU@
+ DB2 C00F    EXIT
+
+ DB3  6E1    SET-CURRENT
+ DB4  DA3   
+ DB5    B   
+ DB6   53 S 
+ DB7   45 E 
+ DB8   54 T 
+ DB9   2D - 
+ DBA   43 C 
+ DBB   55 U 
+ DBC   52 R 
+ DBD   52 R 
+ DBE   45 E 
+ DBF   4E N 
+ DC0   54 T 
+ DC1 BBBB   
+ DC2  56F o  CURRENT
+ DC3 8008    AU!
+ DC4 C00F    EXIT
+
+ DC5  6E8    ?UNIQUE
+ DC6  DB5   
+ DC7    7   
+ DC8   3F ? 
+ DC9   55 U 
+ DCA   4E N 
+ DCB   49 I 
+ DCC   51 Q 
+ DCD   55 U 
+ DCE   45 E 
+ DCF BBBB   
+ DD0  121 !  2DUP
+ DD1  6D8    GET-CURRENT
+ DD2  540 @  WID?
+ DD3 C034 4  _IF
+ DD4  DE2   
+ DD5  11C    2DROP
+ DD6  472 r  CR
+ DD7  48D    _."
+ DD8    6   
+ DD9   72 r 
+ DDA   65 e 
+ DDB   44 D 
+ DDC   65 e 
+ DDD   66 f 
+ DDE   20   
+ DDF  121 !  2DUP
+ DE0  469 i  TYPE
+ DE1 C00F    EXIT
+ DE2  11C    2DROP
+ DE3 C00F    EXIT
+
+ DE4  6F5    >XT
+ DE5  DC7   
+ DE6    3   
+ DE7   3E > 
+ DE8   58 X 
+ DE9   54 T 
+ DEA  3AB    HERE
+ DEB C032 2  _LIT
+ DEC    1   
+ DED 8027 '  AND
+ DEE C034 4  _IF
+ DEF  DF3   
+ DF0 C032 2  _LIT
+ DF1    0   
+ DF2  615    ,
+ DF3  3AB    HERE
+ DF4 C032 2  _LIT
+ DF5    1   
+ DF6  1B5    RSHIFT
+ DF7 8025 %  OR
+ DF8 C00F    EXIT
+
+ DF9  701    HEAD,
+ DFA  DE6   
+ DFB    5   
+ DFC   48 H 
+ DFD   45 E 
+ DFE   41 A 
+ DFF   44 D 
+ E00   2C , 
+ E01 BBBB   
+ E02  5AE    PARSE-WORD
+ E03 8032 2  DUP
+ E04 C034 4  _IF
+ E05  E16   
+ E06  6E8    ?UNIQUE
+ E07  3AB    HERE
+ E08 C02C ,  >R
+ E09 C032 2  _LIT
+ E0A    0   
+ E0B  615    ,
+ E0C  6D8    GET-CURRENT
+ E0D 8032 2  DUP
+ E0E 803C <  AU@
+ E0F  615    ,
+ E10  3AB    HERE
+ E11  6CE    LAST
+ E12  240 @  2!
+ E13  68A    STRING,
+ E14 C014    R>
+ E15 C00F    EXIT
+ E16 C032 2  _LIT
+ E17 FFF0   
+ E18  349 I  THROW
+ E19 C00F    EXIT
+
+ E1A  711    LEX!
+ E1B  DFB   
+ E1C    4   
+ E1D   4C L 
+ E1E   45 E 
+ E1F   58 X 
+ E20   21 ! 
+ E21 BBBB   
+ E22  6CE    LAST
+ E23 803C <  AU@
+ E24 803C <  AU@
+ E25 8025 %  OR
+ E26  6CE    LAST
+ E27 803C <  AU@
+ E28 8008    AU!
+ E29 C00F    EXIT
+
+ E2A  71B    IMMEDIATE
+ E2B  E1C   
+ E2C    9   
+ E2D   49 I 
+ E2E   4D M 
+ E2F   4D M 
+ E30   45 E 
+ E31   44 D 
+ E32   49 I 
+ E33   41 A 
+ E34   54 T 
+ E35   45 E 
+ E36 C032 2  _LIT
+ E37   80   
+ E38  711    LEX!
+ E39 C00F    EXIT
+
+ E3A  725 %  COMPILE-ONLY
+ E3B  E2C , 
+ E3C    C   
+ E3D   43 C 
+ E3E   4F O 
+ E3F   4D M 
+ E40   50 P 
+ E41   49 I 
+ E42   4C L 
+ E43   45 E 
+ E44   2D - 
+ E45   4F O 
+ E46   4E N 
+ E47   4C L 
+ E48   59 Y 
+ E49 BBBB   
+ E4A C032 2  _LIT
+ E4B   40 @ 
+ E4C  711    LEX!
+ E4D C00F    EXIT
+
+ E4E  72C ,  REVEAL
+ E4F  E3C < 
+ E50    6   
+ E51   52 R 
+ E52   45 E 
+ E53   56 V 
+ E54   45 E 
+ E55   41 A 
+ E56   4C L 
+ E57 BBBB   
+ E58  6CE    LAST
+ E59  246 F  2@
+ E5A 8033 3  SWAP
+ E5B 8008    AU!
+ E5C  59E    [
+ E5D C00F    EXIT
+
+ E5E  734 4  RECURSE
+ E5F  E50 P 
+ E60   87   
+ E61   52 R 
+ E62   45 E 
+ E63   43 C 
+ E64   55 U 
+ E65   52 R 
+ E66   53 S 
+ E67   45 E 
+ E68 C032 2  _LIT
+ E69  D9F   
+ E6A 803C <  AU@
+ E6B  61E    COMPILE,
+ E6C C00F    EXIT
+
+ E6D  73C <  POSTPONE
+ E6E  E60 ` 
+ E6F   88   
+ E70   50 P 
+ E71   4F O 
+ E72   53 S 
+ E73   54 T 
+ E74   50 P 
+ E75   4F O 
+ E76   4E N 
+ E77   45 E 
+ E78  5AE    PARSE-WORD
+ E79  575 u  SFIND
+ E7A C034 4  _IF
+ E7B  E87   
+ E7C C032 2  _LIT
+ E7D   80   
+ E7E 8027 '  AND
+ E7F  158 X  0=
+ E80 C034 4  _IF
+ E81  E85   
+ E82  624 $  LITERAL
+ E83 C032 2  _LIT
+ E84  61E    COMPILE,
+ E85  61E    COMPILE,
+ E86 C00F    EXIT
+ E87 C032 2  _LIT
+ E88 FFF3   
+ E89  349 I  THROW
+ E8A C00F    EXIT
+
+ E8B  74B K  :NONAME
+ E8C  E6F o 
+ E8D    7   
+ E8E   3A : 
+ E8F   4E N 
+ E90   4F O 
+ E91   4E N 
+ E92   41 A 
+ E93   4D M 
+ E94   45 E 
+ E95 BBBB   
+ E96 C032 2  _LIT
+ E97    0   
+ E98  6F5    >XT
+ E99 8032 2  DUP
+ E9A C032 2  _LIT
+ E9B  D9F   
+ E9C 8008    AU!
+ E9D  6C7    ]
+ E9E C00F    EXIT
+
+ E9F  752 R  :
+ EA0  E8D   
+ EA1    1   
+ EA2   3A : 
+ EA3 BBBB   
+ EA4  701    HEAD,
+ EA5  74B K  :NONAME
+ EA6 8033 3  SWAP
+ EA7 8008    AU!
+ EA8 C00F    EXIT
+
+ EA9  757 W  ;
+ EAA  EA1   
+ EAB   C1   
+ EAC   3B ; 
+ EAD BBBB   
+ EAE C032 2  _LIT
+ EAF C00F    EXIT
+ EB0  61E    COMPILE,
+ EB1  72C ,  REVEAL
+ EB2 C00F    EXIT
+
+ EB3  75E ^  _DOES>
+ EB4  EAB   
+ EB5   46 F 
+ EB6   5F _ 
+ EB7   44 D 
+ EB8   4F O 
+ EB9   45 E 
+ EBA   53 S 
+ EBB   3E > 
+ EBC C032 2  _LIT
+ EBD    0   
+ EBE C014    R>
+ EBF 8025 %  OR
+ EC0 C032 2  _LIT
+ EC1  DA0   
+ EC2 803C <  AU@
+ EC3 8008    AU!
+ EC4 C00F    EXIT
+
+ EC5  767 g  DOES>
+ EC6  EB5   
+ EC7   C5   
+ EC8   44 D 
+ EC9   4F O 
+ ECA   45 E 
+ ECB   53 S 
+ ECC   3E > 
+ ECD BBBB   
+ ECE C032 2  _LIT
+ ECF  75E ^  _DOES>
+ ED0  61E    COMPILE,
+ ED1  74B K  :NONAME
+ ED2 801A    DROP
+ ED3 C032 2  _LIT
+ ED4 C014    R>
+ ED5  61E    COMPILE,
+ ED6 C00F    EXIT
+
+ ED7  770 p  CREATE
+ ED8  EC7   
+ ED9    6   
+ EDA   43 C 
+ EDB   52 R 
+ EDC   45 E 
+ EDD   41 A 
+ EDE   54 T 
+ EDF   45 E 
+ EE0 C032 2  _LIT
+ EE1 C00E    _VAR
+ EE2  752 R  :
+ EE3  72C ,  REVEAL
+ EE4  3AB    HERE
+ EE5 C032 2  _LIT
+ EE6  DA0   
+ EE7 8008    AU!
+ EE8  61E    COMPILE,
+ EE9 C00F    EXIT
+
+ EEA  77B {  VARIABLE
+ EEB  ED9   
+ EEC    8   
+ EED   56 V 
+ EEE   41 A 
+ EEF   52 R 
+ EF0   49 I 
+ EF1   41 A 
+ EF2   42 B 
+ EF3   4C L 
+ EF4   45 E 
+ EF5 BBBB   
+ EF6  770 p  CREATE
+ EF7 C032 2  _LIT
+ EF8    0   
+ EF9  615    ,
+ EFA C00F    EXIT
+
+ EFB  783    CONSTANT
+ EFC  EEC   
+ EFD    8   
+ EFE   43 C 
+ EFF   4F O 
+ F00   4E N 
+ F01   53 S 
+ F02   54 T 
+ F03   41 A 
+ F04   4E N 
+ F05   54 T 
+ F06 C032 2  _LIT
+ F07 C00D    _CON
+ F08  752 R  :
+ F09  72C ,  REVEAL
+ F0A  61E    COMPILE,
+ F0B  615    ,
+ F0C C00F    EXIT
+
+ F0D  78A    USER
+ F0E  EFD   
+ F0F    4   
+ F10   55 U 
+ F11   53 S 
+ F12   45 E 
+ F13   52 R 
+ F14 C032 2  _LIT
+ F15  2AC    _USR
+ F16  752 R  :
+ F17  72C ,  REVEAL
+ F18  61E    COMPILE,
+ F19  615    ,
+ F1A C00F    EXIT
+
+ F1B  791    HAT
+ F1C  F0F   
+ F1D    3   
+ F1E   48 H 
+ F1F   41 A 
+ F20   54 T 
+ F21 BBBB   
+ F22  770 p  CREATE
+ F23 8035 5  +
+ F24 8033 3  SWAP
+ F25 C032 2  _LIT
+ F26    9   
+ F27 8035 5  +
+ F28 8032 2  DUP
+ F29  3AB    HERE
+ F2A 8035 5  +
+ F2B  615    ,
+ F2C 8035 5  +
+ F2D 8032 2  DUP
+ F2E  3AB    HERE
+ F2F 8035 5  +
+ F30  615    ,
+ F31  605    ALLOT
+ F32 C00F    EXIT
+
+ F33  79F    WORDLIST
+ F34  F1D   
+ F35    8   
+ F36   57 W 
+ F37   4F O 
+ F38   52 R 
+ F39   44 D 
+ F3A   4C L 
+ F3B   49 I 
+ F3C   53 S 
+ F3D   54 T 
+ F3E  3AB    HERE
+ F3F C032 2  _LIT
+ F40    0   
+ F41  615    ,
+ F42 8032 2  DUP
+ F43  56F o  CURRENT
+ F44 8000    1+
+ F45 8032 2  DUP
+ F46 803C <  AU@
+ F47  615    ,
+ F48 8008    AU!
+ F49 C032 2  _LIT
+ F4A    0   
+ F4B  615    ,
+ F4C C00F    EXIT
+
+ F4D  7AB    ORDER@
+ F4E  F35 5 
+ F4F    6   
+ F50   4F O 
+ F51   52 R 
+ F52   44 D 
+ F53   45 E 
+ F54   52 R 
+ F55   40 @ 
+ F56 8032 2  DUP
+ F57 803C <  AU@
+ F58 8032 2  DUP
+ F59 C034 4  _IF
+ F5A  F62 b 
+ F5B C02C ,  >R
+ F5C 8000    1+
+ F5D  7AB    ORDER@
+ F5E C014    R>
+ F5F 8033 3  SWAP
+ F60 8000    1+
+ F61 C00F    EXIT
+ F62  110    NIP
+ F63 C00F    EXIT
+
+ F64  7B8    GET-ORDER
+ F65  F4F O 
+ F66    9   
+ F67   47 G 
+ F68   45 E 
+ F69   54 T 
+ F6A   2D - 
+ F6B   4F O 
+ F6C   52 R 
+ F6D   44 D 
+ F6E   45 E 
+ F6F   52 R 
+ F70  563 c  CONTEXT
+ F71  7AB    ORDER@
+ F72 C00F    EXIT
+
+ F73  7C0    SET-ORDER
+ F74  F66 f 
+ F75    9   
+ F76   53 S 
+ F77   45 E 
+ F78   54 T 
+ F79   2D - 
+ F7A   4F O 
+ F7B   52 R 
+ F7C   44 D 
+ F7D   45 E 
+ F7E   52 R 
+ F7F BBBB   
+ F80 8032 2  DUP
+ F81 C032 2  _LIT
+ F82 FFFF   
+ F83  15E ^  =
+ F84 C034 4  _IF
+ F85  F8A   
+ F86 801A    DROP
+ F87  55D ]  FORTH-WORDLIST
+ F88 C032 2  _LIT
+ F89    1   
+ F8A C032 2  _LIT
+ F8B    8   
+ F8C 801B    OVER
+ F8D  162 b  U<
+ F8E C034 4  _IF
+ F8F  F93   
+ F90 C032 2  _LIT
+ F91 FFD2   
+ F92  349 I  THROW
+ F93  563 c  CONTEXT
+ F94 8033 3  SWAP
+ F95 8032 2  DUP
+ F96 C034 4  _IF
+ F97  FA1   
+ F98 C02C ,  >R
+ F99 8033 3  SWAP
+ F9A 801B    OVER
+ F9B 8008    AU!
+ F9C 8000    1+
+ F9D C014    R>
+ F9E 800E    1-
+ F9F C006    _ELSE
+ FA0  F95   
+ FA1 8033 3  SWAP
+ FA2 8008    AU!
+ FA3 C00F    EXIT
+
+ FA4  7D6    -ROT
+ FA5  F75 u 
+ FA6    4   
+ FA7   2D - 
+ FA8   52 R 
+ FA9   4F O 
+ FAA   54 T 
+ FAB BBBB   
+ FAC 8033 3  SWAP
+ FAD C02C ,  >R
+ FAE 8033 3  SWAP
+ FAF C014    R>
+ FB0 C00F    EXIT
+
+ FB1  7DE    _-ORDER
+ FB2  FA6   
+ FB3    7   
+ FB4   5F _ 
+ FB5   2D - 
+ FB6   4F O 
+ FB7   52 R 
+ FB8   44 D 
+ FB9   45 E 
+ FBA   52 R 
+ FBB BBBB   
+ FBC 8032 2  DUP
+ FBD C034 4  _IF
+ FBE  FCE   
+ FBF 800E    1-
+ FC0 8033 3  SWAP
+ FC1 C02C ,  >R
+ FC2  7DE    _-ORDER
+ FC3 801B    OVER
+ FC4 C011    R@
+ FC5 8026 &  XOR
+ FC6 C034 4  _IF
+ FC7  FCC   
+ FC8 8000    1+
+ FC9 C014    R>
+ FCA  7D6    -ROT
+ FCB C00F    EXIT
+ FCC C014    R>
+ FCD 801A    DROP
+ FCE C00F    EXIT
+
+ FCF  7EC    -ORDER
+ FD0  FB3   
+ FD1    6   
+ FD2   2D - 
+ FD3   4F O 
+ FD4   52 R 
+ FD5   44 D 
+ FD6   45 E 
+ FD7   52 R 
+ FD8  7B8    GET-ORDER
+ FD9  7DE    _-ORDER
+ FDA  110    NIP
+ FDB  7C0    SET-ORDER
+ FDC C00F    EXIT
+
+ FDD  7F3    +ORDER
+ FDE  FD1   
+ FDF    6   
+ FE0   2B + 
+ FE1   4F O 
+ FE2   52 R 
+ FE3   44 D 
+ FE4   45 E 
+ FE5   52 R 
+ FE6 8032 2  DUP
+ FE7 C02C ,  >R
+ FE8  7EC    -ORDER
+ FE9  7B8    GET-ORDER
+ FEA C014    R>
+ FEB 8033 3  SWAP
+ FEC 8000    1+
+ FED  7C0    SET-ORDER
+ FEE C00F    EXIT
+
+ FEF  7FB    ONLY
+ FF0  FDF   
+ FF1    4   
+ FF2   4F O 
+ FF3   4E N 
+ FF4   4C L 
+ FF5   59 Y 
+ FF6 C032 2  _LIT
+ FF7 FFFF   
+ FF8  7C0    SET-ORDER
+ FF9 C00F    EXIT
+
+ FFA  801    ALSO
+ FFB  FF1   
+ FFC    4   
+ FFD   41 A 
+ FFE   4C L 
+ FFF   53 S 
+1000   4F O 
+1001 BBBB   
+1002  7B8    GET-ORDER
+1003 801B    OVER
+1004 8033 3  SWAP
+1005 8000    1+
+1006  7C0    SET-ORDER
+1007 C00F    EXIT
+
+1008  80A    PREVIOUS
+1009  FFC   
+100A    8   
+100B   50 P 
+100C   52 R 
+100D   45 E 
+100E   56 V 
+100F   49 I 
+1010   4F O 
+1011   55 U 
+1012   53 S 
+1013 BBBB   
+1014  7B8    GET-ORDER
+1015  110    NIP
+1016 800E    1-
+1017  7C0    SET-ORDER
+1018 C00F    EXIT
+
+1019  814    DEFINITIONS
+101A 100A   
+101B    B   
+101C   44 D 
+101D   45 E 
+101E   46 F 
+101F   49 I 
+1020   4E N 
+1021   49 I 
+1022   54 T 
+1023   49 I 
+1024   4F O 
+1025   4E N 
+1026   53 S 
+1027 BBBB   
+1028  563 c  CONTEXT
+1029 803C <  AU@
+102A  6E1    SET-CURRENT
+102B C00F    EXIT
+
+102C  81B    _MARKER
+102D 101B   
+102E   47 G 
+102F   5F _ 
+1030   4D M 
+1031   41 A 
+1032   52 R 
+1033   4B K 
+1034   45 E 
+1035   52 R 
+1036 C014    R>
+1037  246 F  2@
+1038 8032 2  DUP
+1039 803C <  AU@
+103A  2B5    FOLLOWER
+103B 8008    AU!
+103C 8032 2  DUP
+103D  563 c  CONTEXT
+103E C02C ,  >R
+103F 8000    1+
+1040 8032 2  DUP
+1041 803C <  AU@
+1042 8032 2  DUP
+1043 C011    R@
+1044 8008    AU!
+1045 C034 4  _IF
+1046 104B K 
+1047 C014    R>
+1048 8000    1+
+1049 C006    _ELSE
+104A 103E > 
+104B 8000    1+
+104C 8032 2  DUP
+104D  246 F  2@
+104E  56F o  CURRENT
+104F  240 @  2!
+1050 8000    1+
+1051 8032 2  DUP
+1052 803C <  AU@
+1053 C02C ,  >R
+1054 8000    1+
+1055 8032 2  DUP
+1056 803C <  AU@
+1057 C011    R@
+1058 8008    AU!
+1059 C014    R>
+105A 8000    1+
+105B 803C <  AU@
+105C  126 &  ?DUP
+105D  158 X  0=
+105E C034 4  _IF
+105F 1053 S 
+1060 C014    R>
+1061  11C    2DROP
+1062   E7    DP
+1063  240 @  2!
+1064 C00F    EXIT
+
+1065  837 7  MARKER
+1066 102E . 
+1067    6   
+1068   4D M 
+1069   41 A 
+106A   52 R 
+106B   4B K 
+106C   45 E 
+106D   52 R 
+106E   E7    DP
+106F  246 F  2@
+1070  2B5    FOLLOWER
+1071 803C <  AU@
+1072  615    ,
+1073  563 c  CONTEXT
+1074 8032 2  DUP
+1075 803C <  AU@
+1076 8032 2  DUP
+1077  615    ,
+1078 C034 4  _IF
+1079 107D } 
+107A 8000    1+
+107B C006    _ELSE
+107C 1074 t 
+107D 801A    DROP
+107E  56F o  CURRENT
+107F  246 F  2@
+1080  615    ,
+1081 8032 2  DUP
+1082  615    ,
+1083 8032 2  DUP
+1084 803C <  AU@
+1085  615    ,
+1086 8000    1+
+1087 803C <  AU@
+1088  126 &  ?DUP
+1089  158 X  0=
+108A C034 4  _IF
+108B 1083   
+108C C032 2  _LIT
+108D  81B    _MARKER
+108E  752 R  :
+108F  72C ,  REVEAL
+1090  61E    COMPILE,
+1091  615    ,
+1092  615    ,
+1093 C00F    EXIT
+
+1094  84E N  BEGIN
+1095 1067 g 
+1096   C5   
+1097   42 B 
+1098   45 E 
+1099   47 G 
+109A   49 I 
+109B   4E N 
+109C  3AB    HERE
+109D C00F    EXIT
+
+109E  853 S  THEN
+109F 1096   
+10A0   C4   
+10A1   54 T 
+10A2   48 H 
+10A3   45 E 
+10A4   4E N 
+10A5 BBBB   
+10A6  84E N  BEGIN
+10A7 8033 3  SWAP
+10A8 8008    AU!
+10A9 C00F    EXIT
+
+10AA  85A Z  RESOLVE
+10AB 10A0   
+10AC    7   
+10AD   52 R 
+10AE   45 E 
+10AF   53 S 
+10B0   4F O 
+10B1   4C L 
+10B2   56 V 
+10B3   45 E 
+10B4  615    ,
+10B5 C00F    EXIT
+
+10B6  85F _  MARK
+10B7 10AC   
+10B8    4   
+10B9   4D M 
+10BA   41 A 
+10BB   52 R 
+10BC   4B K 
+10BD BBBB   
+10BE  3AB    HERE
+10BF  84E N  BEGIN
+10C0  85A Z  RESOLVE
+10C1 C00F    EXIT
+
+10C2  864 d  IF
+10C3 10B8   
+10C4   C2   
+10C5   49 I 
+10C6   46 F 
+10C7 BBBB   
+10C8 C032 2  _LIT
+10C9 C034 4  _IF
+10CA  61E    COMPILE,
+10CB  85F _  MARK
+10CC C00F    EXIT
+
+10CD  86B k  AHEAD
+10CE 10C4   
+10CF   C5   
+10D0   41 A 
+10D1   48 H 
+10D2   45 E 
+10D3   41 A 
+10D4   44 D 
+10D5 BBBB   
+10D6 C032 2  _LIT
+10D7 C006    _ELSE
+10D8  61E    COMPILE,
+10D9  85F _  MARK
+10DA C00F    EXIT
+
+10DB  871 q  ELSE
+10DC 10CF   
+10DD   C4   
+10DE   45 E 
+10DF   4C L 
+10E0   53 S 
+10E1   45 E 
+10E2  86B k  AHEAD
+10E3 8033 3  SWAP
+10E4  853 S  THEN
+10E5 C00F    EXIT
+
+10E6  877 w  WHILE
+10E7 10DD   
+10E8   C5   
+10E9   57 W 
+10EA   48 H 
+10EB   49 I 
+10EC   4C L 
+10ED   45 E 
+10EE  864 d  IF
+10EF 8033 3  SWAP
+10F0 C00F    EXIT
+
+10F1  87D }  UNTIL
+10F2 10E8   
+10F3   C5   
+10F4   55 U 
+10F5   4E N 
+10F6   54 T 
+10F7   49 I 
+10F8   4C L 
+10F9 BBBB   
+10FA C032 2  _LIT
+10FB C034 4  _IF
+10FC  61E    COMPILE,
+10FD  85A Z  RESOLVE
+10FE C00F    EXIT
+
+10FF  884    AGAIN
+1100 10F3   
+1101   C5   
+1102   41 A 
+1103   47 G 
+1104   41 A 
+1105   49 I 
+1106   4E N 
+1107 BBBB   
+1108 C032 2  _LIT
+1109 C006    _ELSE
+110A  61E    COMPILE,
+110B  85A Z  RESOLVE
+110C C00F    EXIT
+
+110D  88B    REPEAT
+110E 1101   
+110F   C6   
+1110   52 R 
+1111   45 E 
+1112   50 P 
+1113   45 E 
+1114   41 A 
+1115   54 T 
+1116  884    AGAIN
+1117  853 S  THEN
+1118 C00F    EXIT
+
+1119  890    PAGE
+111A 110F   
+111B    4   
+111C   50 P 
+111D   41 A 
+111E   47 G 
+111F   45 E 
+1120 C032 2  _LIT
+1121   1B   
+1122  445 E  EMIT
+1123  48D    _."
+1124    3   
+1125   5B [ 
+1126   32 2 
+1127   4A J 
+1128 C00F    EXIT
+
+1129  899    AT-XY
+112A 111B   
+112B    5   
+112C   41 A 
+112D   54 T 
+112E   2D - 
+112F   58 X 
+1130   59 Y 
+1131 BBBB   
+1132   C9    BASE
+1133 803C <  AU@
+1134 C02C ,  >R
+1135  10A    DECIMAL
+1136 8000    1+
+1137 8033 3  SWAP
+1138 8000    1+
+1139  3BD    <#
+113A C032 2  _LIT
+113B    0   
+113C C032 2  _LIT
+113D   48 H 
+113E  3CD    HOLD
+113F  3DD    #S
+1140 801A    DROP
+1141 C032 2  _LIT
+1142   3B ; 
+1143  3CD    HOLD
+1144  3DD    #S
+1145 C032 2  _LIT
+1146   5B [ 
+1147  3CD    HOLD
+1148 C032 2  _LIT
+1149   1B   
+114A  3CD    HOLD
+114B  3E3    #>
+114C  469 i  TYPE
+114D C014    R>
+114E   C9    BASE
+114F 8008    AU!
+1150 C00F    EXIT
+
+1151  8AC    !CSP
+1152 112B + 
+1153    4   
+1154   21 ! 
+1155   43 C 
+1156   53 S 
+1157   50 P 
+1158 8015    SP@
+1159   DE    CSP
+115A 8008    AU!
+115B C00F    EXIT
+
+115C  8B2    ?CSP
+115D 1153 S 
+115E    4   
+115F   3F ? 
+1160   43 C 
+1161   53 S 
+1162   50 P 
+1163 BBBB   
+1164 8015    SP@
+1165   DE    CSP
+1166 803C <  AU@
+1167 8026 &  XOR
+1168  494    _ABORT"
+1169    4   
+116A   63 c 
+116B   73 s 
+116C   70 p 
+116D   3F ? 
+116E C00F    EXIT
+
+116F  8BA    .S
+1170 115E ^ 
+1171    2   
+1172   2E . 
+1173   53 S 
+1174  355 U  DEPTH
+1175 C034 4  _IF
+1176 117C | 
+1177 C02C ,  >R
+1178  8BA    .S
+1179 C014    R>
+117A 8032 2  DUP
+117B  4BF    .
+117C C00F    EXIT
+
+117D  8C2    .ID
+117E 1171 q 
+117F    3   
+1180   2E . 
+1181   49 I 
+1182   44 D 
+1183 BBBB   
+1184  22C ,  COUNT
+1185 C032 2  _LIT
+1186   3F ? 
+1187 8027 '  AND
+1188  469 i  TYPE
+1189 C00F    EXIT
+
+118A  8C9    .WID
+118B 117F   
+118C    4   
+118D   2E . 
+118E   57 W 
+118F   49 I 
+1190   44 D 
+1191 BBBB   
+1192 8032 2  DUP
+1193 8000    1+
+1194 8000    1+
+1195 803C <  AU@
+1196  126 &  ?DUP
+1197 C034 4  _IF
+1198 119C   
+1199  8C2    .ID
+119A 801A    DROP
+119B C00F    EXIT
+119C C032 2  _LIT
+119D    0   
+119E  4AC    U.R
+119F C00F    EXIT
+
+11A0  8D5    .ORDER
+11A1 118C   
+11A2    6   
+11A3   2E . 
+11A4   4F O 
+11A5   52 R 
+11A6   44 D 
+11A7   45 E 
+11A8   52 R 
+11A9 BBBB   
+11AA  126 &  ?DUP
+11AB C034 4  _IF
+11AC 11B4   
+11AD 800E    1-
+11AE 8033 3  SWAP
+11AF C02C ,  >R
+11B0  8D5    .ORDER
+11B1 C014    R>
+11B2  8C9    .WID
+11B3  44F O  SPACE
+11B4 C00F    EXIT
+
+11B5  8DF    ORDER
+11B6 11A2   
+11B7    5   
+11B8   4F O 
+11B9   52 R 
+11BA   44 D 
+11BB   45 E 
+11BC   52 R 
+11BD BBBB   
+11BE  7B8    GET-ORDER
+11BF  8D5    .ORDER
+11C0  48D    _."
+11C1    3   
+11C2   2B + 
+11C3   2B + 
+11C4   20   
+11C5  6D8    GET-CURRENT
+11C6  8C9    .WID
+11C7 C00F    EXIT
+
+11C8  8E8    VOCS
+11C9 11B7   
+11CA    4   
+11CB   56 V 
+11CC   4F O 
+11CD   43 C 
+11CE   53 S 
+11CF BBBB   
+11D0  56F o  CURRENT
+11D1 8000    1+
+11D2 803C <  AU@
+11D3  126 &  ?DUP
+11D4 C034 4  _IF
+11D5 11DC   
+11D6 8032 2  DUP
+11D7  8C9    .WID
+11D8  44F O  SPACE
+11D9 8000    1+
+11DA C006    _ELSE
+11DB 11D2   
+11DC C00F    EXIT
+
+11DD  8F4    WIDWORDS
+11DE 11CA   
+11DF    8   
+11E0   57 W 
+11E1   49 I 
+11E2   44 D 
+11E3   57 W 
+11E4   4F O 
+11E5   52 R 
+11E6   44 D 
+11E7   53 S 
+11E8 8033 3  SWAP
+11E9 C02C ,  >R
+11EA 8032 2  DUP
+11EB C034 4  _IF
+11EC 1209   
+11ED  472 r  CR
+11EE 8032 2  DUP
+11EF  48D    _."
+11F0    4   
+11F1   77 w 
+11F2   69 i 
+11F3   64 d 
+11F4   3D = 
+11F5  8C9    .WID
+11F6  472 r  CR
+11F7 803C <  AU@
+11F8 8032 2  DUP
+11F9 C034 4  _IF
+11FA 1209   
+11FB  121 !  2DUP
+11FC 8000    1+
+11FD C011    R@
+11FE  4F4    SAME?
+11FF C034 4  _IF
+1200 1205   
+1201 8032 2  DUP
+1202  8C2    .ID
+1203  44F O  SPACE
+1204  47A z  ?CR
+1205 800E    1-
+1206  41F    NUF?
+1207 C034 4  _IF
+1208 11F7   
+1209 801A    DROP
+120A C014    R>
+120B C00F    EXIT
+
+120C  90A    WORDS
+120D 11DF   
+120E    5   
+120F   57 W 
+1210   4F O 
+1211   52 R 
+1212   44 D 
+1213   53 S 
+1214   F1    BL
+1215  661 a  PARSE
+1216 8032 2  DUP
+1217 C034 4  _IF
+1218 1227 ' 
+1219  56F o  CURRENT
+121A 8000    1+
+121B 803C <  AU@
+121C  126 &  ?DUP
+121D C034 4  _IF
+121E 1225 % 
+121F 8032 2  DUP
+1220 C02C ,  >R
+1221  8F4    WIDWORDS
+1222 C014    R>
+1223 C006    _ELSE
+1224 121A   
+1225  11C    2DROP
+1226 C00F    EXIT
+1227  563 c  CONTEXT
+1228 803C <  AU@
+1229  8F4    WIDWORDS
+122A  11C    2DROP
+122B C00F    EXIT
+
+122C  91B    NAMED?
+122D 120E   
+122E    6   
+122F   4E N 
+1230   41 A 
+1231   4D M 
+1232   45 E 
+1233   44 D 
+1234   3F ? 
+1235 BBBB   
+1236 803C <  AU@
+1237  56F o  CURRENT
+1238 8000    1+
+1239 803C <  AU@
+123A 8032 2  DUP
+123B C02C ,  >R
+123C 803C <  AU@
+123D 8032 2  DUP
+123E C034 4  _IF
+123F 124A J 
+1240  121 !  2DUP
+1241  53A :  NAME>
+1242 8026 &  XOR
+1243 C034 4  _IF
+1244 124A J 
+1245 800E    1-
+1246 C014    R>
+1247 801A    DROP
+1248 C006    _ELSE
+1249 123A : 
+124A  110    NIP
+124B C014    R>
+124C C00F    EXIT
+
+124D  92B +  >CHAR
+124E 122E . 
+124F    5   
+1250   3E > 
+1251   43 C 
+1252   48 H 
+1253   41 A 
+1254   52 R 
+1255 BBBB   
+1256 8032 2  DUP
+1257 C032 2  _LIT
+1258   7F   
+1259   F1    BL
+125A  181    WITHIN
+125B C034 4  _IF
+125C 125F _ 
+125D 801A    DROP
+125E   F1    BL
+125F C00F    EXIT
+
+1260  934 4  DUMP
+1261 124F O 
+1262    4   
+1263   44 D 
+1264   55 U 
+1265   4D M 
+1266   50 P 
+1267 BBBB   
+1268   C9    BASE
+1269 803C <  AU@
+126A C02C ,  >R
+126B  102    HEX
+126C  233 3  BOUNDS
+126D  121 !  2DUP
+126E 8026 &  XOR
+126F C034 4  _IF
+1270 1298   
+1271  472 r  CR
+1272 8032 2  DUP
+1273 C02C ,  >R
+1274  91B    NAMED?
+1275 803C <  AU@
+1276 800E    1-
+1277 800E    1-
+1278 C011    R@
+1279  15E ^  =
+127A C034 4  _IF
+127B 127D } 
+127C  472 r  CR
+127D C011    R@
+127E C032 2  _LIT
+127F    4   
+1280  4AC    U.R
+1281  44F O  SPACE
+1282 C011    R@
+1283 803C <  AU@
+1284 8032 2  DUP
+1285 C032 2  _LIT
+1286    4   
+1287  4AC    U.R
+1288  44F O  SPACE
+1289  1C3    RIVE
+128A  92B +  >CHAR
+128B  445 E  EMIT
+128C  92B +  >CHAR
+128D  445 E  EMIT
+128E  126 &  ?DUP
+128F C034 4  _IF
+1290 1293   
+1291  44F O  SPACE
+1292  8C2    .ID
+1293 C014    R>
+1294 8000    1+
+1295  41F    NUF?
+1296 C034 4  _IF
+1297 126D m 
+1298  11C    2DROP
+1299 C014    R>
+129A   C9    BASE
+129B 8008    AU!
+129C C00F    EXIT
+
+129D  952 R  SEE
+129E 1262 b 
+129F    3   
+12A0   53 S 
+12A1   45 E 
+12A2   45 E 
+12A3 BBBB   
+12A4  641 A  '
+12A5 8032 2  DUP
+12A6  28D    >ADR
+12A7 800E    1-
+12A8  121 !  2DUP
+12A9 803C <  AU@
+12AA  15E ^  =
+12AB C034 4  _IF
+12AC 12A7   
+12AD  110    NIP
+12AE  3AB    HERE
+12AF 801B    OVER
+12B0  131 1  -
+12B1  934 4  DUMP
+12B2 C00F    EXIT
+
+12B3  95E ^  'WARM
+12B4 129F   
+12B5    5   
+12B6   27 ' 
+12B7   57 W 
+12B8   41 A 
+12B9   52 R 
+12BA   4D M 
+12BB BBBB   
+12BC C00E    _VAR
+12BD  9BF    WARM
+
+12BE  963 c  COLD
+12BF 12B5   
+12C0    4   
+12C1   43 C 
+12C2   4F O 
+12C3   4C L 
+12C4   44 D 
+12C5 BBBB   
+12C6   ED    SUP
+12C7  246 F  2@
+12C8 C02F /  RP!
+12C9 8018    SP!
+12CA   ED    SUP
+12CB 803C <  AU@
+12CC 800E    1-
+12CD  2A7    UP
+12CE 8008    AU!
+12CF  2BB    STATUS
+12D0  2B5    FOLLOWER
+12D1 8008    AU!
+12D2   ED    SUP
+12D3  2C3    TID
+12D4 8008    AU!
+12D5   ED    SUP
+12D6  2F5    AWAKE
+12D7 C032 2  _LIT
+12D8    0   
+12D9   E7    DP
+12DA C032 2  _LIT
+12DB    5   
+12DC  24D M  MOVE
+12DD C032 2  _LIT
+12DE    6   
+12DF 803C <  AU@
+12E0 C01E    EXECUTE
+12E1  95E ^  'WARM
+12E2 803C <  AU@
+12E3 C01E    EXECUTE
+12E4 C00F    EXIT
+
+12E5  978 x  .VERSION
+12E6 12C0   
+12E7    8   
+12E8   2E . 
+12E9   56 V 
+12EA   45 E 
+12EB   52 R 
+12EC   53 S 
+12ED   49 I 
+12EE   4F O 
+12EF   4E N 
+12F0  48D    _."
+12F1   14   
+12F2   65 e 
+12F3   46 F 
+12F4   6F o 
+12F5   72 r 
+12F6   74 t 
+12F7   68 h 
+12F8   20   
+12F9   62 b 
+12FA   74 t 
+12FB   63 c 
+12FC   3A : 
+12FD   32 2 
+12FE   30 0 
+12FF   31 1 
+1300   31 1 
+1301   30 0 
+1302   32 2 
+1303   31 1 
+1304   30 0 
+1305   20   
+1306 C032 2  _LIT
+1307   D2   
+1308  22C ,  COUNT
+1309  469 i  TYPE
+130A C00F    EXIT
+
+130B  98A    PACER
+130C 12E7   
+130D    5   
+130E   50 P 
+130F   41 A 
+1310   43 C 
+1311   45 E 
+1312   52 R 
+1313 BBBB   
+1314 C032 2  _LIT
+1315   11   
+1316  445 E  EMIT
+1317 C00F    EXIT
+
+1318  990    !IOA
+1319 130D   
+131A    4   
+131B   21 ! 
+131C   49 I 
+131D   4F O 
+131E   41 A 
+131F BBBB   
+1320 C032 2  _LIT
+1321    7   
+1322 C032 2  _LIT
+1323    8   
+1324  24D M  MOVE
+1325 C00F    EXIT
+
+1326  998    HAND[]
+1327 131A   
+1328    6   
+1329   48 H 
+132A   41 A 
+132B   4E N 
+132C   44 D 
+132D   5B [ 
+132E   5D ] 
+132F BBBB   
+1330 C00E    _VAR
+1331 C03C <  RX?
+1332 C03D =  TX?
+1333  445 E  EMIT
+1334  472 r  CR
+1335  5CB    .OK
+1336 8031 1  NOOP
+1337    0   
+1338    0   
+
+1339  9A1    FILE[]
+133A 1328 ( 
+133B    6   
+133C   46 F 
+133D   49 I 
+133E   4C L 
+133F   45 E 
+1340   5B [ 
+1341   5D ] 
+1342 C00E    _VAR
+1343 C03C <  RX?
+1344 C03D =  TX?
+1345 801A    DROP
+1346 8031 1  NOOP
+1347 8031 1  NOOP
+1348  98A    PACER
+1349    0   
+134A    0   
+
+134B  9A9    FILE
+134C 133B ; 
+134D    4   
+134E   46 F 
+134F   49 I 
+1350   4C L 
+1351   45 E 
+1352  9A1    FILE[]
+1353  990    !IOA
+1354 C00F    EXIT
+
+1355  9AE    HAND
+1356 134D M 
+1357    4   
+1358   48 H 
+1359   41 A 
+135A   4E N 
+135B   44 D 
+135C  998    HAND[]
+135D  990    !IOA
+135E C00F    EXIT
+
+135F  9B3    IO#
+1360 1357 W 
+1361    3   
+1362   49 I 
+1363   4F O 
+1364   23 # 
+1365 BBBB   
+1366 C00E    _VAR
+1367    0   
+
+1368  9B7    IOS
+1369 1361 a 
+136A    3   
+136B   49 I 
+136C   4F O 
+136D   53 S 
+136E C032 2  _LIT
+136F 7FFF   
+1370 8027 '  AND
+1371 C032 2  _LIT
+1372    8   
+1373 803C <  AU@
+1374 C01E    EXECUTE
+1375 C00F    EXIT
+
+1376  9BF    WARM
+1377 136A j 
+1378    4   
+1379   57 W 
+137A   41 A 
+137B   52 R 
+137C   4D M 
+137D BBBB   
+137E  7FB    ONLY
+137F  814    DEFINITIONS
+1380  10A    DECIMAL
+1381  9B3    IO#
+1382 803C <  AU@
+1383  9B7    IOS
+1384  472 r  CR
+1385  978 x  .VERSION
+1386  472 r  CR
+1387  5CB    .OK
+1388  5EB    QUIT
+1389 C00F    EXIT
+ ok

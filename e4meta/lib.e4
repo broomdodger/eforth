@@ -1,0 +1,340 @@
+CR .( ++++ eForth library ++++ )
+\ Provides many functions not in the eForth kernel
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20090729 bee update
+\ 20070508 bee move to core S" .\  add more ans numbers
+\ 20070424 bee add S" ,"
+\ 20070424 bee in eForth   -1 +   is much faster than   1 -
+\ 20070207 bee move to core UNUSED ERASE IF\
+\ 20070111 bee add U2/ 2/MOD #BITS change MSB> >MSB
+\ 20061217 bee moved PICK out of eForth  add DM W
+\ 20061210 bee eForth compiled with gForth 062
+\ 19971005 bee move to core 0= BOUNDS NIP [CHAR]
+\ 19950512 bee change 2LITERAL  add ?LEAVE
+\ 19950411 bee change DU. FIND  remove DDEFER DVALUE DV!
+\ 19950411 bee move to core [']
+\ 19941015 bee fix FIND per jfox  add SEARCH-WORDLIST WORD
+\ 19930307 bee start library collection
+\ ==============================================================
+
+[DEFINED] M.LIB 0= IF\ M.LIB
+MARKER M.LIB
+
+\ ==============================================================
+
+: @EXECUTE ( a -- ) @ DUP IF EXECUTE EXIT THEN DROP ;
+
+: CMOVE ( a a u -- )( 17.6.1.0910 ) CHARS MOVE ;
+: ," ( 'ccc"' -- ) [CHAR] " PARSE S, ;
+
+\ ==============================================================
+CR .( numeric overrides )
+
+: rni# ( -- ( 'ccc' -- n | d ) \ radix number input
+  DOES> C@            \ new radix
+  BASE @ >R  BASE !   \ save and set radix
+  PARSE-WORD          \ get a u of string
+  ['] EVALUATE CATCH  \ convert to number, set trap
+  R> BASE !  THROW ;  \ restore radix before error control
+
+CREATE D# ( 'ccc' -- n | d ) 10 C, rni# IMMEDIATE
+CREATE B# ( 'ccc' -- n | d )  2 C, rni# IMMEDIATE
+CREATE O# ( 'ccc' -- n | d )  8 C, rni# IMMEDIATE
+CREATE H# ( 'ccc' -- n | d ) 16 C, rni# IMMEDIATE
+CREATE T# ( 'ccc' -- n | d ) 36 C, rni# IMMEDIATE
+
+: .rno ( -- ) \ radix number output
+  DOES> C@ BASE @ >R BASE ! U. R> BASE ! ;
+
+CREATE .B ( n -- )  2 C, .rno
+CREATE .O ( n -- )  8 C, .rno
+CREATE .D ( n -- ) 10 C, .rno
+CREATE .H ( n -- ) 16 C, .rno
+CREATE .T ( n -- ) 36 C, .rno
+
+: BINARY ( -- ) 2 BASE ! ;
+: OCTAL ( -- ) 8 BASE ! ;
+
+\ ==============================================================
+CR .( single number extensions )
+
+: BLANK ( ca u -- )( 17.6.1.0780 ) BL FILL ;
+
+0        CONSTANT FALSE ( 6.2.1485 )
+0 INVERT CONSTANT TRUE ( 6.2.2298 )
+
+: ON ( a -- )( 0x6A ) TRUE SWAP ! ;
+: OFF ( a -- )( 0x6B ) FALSE SWAP ! ;
+
+: NOT ( n -- n ) INVERT ;
+
+: 0> ( n -- )( 6.2.0280 ( 0x38 ) NEGATE 0< ;
+: 0<> ( n -- f )( 6.2.0260 ( 0x35 ) IF -1 EXIT THEN 0 ;
+
+: >= ( n n -- f )( 0x42 ) < INVERT ;
+: <> ( n n -- f )( 6.2.0500 ( 0x3D ) = INVERT ;
+: > ( n n -- f )( 6.1.0540 ( 0x3B ) SWAP < ;
+: U> ( u u -- f )( 6.2.2350 ( 0x3E ) SWAP U< ;
+
+: 2+ ( n -- n ) 1+ 1+ ;
+: 2- ( n -- n ) 1- 1- ;
+
+: U2/ ( u -- u )( 0x58 ) 1 RSHIFT ;
+
+: 3* ( n -- n ) DUP 2* + ;
+: 4* ( n -- n ) 2* 2* ;
+: 5* ( n -- n ) DUP 4* + ;
+: 6* ( n -- n ) 3* 2* ;
+: 7* ( n -- n ) DUP 6* + ;
+: 8* ( n -- n ) 4* 2* ;
+: 9* ( n -- n ) DUP 8* + ;
+: 10* ( n -- n ) 5* 2* ;
+: 16* ( n -- n ) 8* 2* ;
+
+: TUCK ( n1 n2 -- n2 n1 n2 )( 6.2.2300 ( 0x4C ) SWAP OVER ;
+
+\ Do not separate UMIN and UMAX
+: UMIN ( u u -- u ) 2DUP U< IF   BEGIN DROP ;
+: UMAX ( u u -- u ) 2DUP U< UNTIL THEN NIP ;
+
+\ ==============================================================
+CR .( double number extensions )
+
+: 2LITERAL ( d -- )( 8.6.1.0390 )
+  SWAP  [COMPILE] LITERAL  [COMPILE] LITERAL ; IMMEDIATE
+: 2CONSTANT ( d 'name' -- )( 8.6.1.0360 ) CREATE , , DOES> 2@ ;
+: 2VARIABLE ( 'name' -- )( 8.6.1.0440 ) CREATE 2 CELLS ALLOT ;
+
+: 2>R ( n1 n2 -- (R -- n1 n2 )( 6.2.0340 )
+  SWAP R>  SWAP >R  SWAP >R  >R ; COMPILE-ONLY
+
+: 2R> ( -- n1 n2 (R n1 n2 -- )( 6.2.0410 )
+  R>  R> SWAP  R> SWAP  >R  SWAP ; COMPILE-ONLY
+
+: 2R@ ( -- n1 n2 (R n1 n2 -- n1 n2 )( 6.2.0415 )
+  R>  R> R@  SWAP >R  SWAP R@  SWAP >R ; COMPILE-ONLY
+
+: 2SWAP ( d1 d2 -- d2 d1 )( 6.1.0430 ( 0x55 ) ROT >R ROT R> ;
+: 2OVER ( d1 d2 -- d1 d2 d1 )( 6.1.0400 ( 0x54 )
+  2>R 2DUP  2R> 2SWAP ;
+: 2ROT ( d1 d2 d3 -- d2 d3 d1 )( 8.6.2.0420 ( 0x56 )
+  2>R 2SWAP 2R> 2SWAP ;
+
+: D0< ( d -- f )( 8.6.1.1075 ) NIP 0< ;
+: D0> ( d -- f ) DNEGATE D0< ;
+: D- ( d d -- d )( 8.6.1.1050 ( 0xD9 ) DNEGATE D+ ;
+: D0= ( d -- f )( 8.6.1.1080 ) OR 0= ;
+: D= ( d d -- f )( 8.6.1.1120 ) D- D0= ;
+: D<> ( d d -- f ) D= INVERT ;
+
+\ Do not separate D< and DU<
+: D< ( d d -- f )( 8.6.1.1110 )
+  ROT 2DUP XOR IF SWAP 2SWAP 2DROP < ;
+: DU< ( ud ud -- f )( 8.6.2.1270 )
+  ROT 2DUP XOR IF SWAP 2SWAP THEN THEN 2DROP U< ;
+
+\ Do not separate DMIN and DMAX
+: DMIN ( d d -- d )( 8.6.1.1220 )
+  2OVER 2OVER D< IF   BEGIN       2DROP ;
+: DMAX ( d d -- d )( 8.6.1.1210 )
+  2OVER 2OVER D< UNTIL THEN 2SWAP 2DROP ;
+
+\ Do not separate DUMIN and DUMAX
+: DUMIN ( d d -- d )( 8.6.1.1220 )
+  2OVER 2OVER DU< IF   BEGIN       2DROP ;
+: DUMAX ( d d -- d )( 8.6.1.1210 )
+  2OVER 2OVER DU< UNTIL THEN 2SWAP 2DROP ;
+
+: M+ ( d n -- d )( 8.6.1.1830 ) S>D D+ ;
+: M- ( d n -- d ) S>D D- ;
+
+: M* ( n n -- d )( 6.1.1810 )
+  2DUP XOR 0< >R  ABS SWAP ABS UM*  R> IF DNEGATE THEN ;
+: M/ ( d n -- q ) FM/MOD NIP ;
+
+: */MOD ( n n n -- r q )( 6.1.0110 ) >R M* R> FM/MOD ;
+: */ ( n n n -- q )( 6.1.0100 ) */MOD NIP ;
+
+\ no rounding
+\ : u*/mod ( u1 u2 u3 -- r q ) >r um*  r> um/mod ;
+\ : u*/    ( u1 u2 u3 -- q ) u*/mod nip ;
+
+\ rounding
+: u*/mod ( u1 u2 u3 -- r q ) >r um*  r@ 1- 0 d+  r> um/mod ;
+: u*/    ( u1 u2 u3 -- q ) u*/mod nip ;
+
+: MU/MOD ( ud u -- ur udq )
+  >R 0 R@ UM/MOD R> SWAP >R UM/MOD R> ;
+
+: D2* ( d -- d )( 8.6.1.1090 ) 2DUP D+ ;
+: DU2/ ( ud -- ud ) 2 MU/MOD ROT DROP ;
+: D2/ ( d -- d )( 8.6.1.1100 ) DUP >R 1 AND DU2/  R> 2/ OR ;
+
+: DU.R ( ud n -- ) >R <# #S #> R> S.R ;
+: DU. ( ud -- ) 0 DU.R SPACE ;
+
+\ ==============================================================
+CR .( triple number extensions )
+
+: TU* ( ud u -- ut ) DUP >R SWAP >R UM* 0 R> R> UM* D+ ;
+: TU/MOD ( ut u -- ur udq ) DUP >R UM/MOD R> SWAP >R UM/MOD R> ;
+
+: M*/MOD ( ud u u -- ur udq ) >R TU*  R> TU/MOD ;
+: M*/ ( ud u u -- ud )( 8.6.1.1820 ) M*/MOD ROT DROP ;
+
+\ ==============================================================
+CR .( PICK ROLL -ROLL ) \ no no no !
+
+: PICK ( n -- n )( 6.2.2030 ( 0x50 ) \ never PICK
+  ?DUP IF SWAP >R 1-  RECURSE  R> SWAP EXIT THEN DUP ;
+
+: ROLL ( n ... +n -- ... n )( 6.2.2150 ( 0x4F ) \ never ROLL
+  ?DUP IF SWAP >R 1-  RECURSE  R> SWAP THEN ;
+
+: -ROLL ( ... n +n -- n ... ) \ never -ROLL
+  ?DUP IF ROT  >R 1-  RECURSE  R> THEN ;
+
+\ ==============================================================
+CR .( DO ?DO LOOP +LOOP LEAVE ?LEAVE UNLOOP I J )
+
+\ [?]DO pushes the address of a1 to the
+\       Return Stack for [?]LEAVE and [+]LOOP
+\
+\          v-------------------<<
+\ [?]DO a1 ... [?]LEAVE ... [+]LOOP ...
+\       >>--------+>----------------^
+\
+\          v-------------------------------------<<
+\ [?]DO a1 ... IF a2 ... UNLOOP EXIT THEN ... [+]LOOP ...
+\                 >>----------------------^
+\       >>--------------------------------------------^
+\
+\          v-----------------<<
+\ [?]DO a1 ...WHILE a2 ...[+]LOOP ...ELSE a3 ...UNLOOP THEN ...
+\       >>------------------------^       >>----------------^
+\                   >>-----------------------^
+
+\ Do not separate _DO and _?DO
+: _DO ( l i -- (R a -- a l i )
+  BEGIN  SWAP  R> CELL+  DUP >R  SWAP >R  SWAP >R  >R ;
+: _?DO ( l i -- (R a -- a l i ) 2DUP = UNTIL  2DROP  R> @ >R ;
+
+: _LOOP ( -- (R a l i  a -- a l i | )
+  R>  R> 1+ R>  2DUP XOR
+  IF R@  SWAP >R  SWAP >R  >R  DROP  EXIT
+  THEN 2DROP  R> DROP  >R ;
+
+: _+LOOP ( n -- (R a l i  a -- a l i | )
+  R> SWAP  DUP R@ +  SWAP
+  DUP  R> NEGATE R@ +  NEGATE UM+ >R DROP \ l i - n - save carry
+  INVERT 0< R> + \ overflow ? sign of n and carry
+  IF R> R@  SWAP >R  SWAP >R  >R  DROP  EXIT
+  THEN R> 2DROP  R> DROP  >R ;
+
+: DO ( -- a )( 6.1.1240 ( 0x17 )
+  ['] _DO  COMPILE,  MARK ; IMMEDIATE
+: ?DO ( -- a )( 6.2.0620 ( 0x18 )
+  ['] _?DO COMPILE,  MARK ; IMMEDIATE
+
+: LOOP ( a -- )( 6.1.1800 ( 0x15 )
+  ['] _LOOP  COMPILE,  [COMPILE] THEN ; IMMEDIATE
+: +LOOP ( a -- )( 6.1.0140 ( 0x16 )
+  ['] _+LOOP COMPILE,  [COMPILE] THEN ; IMMEDIATE
+
+: UNLOOP ( -- (R a l i  a -- )( 6.1.2380 ( 0x89 )
+  R>       R> R> 2DROP  R> DROP    >R ;
+: LEAVE ( -- (R a l i  a -- )( 6.1.1760 ( 0x1B )
+  R> DROP  R> R> 2DROP  R> CELL- @ >R ;
+: ?LEAVE ( f -- ) IF R> DROP LEAVE THEN ;
+
+: I ( -- n )( 6.1.1680 ( 0x19 )
+  R>            R@                             SWAP >R ;
+: J ( -- n )( 6.1.1730 ( 0x1A )
+  R>  R> R> R>  R@  SWAP >R  SWAP >R  SWAP >R  SWAP >R ;
+
+\ test DO-LOOP
+
+: L1 ( -- ) 9 0  DO I . LOOP ;
+: L2 ( -- ) 9 0 ?DO I . LOOP ;
+: L3 ( -- ) 9 9 ?DO I . LOOP ;
+
+: L4 ( -- ) 9 0
+  ?DO I 3 = IF UNLOOP ." UNLOOP " EXIT THEN I . LOOP 99 . ;
+: L5 ( -- ) 9 0
+  ?DO I 3 = IF LEAVE ." LEAVE " THEN I . LOOP 99 . ;
+: L6 ( -- ) 9 0 ?DO I 3 = ?LEAVE I . LOOP 99 . ;
+
+: L7 ( -- ) 9 0 ?DO I .  2 +LOOP ;
+: L8 ( -- ) 0 9 ?DO I . -2 +LOOP ;
+
+: L9 ( -- ) 9 0 ?DO 4 0 ?DO J . LOOP LOOP ;
+
+\ ==============================================================
+CR .( FOR NEXT AFT )
+
+\     v--------<<
+\ FOR ... NEXT a1 ...
+\
+\     v---------------------<<          >>----------v
+\ FOR ... WHILE a1 ... NEXT a2 ... ELSE a3 ... THEN ...
+\               >>-------------------------^
+\
+\                v-----------------<<
+\ FOR ... AFT a1 ... THEN ... NEXT a2 ...
+\             >>----------^
+
+: AFT ( a -- a a )
+  DROP  [COMPILE] AHEAD  [COMPILE] BEGIN  SWAP ; IMMEDIATE
+: FOR ( -- a )( n -- )
+  ['] >R COMPILE,  [COMPILE] BEGIN ; IMMEDIATE
+
+\ if R is non-zero, decrement R and jump
+: NEXT ( a -- ) \ loop n+1 times
+  POSTPONE R>  ( *) POSTPONE DUP  POSTPONE 1- ( *)
+  POSTPONE >R  POSTPONE 0=   POSTPONE UNTIL
+  POSTPONE R>  POSTPONE DROP ; IMMEDIATE
+
+\ if R is non-zero, decrement R and jump
+: NEXT0 ( a -- ) \ loop n+0 times
+  POSTPONE R>  ( *) POSTPONE 1-  POSTPONE DUP ( *)
+  POSTPONE >R  POSTPONE 0=  POSTPONE UNTIL
+  POSTPONE R>  POSTPONE DROP ; IMMEDIATE
+
+\ test FOR-NEXT
+
+: N1 ( -- ) 9 FOR R@ . NEXT ;
+: N2 ( -- )
+  9 FOR 5 R@ < WHILE R@ . NEXT ." X" ELSE R> DROP ." Y" THEN ;
+: N3 ( -- ) 9 FOR ." X" AFT ." Y" THEN R@ . NEXT ;
+
+\ ==============================================================
+CR .( CASE structure )
+
+0 CONSTANT CASE ( -- 0 )( 6.2.0873 ( 0xC4 ) IMMEDIATE
+
+: OF ( -- sys )( 6.2.1950 ( 0x1C )
+  ['] OVER COMPILE,  ['] = COMPILE,
+  [COMPILE] IF  ['] DROP COMPILE, ; IMMEDIATE
+
+: ENDOF ( sys -- sys )( 6.2.1343 ( 0xC6 )
+  [COMPILE] ELSE ; IMMEDIATE
+
+: ESAC ( 0 i*sys -- ) \ a useful factor
+  BEGIN ?DUP WHILE  [COMPILE] THEN  REPEAT ; IMMEDIATE
+
+: ENDCASE ( 0 i*sys -- )( 6.2.1342 ( 0xC5 )
+  ['] DROP COMPILE,  [COMPILE] ESAC ; IMMEDIATE
+
+\ test CASE
+
+: TT ( n -- )
+  CR ." TEST BEGIN "
+  CASE 1 OF ." HI BEE"   ENDOF
+       2 OF ." OH BEZEL" ENDOF
+    ." NO WAY " DUP 0 .R
+  ENDCASE ."  TEST END" ;
+
+\ ==============================================================
+

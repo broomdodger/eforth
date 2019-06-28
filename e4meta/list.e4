@@ -1,0 +1,1088 @@
+CR .( ++++ eForth btc inline heads model ++++ )
+    (      eForth and btc copyright Bill Muench )
+\ ==============================================================
+\ todo     add REFILL  [IF]  multiline (   vector array
+\          make SEARCH-WORDLIST from WID?
+\          tracks ==============================================
+\ 20110209 jwr RX? TX? EMIT? EMIT  DUMP macros
+\ 20110204 bee init DP WORDLIST from COLD
+\ 20110203 bee add ALIGNED to PAD
+\ 20110128 bee change SEE to show whole head
+\ 20110126 bee add M* */MOD */  add [m_fm/sm_m] to /mod */mod
+\ 20110125 bee KEY? flag to ans
+\ 20110121 bee move console i/o to userlist.e4
+\ 20110116 bee macros [m_<...>_m]  combine DUMP SEE
+\ 20110114 bee new NAMED?  remove .{#} .ADR
+\ 20110105 jwr add EXECUTE  fix >XT
+\ 20110102 jwr added 1+ (16 uses) and 1- (16 uses) definitions
+\ 20101208 bee add >ADR for CODEBIT
+\ 20090728 bee update, change DUMP add WARM change COLD
+\ 20080713 jwr factor basic setup add .VERSION WARM 'WARM
+\ 20080713 jwr consistant line-lengths and eForth spelling
+\ 20080713 jwr and add 'BAUD variable to allow user changes
+\ 20080711 bee move init 'COLD to meta load in eforth.f
+\ 20080709 bee move send start to  !io  in terminal node
+\ 20080709 bee add temp serial test words g and p
+\ 20080708 bee test delay before emit and send start
+\ 20080706 bee change to 115kbps
+\ 20080702 bee update, hard code 816=230kbps
+\ 20070930 bee/jwr move more initialization into COLD, use of |
+\ 20071020 bee fix QUIT add ?DUP
+\ 20070916 bee refactor COLD  add CODE-VERSION to COLD
+\ 20070819 bee add +ORDER -ORDER  change ORDER WORDLIST
+\ 20070819 bee make WORDLIST FORTH-WORDLIST structures the same
+\ 20070815 bee change QUIT  separate versions of QUIT
+\ 20070806 bee '=SP =RP = [IF]' for sp2 (no stack pointers)
+\ 20070804 bee remove constants -1 0 1
+\ 20070803 jwr add .OK to COLD
+\ 20070727 bee add even only address
+\ 20070724 bee remove EXIT use 0 token
+\ 20070609 bee change to XON for pace char
+\ 20070516 bee change DUMP for char=8/32
+\ 20070510 bee remove attribute char changed to pack count
+\ 20070510 bee rename TTT to NUF  MS move PAUSE to outer loop
+\ 20070510 bee remove ELSE from QUIT _] WORDS SSEE
+\ 20070510 bee add CELL/  rename CHAR/
+\ 20070508 bee add ONLY ALSO PREVIOUS ORDER VOCS  CTRL [CTRL]
+\ 20070508 bee more ANSI numbers   change S"  return [COMPILE]
+\ 20070506 bee change to run on rev7d chip with t18 v1.2
+\ 20070427 bee move PAUSE to TYPE change ?CR
+\ 20070425 bee remove PACK  change S,
+\ 20070423 bee change 1 - to -1 +  separate code/list  align S,
+\ 20070423 bee defined if skip compile  smaller /STRING
+\ 20070422 bee add c18 auto update, INVERT +  change tib sizing
+\ 20070414 bee add [DEFINED] IF\ SWAP-
+\ 20070414 bee restore SFILE  fix UNUSED  change PAGE
+\ 20070411 bee fit c18 code into nodes 0-3
+\ 20070411 bee change code addresses, ELSE to list
+\ 20070401 bee change AT-XY DUMP _LIT
+\ 20070401 bee remove LODS from next_xt exec_xt
+\ 20070331 bee rewrite reset, reorder code segments, move um+
+\ 20070329 bee runs at IntellaSys meeting
+\ 20070328 bee runs at B40
+\ 20070317 bee start c18
+\ 20070216 bee another big step char=cell=32bits
+\ 20070207 bee big step char = cell works  add ERASE
+\ 20070201 bee start cell based  add =USER UNUSED #TIB
+\ 20070127 bee KEY? RX? replaces ?RX ?KEY
+\ 20070125 bee EXIT move nest to inner loop
+\ 20070117 bee _LIT _ELSE highlevel options
+\ 20070103 bee change btc to call ret
+\ 20061218 bee btc !!!
+\ 20061217 bee add UPPER to >NUMBER SAME? case insensitive
+\ 20061210 bee change .S MIN MAX U. . remove PICK
+\ 20061210 bee gforth 062
+\ 19980706 bee change RECURSE :NONAME DOES> CREATE
+\ 19980706 bee add =RECUR =DOES
+\ 19971011 bee change CURRENT SFIND NAMED? MARKER WORDS
+\ 19971005 bee change _[ _] ?STACK only called after EXECUTE
+\ 19971005 bee rename DELIMIT PARSE-WORD  add [CHAR]
+\ 19971003 bee rename pass _PASS  wake _WAKE  do" _"
+\ 19971003 bee rename _PARSE  _DELIMIT  _[  _]
+\ 19971003 bee remove >NAME  change DUMP SSEE
+\ 19970923 bee change _DOES> DOES> to use TOKEN and :NONAME
+\ 19970304 bee change ALIGNED DEPTH HAT =  add 0= NIP BOUNDS
+\ 19950717 bee change ACCEPT TOKEN? to NAMED?  remove CON
+\ 19971003 bee change to inline names 16k image
+\ 19971003 bee change ALIGNED  NAME>  SEE  HEAD,  CODE  :
+\ 19971003 bee change PACK  DP  MARKER  DOES>
+\ 19971003 bee rename _IF _ELSE _S" _." _ABORT" _DOES> _MARKER
+\ 19971003 bee rename _CON _VAR _USR  ADR> to NAMED?
+\ 19971003 bee add /STRING S, SLITERAL
+\ 19950525 bee add ALIGN to _DOES>
+\ 19950511 bee change QUIT  add 'OK LTOKEN CTOKEN  rename SFIND
+\ 19950410 bee change D. space at end, SSEE
+\ 19950322 bee add TOKEN  fix RECURSE with :NONAME
+\ 19950321 bee CONTEXT find WORDLIST ORDER@ GET-ORDER SET-ORDER
+\ 19941011 bee STOP TYPE _TYPE DUMP DM+
+\ 19941006 bee 2.5.0
+\ 19941006 bee add INITIALIZETARGETIMAGE
+\ 19941006 bee add ALIGN to ] MARKER WORDLIST
+\ 19941006 bee change PACK _TYPE DM+ CR BL REVEAL
+\ 19941006 bee change ' POSTPONE ACCEPT .ID LEX! does if else
+\ 19941006 bee change to linked search order WID? CONTEXT find
+\ 19941006 bee LAST FORTH-WORDLIST VLINK WORDLIST HEAD, WORDS
+\ 19941006 bee GET-ORDER SET-ORDER marker MARKER >NAME ADR>
+\ 19940817 bee itc 1616
+\ 19940817 bee change from CMOVE to MOVE  remove use of CHARS
+\ 19940817 bee Environmental dependency:
+\ 19940817 bee only two's complement arithmetic supported
+\ 19940817 bee ie true flags=-1 and NEGATE
+\ 19940817 bee systems with char<byte NOT supported
+\ 19940815 bee itc 3232 32bit tokens
+\ 19940814 bee itc again!
+\ 19940806 bee 2.4.2
+\ 19940806 bee remove new NEW c" C"  add search order  W- W+
+\ 19940806 bee rename LEX! LIT DOES If Else  BKSP
+\ 19940806 bee !lex lit does if else =BKSP
+\ 19940806 bee rename <RESOLVE >MARK search-wordlist
+\ 19940806 bee RESOLVE  MARK  WID?
+\ 19940806 bee change ADR> ALIGNED >MARK DM+ DUMP WORDS HEAD,
+\ 19940806 bee find ?UNIQUE marker MARKER QUIT
+\ 19940523 bee 2.4.1 32bit meta C,  change >MARK WORDS
+\ 19940523 bee change USERs BUILD ACTIVATE HAT DEPTH QUIT COLD
+\ 19940523 bee replace HLD with HERE in ' POSTPONE
+\ 19940520 bee remove END-CODE STRING, CONSTANTs -1 0 1 2
+\ 19940519 bee remove TIB  add SOURCE  change 32bit return stack
+\ 19940513 bee add CR to ?UNIQUE
+\ 19940513 bee replace HERE with HLD in ' POSTPONE
+\ 19930811 bee 2.40
+\ 19930809 bee start 32bit eForth with 16bit tokens
+\ 19930731 bee ah, postfix again
+\ 19930719 bee remove ?STACK from EVALUATE add to _[ and _]
+\ 19930604 bee ' saves name address at HERE  add [ to REVEAL
+\ 19930604 bee add POSTPONE  remove COMPILE [COMPILE]
+\ 19930530 bee add CHAR- CHAR+ CHARS COMPILE,  change ERF to TF
+\ 19930326 bee remove use of FOR NEXT AFT
+\ 19930326 bee change EVAL to EVALUATE  remove >RESOLVE <MARK
+\ 19930224 bee add multitasker
+\ 19930212 bee 2.30 convert to btc  add >ADR ADR>  remove QUERY
+\ 19920326 bee S.R H# _" _[ _]
+\ 19920324 bee replace SHIFT with LSHIFT RSHIFT  NOT with INVERT
+\ 19920219 bee fix IMMEDIATE COMPILE-ONLY
+\ 19920219 dak change [[ to REVEAL
+\ 19920219 bee new MARKER  QUIT  ALIGN  HEAD,
+\ 19920205 bee WORDS  2@ 2!  CR  remove FILE HAND  change FROM
+\ 19920126 bee -SAME? SHIFT abort" .OK
+\ 19920112 bee seperate _DELIMIT DELIMIT from _PARSE PARSE
+\ 19920112 bee double number output and input  EVAL QUIT STATE
+\ 19920110 bee use C@ in _PARSE -SAME? find  ,C"  BKSP dak
+\ 19911121 bee PACK STDIN :  remove TOKEN WORD NAME?  add S"
+\ 19910828 bee DUMP field size jf
+\ 19910722 bee ANS update C" ACCEPT PICK  add DOES> >BODY SM/REM
+\ 19910719 bee update : TOKEN WORD  add FROM STDIN stdin :NONAME
+\ 19910408 bee accept rid EXPECT add MARKER NEW
+\ 19910405 bee itc update
+\ 1989xxxx bee bForth MS-DOS version
+\          coyote ==============================================
+
+\ Notation
+  ( 0.0.0000 ) \ ANS reference numbers
+  ( 0x00 )     \ Boot Firmware byte codes
+
+\ Conventions
+  \ a   address
+  \ ca  character address
+  \ c   character
+  \ f   flag  0 or non-zero
+  \ n   signed single
+  \ d   signed double
+  \ u   unsigned single
+  \ ud  unsigned double
+  \ xt  execution token
+  \ w   unspecified cell, word
+
+\ name structure \xt\link\attribute+count\name_string\
+  \ 'xt' execution token -- cell
+  \ 'link' pointer to previous 'name string' -- cell
+  \ 'attribute+count' string length and attribute 'icnn nnnn'
+  \   n -- string length, 63 chars max
+  \   i -- immediate
+  \   c -- compile-only
+  \ 'name_string' variable length ascii 'ccc' -- chars
+  \   compiler does not set bits in the 'name string'
+  \ 0 < la na < ... < la na < last name compiled
+
+\ ==============================================================
+
+CR .( List definitions ) CR
+
+: NOOP ( -- )( 0x7B ) ;
+: _VAR ( -- a )( 0xB9 ) R> ; COMPILE-ONLY
+: _CON ( -- n )( 0xBA ) R> @ ; COMPILE-ONLY
+: _ELSE ( -- )( 0x13 ( absolute branch ) R> @ >R ; COMPILE-ONLY
+: _LIT ( -- n )( 0x10 ) R> DUP CELL+ >R @ ; COMPILE-ONLY
+
+CR .( System variables ) CR
+
+VARIABLE BASE ( 6.1.0750 ( 0xA0 ) \ numeric radix
+VARIABLE DPL  \ numeric input decimal place
+VARIABLE HLD  \ numeric output string pointer
+
+VARIABLE >IN ( 6.1.0560 ) \ input buffer offset
+CREATE #IN \ input buffer and count, SOURCE
+  D# 0 , =TIB ,
+
+VARIABLE CSP \ current stack pointer, for error checking
+
+CREATE STATE ( 6.1.2250 ( 0xDC ) \ interpret/compile flag
+  D# 2 CELLS ALLOT \ interpret/compile vector
+
+CREATE DP \ dictionary and marker
+  D# 2 CELLS ALLOT
+LABEL =wid \ internally consistent wordlist structure
+  D# 3 CELLS ALLOT
+  \ na, last definition, linked
+  \ wid|0, next|last wordlist in chain
+  \ na, wordlist name pointer
+
+CREATE SUP ( -- tid ) \ System User Pointer
+  =RP , \ return stack pointer
+  =SP , \ data stack pointer
+
+=BL   CONSTANT BL ( -- c )( 6.1.0770 ( 0xA9 )
+nTIB  CONSTANT #TIB ( -- n )( 6.2.0060 )
+=CR   CONSTANT \r ( -- c )( carrage return )
+=LF   CONSTANT \n ( -- c )( linefeed )
+
+CR .( Data stack and ALU ) CR
+
+: HEX ( -- )( 6.2.1660 ) D# 16 BASE ! ;
+: DECIMAL ( -- )( 6.1.1170 ) D# 10 BASE ! ;
+
+: NIP ( n1 n2 -- n2 )( 6.2.1930 ( 0x4D ) SWAP DROP ;
+: ROT ( n1 n2 n3 -- n2 n3 n1 )( 6.1.2160 ( 0x4A )
+  >R SWAP R> SWAP ;
+: 2DROP ( n n -- )( 6.1.0370 ( 0x52 ) DROP DROP ;
+: 2DUP ( n1 n2 -- n1 n2 n1 n2 )( 6.1.0380 ( 0x53 ) OVER OVER ;
+: ?DUP ( n -- n n | 0 )( 6.1.0630 ( 0x50 ) DUP IF DUP THEN ;
+
+: INVERT ( n -- n )( 6.1.1720 ( 0x26 ) D# -1 XOR ;
+: + ( n n -- n )( 6.1.0120 ( 0x1E ) UM+ DROP ;
+
+: 1+ ( n -- n )( 6.1.0290 ) D# 1 + ;
+: 1- ( n -- n )( 6.1.0300 ) D# -1 + ;
+: NEGATE ( n -- n )( 6.1.1910 ( 0x2C ) INVERT 1+ ;
+: - ( n n -- n )( 6.1.0160 ( 0x1F ) NEGATE + ;
+: ABS ( n -- u )( 6.1.0690 ( 0x2D ) DUP 0< IF NEGATE THEN ;
+: S>D ( n -- d )( 6.1.2170 ) DUP 0< ;
+
+: D+ ( d d -- d )( 8.6.1.1040 ( 0xD8 )
+  >R  SWAP >R  UM+  R> +  R> + ;
+: DNEGATE ( d -- d )( 8.6.1.1230 )
+  INVERT >R INVERT D# 1 UM+ R> + ;
+: DABS ( d -- ud )( 8.6.1.1160 ) DUP 0< IF DNEGATE THEN ;
+
+CR .( Comparison ) CR
+
+: 0= ( n -- f )( 6.1.0270 ( 0x34 ) IF D# 0 EXIT THEN D# -1 ;
+: = ( n n -- f )( 6.1.0530 ( 0x3C ) XOR 0= ;
+
+: U< ( u u -- f )( 6.1.2340 ( 0x40 ) \ 20110205 bbb
+  2DUP XOR 0< IF  NIP 0< EXIT THEN - 0< ;
+:  < ( n n -- f )( 6.1.0480 ( 0x3A )
+  2DUP XOR 0< IF DROP 0< EXIT THEN - 0< ;
+
+: MIN ( n n -- n )( 6.1.1880 ( 0x2E ) 2DUP < IF BEGIN DROP ;
+: MAX ( n n -- n )( 6.1.1870 ( 0x2F ) 2DUP < UNTIL THEN NIP ;
+
+: WITHIN ( u ul uh -- f )( 6.2.2440 ( 0x45 ) OVER - >R - R> U< ;
+
+CR .( Multiply ) CR
+
+: LSHIFT ( u n -- u )( 6.1.1805 ( 0x27 )
+  BEGIN DUP
+  WHILE >R  DUP +  R> 1-
+  REPEAT DROP ;
+
+: UM* ( u u -- ud )( 6.1.2360 ( 0xD4 )
+  D# 0 SWAP  [ BITS/CELL ] LITERAL
+  BEGIN DUP
+  WHILE >R  DUP UM+ >R >R  DUP UM+ R> + R>
+    IF >R OVER UM+ R> + THEN  R> 1-
+  REPEAT DROP >R  NIP R> ;
+
+: M* ( n n -- d )( 6.1.1810 )
+  2DUP XOR 0< >R  ABS SWAP ABS UM*  R> IF DNEGATE THEN ;
+
+: * ( n n -- n )( 6.1.0090 ( 0x20 ) UM* DROP ;
+: 2* ( n -- n )( 6.1.0320 ( 0x59 ) DUP + ;
+
+CR .( Divide ) CR
+
+: RSHIFT ( u n -- u )( 6.1.2162 ( 0x28 )
+  D# 0 SWAP INVERT [ BITS/CELL D# 1 + ] LITERAL +
+  BEGIN DUP
+  WHILE >R  2DUP D+  R> 1-
+  REPEAT DROP  NIP ;
+
+: RIVE ( hl -- h l ) DUP D# 8 RSHIFT  SWAP H# 0FF AND ;
+
+: UM/MOD ( ud u -- ur uq )( 6.1.2370 ( 0xD5 )
+  2DUP U<
+  IF NEGATE  [ BITS/CELL ] LITERAL
+    BEGIN DUP
+    WHILE >R  >R  DUP UM+ >R >R  DUP UM+ R> +
+      DUP R> R@ SWAP >R UM+  R> OR
+      IF >R DROP 1+ R> ELSE DROP THEN R>  R> 1-
+    REPEAT 2DROP SWAP EXIT
+  THEN DROP 2DROP  D# -1 DUP ;
+
+: SM/REM ( d n -- r q )( 6.1.2214 ) \ symmetric
+  OVER >R >R  DABS R@ ABS UM/MOD
+  R> R@ XOR 0< IF NEGATE THEN  R> 0< IF >R NEGATE R> THEN ;
+
+: FM/MOD ( d n -- r q )( 6.1.1561 ) \ floored
+  DUP 0<  DUP >R IF NEGATE >R DNEGATE R> THEN
+  >R DUP 0< IF R@ + THEN R> UM/MOD R> IF >R NEGATE R> THEN ;
+
+: /MOD ( n n -- r q )( 6.1.0240 ( 0x2A )
+  OVER 0< SWAP [m_fm/sm_m] ;
+: MOD ( n n -- r )( 6.1.1890 ( 0x22 ) /MOD DROP ;
+: / ( n n -- q )( 6.1.0230 ( 0x21 ) /MOD NIP ;
+: 2/ ( n -- n )( 6.1.0330 ( 0x57 ) D# 2 / ;
+
+: */MOD ( n n n -- r q )( 6.1.0110 ) >R M* R> [m_fm/sm_m] ;
+: */    ( n n n --   q )( 6.1.0100 ) */MOD NIP ;
+
+: CHAR/ ( n -- n ) [ D# 1 CHARS ] LITERAL / ; \ !!!
+: CELL/ ( n -- n ) [ D# 1 CELLS ] LITERAL / ;
+
+CR .( Memory access ) CR
+
+: +! ( n a -- )( 6.1.0130 ( 0x6C ) DUP >R @ + R> ! ;
+: COUNT ( ca -- ca u )( 6.1.0980 ( 0x84 ) DUP CHAR+ SWAP C@ ;
+: BOUNDS ( a u -- a+u a )( 0xAC ) OVER + SWAP ;
+: /STRING ( ca u n -- ca+n u-n )( 17.6.1.0245 )
+  SWAP OVER - >R CHARS + R> ;
+
+: ALIGNED ( a -- a )( 6.1.0706 ( 0xAE )
+  ( 2's comp and 2^n cell size )
+  [ D# 1 CELLS  D# 1 -  DUP ] LITERAL + [ INVERT ] LITERAL AND ;
+
+: 2! ( u u a -- )( 6.1.0310 ( 0x77 ) SWAP OVER ! CELL+ ! ;
+: 2@ ( a -- u u )( 6.1.0350 ( 0x76 ) DUP CELL+ @ SWAP @ ;
+
+: MOVE ( a a u -- )( 6.1.1900 ( 0x78 ) \ address units
+  >R  2DUP U< IF
+    BEGIN R> DUP
+    WHILE 1- >R  OVER R@ + AU@  OVER R@ + AU!
+    REPEAT DROP  2DROP EXIT
+  THEN R> OVER + >R
+  BEGIN DUP R@ XOR
+  WHILE >R  DUP AU@ R@ AU!  1+ R> 1+
+  REPEAT R> DROP  2DROP ;
+
+: ERASE ( a u -- )( 6.2.1350 ) \ address units
+  BOUNDS
+  BEGIN 2DUP XOR
+  WHILE D# 0 OVER AU!  1+
+  REPEAT 2DROP ;
+
+: FILL ( ca u c -- )( 6.1.1540 ( 0x79 )
+  >R  CHARS BOUNDS
+  BEGIN 2DUP XOR
+  WHILE R@ OVER C!  CHAR+
+  REPEAT R> DROP 2DROP ;
+
+: -TRAILING ( ca u -- ca u )( 17.6.1.0170 )
+  BEGIN DUP
+  WHILE 1-  2DUP CHARS + C@  BL SWAP U<
+  UNTIL 1+ THEN ;
+
+: >ADR ( xt -- a ) [m_>adr_m] ;
+: >BODY ( xt -- a )( 6.1.0550 ( 0x86 ) >ADR CELL+ ;
+
+: UPPER ( c -- C ) \ convert to uppercase \ upc ( 0x81 )
+  DUP [CHAR] a [ CHAR z  D# 1 + ] LITERAL WITHIN
+  IF BL XOR THEN ;
+
+=SP =RP = [IF] \ NO stack pointers \ sp2
+
+VARIABLE FOLLOWER
+
+: pause ( -- ) ;
+
+[ELSE]
+
+CR .( Multitask ) CR
+
+VARIABLE UP \ current task pointer
+: _USR ( -- a ) UP @ R> @ + ; COMPILE-ONLY
+
+\ u2\u1\tf\tid\tos\status\follower\r>--<s\tib>-|
+D# 0         DUP USER FOLLOWER \ address of next task's STATUS
+D# 1 CELLS - DUP USER STATUS   \ PASS or WAKE
+D# 1 CELLS - DUP USER TOS      \ top of stack
+D# 1 CELLS - DUP USER TID      \ back link tid
+D# 1 CELLS - DUP USER TF       \ throw frame
+D# 1 CELLS - DUP USER U1       \ free
+D# 1 CELLS - DUP USER U2       \ free
+D# 1 CELLS - ABS EQU =USER     \ size of user area in cells
+
+: PAUSE ( -- ) \ allow another task to execute
+  RP@  SP@ TOS !  FOLLOWER @ >R ;
+
+: _WAKE ( -- ) R> UP !  TOS @ SP! RP! ; COMPILE-ONLY
+' _WAKE CONSTANT WAKE
+' _ELSE CONSTANT PASS
+
+\ control start/stop
+: 'S ( tid a -- a )( index a task's variable )
+  FOLLOWER CELL+ - SWAP @ + ;
+
+: AWAKE ( tid -- )( wake another task ) WAKE SWAP STATUS 'S ! ;
+: SLEEP ( tid -- )( sleep another task ) PASS SWAP STATUS 'S ! ;
+: STOP ( -- )( sleep current task )
+  PASS STATUS ! PAUSE ; COMPILE-ONLY
+
+\ initialize
+: ACTIVATE ( tid -- )
+  DUP 2@        \ tid sp rp
+  R> OVER !     \ save entry at rp
+  OVER !        \ save rp at sp
+  OVER TOS 'S ! \ save sp in tos
+  AWAKE ; COMPILE-ONLY
+
+: BUILD ( tid -- ) \ link new task, do only once
+  DUP SLEEP                     \ sleep new task
+  FOLLOWER @ OVER FOLLOWER 'S ! \ link new task
+  DUP STATUS 'S FOLLOWER !      \ link old task
+  DUP TID 'S ! ;                \ link to tid
+
+\ semaphore support
+: GET ( semaphore -- )
+  PAUSE ( remember your manners ) DUP @ STATUS XOR ( owner ? )
+  IF BEGIN DUP @ WHILE PAUSE REPEAT ( no, wait for release )
+    STATUS SWAP ! ( lock ) EXIT
+  THEN DROP ;
+
+: RELEASE ( semaphore -- )
+  DUP @ STATUS XOR IF DROP EXIT THEN  D# 0 SWAP ! ( unlock ) ;
+
+[THEN]
+
+CR .( Error handling ) CR
+
+=SP =RP = [IF] \ NO stack pointers \ sp2
+
+: CATCH ( xt -- 0 | err )( 9.6.1.0875 ( 0x217 )
+  EXECUTE  D# 0 ;
+
+VARIABLE 'ERR
+VARIABLE 'QUIT
+
+: THROW ( 0 | err -- | err )( 9.6.1.2275 ( 0x218 )
+  ?DUP IF  'ERR @ EXECUTE  'QUIT @ EXECUTE  THEN ;
+
+[ELSE]
+
+: CATCH ( xt -- 0 | err )( 9.6.1.0875 ( 0x217 )
+  SP@ >R  TF @ >R  RP@ TF !  EXECUTE  R> TF !  R> DROP  D# 0 ;
+
+: THROW ( 0 | err -- | err )( 9.6.1.2275 ( 0x218 )
+  ?DUP IF TF @ RP!  R> TF !  R> SWAP >R SP! DROP R> THEN ;
+
+: DEPTH ( -- n )( 6.1.1200 ( 0x51 )
+  SP@  TID @ CELL+ @  SWAP - CELL/ ;
+
+[THEN]
+
+: ABORT ( i*n -- )( 9.6.2.0670 ( 0x216 ) D# -1 THROW ;
+
+CR .( Numeric input ) CR
+
+\ bbb digit ( char base -- digit true | char false )
+: DIGIT? ( c base -- u f )( 0xA3 )
+  >R [CHAR] 0 - D# 9 OVER <
+  IF D# -7 + DUP D# 10 < OR THEN DUP R> U< ;
+
+: >NUMBER ( ud ca u -- ud ca u )( 6.1.0570 )
+  BEGIN DUP
+  WHILE >R  DUP >R C@  UPPER  BASE @ DIGIT?
+  WHILE SWAP BASE @ UM* DROP
+    ROT BASE @ UM* D+ R> CHAR+ R> 1-
+  REPEAT DROP R> R> THEN ;
+
+: NUMBER? ( ca u -- d -1 | ca u 0 ) \ bbb -- d 2 | n 1 | ca u 0
+  OVER C@ [CHAR] - = DUP >R IF D# 1 /STRING THEN
+  >R >R  D# 0 DUP  R> R>  D# -1 DPL !
+  BEGIN >NUMBER DUP
+  WHILE OVER C@ [CHAR] . XOR
+    IF ROT DROP ROT R> 2DROP  D# 0 EXIT
+    THEN 1- DPL !  CHAR+  DPL @
+  REPEAT 2DROP R> IF DNEGATE THEN D# -1 ;
+
+CR .( Numeric formatting ) CR
+
+: HERE ( -- a )( 6.1.1650 ( 0xAD ) DP @ ;
+: PAD ( -- ca )( 6.2.2000 )
+  HERE ALIGNED [ #PAD CHARS ] LITERAL + ;
+
+=SP =RP = [IF] \ NO stack pointers \ sp2
+
+: UNUSED ( -- u )( 6.2.2395 ) SUP @ HERE - ; \ address units
+
+[ELSE]
+
+: UNUSED ( -- u )( 6.2.2395 ) SUP U2 'S HERE - ; \ address units
+
+[THEN]
+
+: <# ( -- )( 6.1.0490 ( 0x96 ) PAD HLD ! ;
+: DIGIT ( u -- c ) D# 9 OVER < D# 7 AND + [CHAR] 0 + ;
+: HOLD ( c -- )( 6.1.1670 ( 0x95 ) HLD @ CHAR- DUP HLD ! C! ;
+
+: # ( d -- d )( 6.1.0030 ( 0xC7 )
+  D# 0 BASE @ UM/MOD >R BASE @ UM/MOD SWAP DIGIT HOLD R> ;
+
+: #S ( d -- d )( 6.1.0050 ( 0xC8 ) BEGIN # 2DUP OR 0= UNTIL ;
+: #> ( d -- ca u )( 6.1.0040 ( 0xC9 )
+  2DROP HLD @ PAD  OVER - CHAR/ ; \ !!!
+
+: SIGN ( n -- )( 6.1.2210 ( 0x98 ) 0< IF [CHAR] - HOLD THEN ;
+
+CR .( Basic I/O ) CR
+
+=ibuf CONSTANT IBUF \ input buffer
+: KEY? ( -- f )( 10.6.1.1755 ( 0x8D )
+  PAUSE  IBUF @ IF D# -1 EXIT THEN
+  [ =rx? ] LITERAL @ EXECUTE  DUP IBUF ! 0< ;
+
+: KEY ( -- c )( 6.1.1750 ( 0x8E )
+  BEGIN KEY? UNTIL  IBUF @ INVERT  D# 0 IBUF ! ;
+
+CREATE MSA  =MSA , \ MilliSecond Adjust
+: MS ( u -- )( 10.6.2.1905 ( 0x126 ) \ MilliSecond delay
+  BEGIN ?DUP WHILE  PAUSE  MSA @
+    BEGIN ?DUP WHILE 1- REPEAT 1-
+  REPEAT ;
+
+CREATE NUF  D# 1 D# 4 LSHIFT DUP , , \ delay
+: NUF? ( -- f )
+  KEY? DUP ( 0-9 throttle )
+  IF KEY D# 10 DIGIT? ( u f )
+    IF D# 4 LSHIFT NUF !  0= EXIT  THEN 2DROP  KEY \r = EXIT
+  THEN  NUF @ MS ;
+
+=obuf CONSTANT OBUF \ output buffer
+: EMIT? ( -- f )( 10.6.2.1325 )
+  OBUF @ DUP
+  IF [ =tx? ] LITERAL @ EXECUTE  DUP OBUF ! 0< THEN INVERT ;
+
+CREATE C#  D# 0 , D# 64 , \ column, max column
+: EMIT ( c -- )( 6.1.1320 ( 0x8F )
+  INVERT OBUF !  BEGIN EMIT? UNTIL  D# 1 C# +! ;
+: SPACE ( -- )( 6.1.2220 ) BL EMIT ; ," coyote"
+
+: EMITS ( n c -- )
+  SWAP D# 0 MAX BEGIN DUP WHILE OVER EMIT 1- REPEAT 2DROP ;
+: SPACES ( n -- )( 6.1.2230 ) BL EMITS ;
+
+: TYPE ( ca u -- )( 6.1.2310 ( 0x90 )
+  PAUSE  CHARS BOUNDS
+  BEGIN 2DUP XOR WHILE COUNT EMIT REPEAT 2DROP ;
+
+: CR ( -- )( 6.1.0990 ( 0x92 ) \r EMIT  \n EMIT  D# 0 C# ! ;
+: ?CR ( -- ) C# 2@ U< IF CR THEN ;
+
+CR .( String output ) CR
+
+: _" ( -- ca )
+  R>  R> DUP COUNT CHARS + ALIGNED >R  SWAP >R ; COMPILE-ONLY
+: _S" ( -- ca u ) _" COUNT ; COMPILE-ONLY
+: _." ( -- )( 0x12 ) _" COUNT TYPE ; COMPILE-ONLY
+: _ABORT" ( i*n f -- i*n | )
+  IF _" CSP ! D# -2 THROW THEN _" DROP ; COMPILE-ONLY
+
+CR .( Number output ) CR
+
+: S.R ( ca u u -- ) OVER - SPACES TYPE ;
+: D.R ( d u -- )( 8.6.1.1070 )
+  >R DUP >R DABS <# #S R> SIGN #> R> S.R ;
+: U.R ( u u -- )( 6.2.2330 ( 0x9C ) D# 0 SWAP D.R ;
+: .R ( n u -- )( 6.2.0210 ( 0x9E ) >R S>D R> D.R ;
+
+: D. ( d -- )( 8.6.1.1060 ) D# 0 D.R SPACE ;
+: U. ( u -- )( 6.1.2320 ( 0x9B ) D# 0 D. ;
+: . ( n -- )( 6.1.0180 ( 0x9D )
+  BASE @ D# 10 XOR IF U. EXIT THEN S>D D. ;
+: ? ( a -- )( 15.6.1.0600 ) @ . ;
+
+CR .( Terminal ) CR
+
+: ECHO ( c -- ) [ =echo ] LITERAL @ EXECUTE ;
+
+: ACCEPT ( ca u -- u )( 6.1.0695 )
+  CHARS OVER + OVER ( bot eot cur )
+  [ =pacer ] LITERAL @ EXECUTE      \ start pacing
+  BEGIN KEY DUP \r XOR              \ carrage return ?
+  WHILE DUP [ =BS ] LITERAL =       \ backspace ?
+    IF DROP  >R OVER R@ <  DUP      \ destructive backspace
+      IF [ =BS ] LITERAL DUP ECHO  BL ECHO  ECHO
+      THEN CHARS R> +               \ !!!
+    ELSE >R  2DUP XOR               \ printable
+      IF R@ OVER C!  CHAR+  R@ ECHO
+      THEN R> DROP
+    THEN
+  REPEAT DROP  NIP  SWAP - CHAR/ ;  \ !!!
+
+CR .( Interpreter ) CR
+
+: SAME? ( ca ca u -- f )
+  CHARS SWAP >R
+  BEGIN DUP
+  WHILE CHAR-  2DUP + C@  UPPER
+    OVER R@ + C@  UPPER  XOR
+  UNTIL R> DROP 2DROP  D# 0 EXIT \ no match
+  THEN R> DROP 2DROP  D# -1 ;    \ found
+
+: _DELIMIT ( ca u -- ca u delta )
+  CHARS BOUNDS  DUP >R  CHAR-
+  BEGIN CHAR+  2DUP XOR       \ skip leading BL (any whitespace)
+  WHILE BL OVER C@ <
+  UNTIL SWAP OVER             \ save first non blank addr
+    BEGIN CHAR+  2DUP XOR     \ scan trailing any whitespace
+    WHILE DUP C@  BL 1+  <
+    UNTIL NIP  DUP CHAR+      \ found
+    ELSE DROP DUP             \ not found
+    THEN >R  OVER - CHAR/  R> \ !!!
+  ELSE DROP D# 0 OVER         \ all BL
+  THEN R> - CHAR/ ;           \ !!!
+
+: _PARSE ( ca1 u1 c -- ca1 u2 delta )
+  >R  CHARS OVER +  OVER CHAR- \ save char, adjust addr
+  BEGIN CHAR+  2DUP XOR        \ inc addr ?
+  WHILE DUP C@ R@ =            \ match ?
+  UNTIL SWAP R> 2DROP  OVER - CHAR/  DUP 1+ EXIT ( found ) \ !!!
+  THEN  SWAP R> 2DROP  OVER - CHAR/  DUP ; ( not found ) \ !!!
+
+: NAME> ( a -- xt ) CELL- CELL- @ ;
+
+: WID? ( ca u wid -- xt lex -1 | ca u 0 )
+  SWAP >R  @             \ address of last word
+  BEGIN DUP              \ last word ?
+  WHILE COUNT [ ATTRIBUTE& ] LITERAL AND
+    R@ =                 \ if count =, check string
+    IF 2DUP R@ SAME?     \ match ?
+      IF SWAP R> 2DROP CHAR-
+        DUP NAME>  SWAP C@  D# -1 EXIT \ found
+      THEN
+    THEN CHAR-  CELL- @  \ link
+  REPEAT DROP R>  D# 0 ; \ no match
+
+=wid CONSTANT FORTH-WORDLIST ( -- wid )( 16.6.1.1595 )
+
+CREATE CONTEXT \ search order
+  FORTH-WORDLIST , D# 0 ,
+  #VOCS D# 1 + CELLS ALLOT D# 3054 ,
+
+CREATE CURRENT ( -- a )
+  FORTH-WORDLIST , \ wid, new definitions
+  FORTH-WORDLIST , \ wid, head of chain
+
+: SFIND ( ca u -- xt lex -1 | ca u 0 )
+  CONTEXT CELL- >R           \ setup
+  BEGIN R> CELL+ DUP >R @ DUP ( wid | 0 )
+  WHILE WID?                 \ found ?
+  UNTIL D# -1 THEN R> DROP ;
+
+=SP =RP = [IF] \ NO stack pointers \ sp2
+
+: ?STACK ( -- ) ;
+
+[ELSE]
+
+: ?STACK ( -- ) DEPTH 0< ABORT" depth?" ;
+
+[THEN]
+
+VARIABLE 'OK \ execution vector
+: .OK ( -- ) ." ok " ;
+
+: _[ ( ca u -- ) \ the Forth interpreter
+  SFIND
+  IF [ =COMP ] LITERAL AND ABORT" compile?"
+    EXECUTE  ?STACK EXIT
+  THEN  NUMBER? \ unknown symbol, try to convert to number
+  IF DPL @ 0< IF DROP THEN EXIT \ single = -1, double position
+  THEN D# -13 THROW ; COMPILE-ONLY
+: [ ( -- )( 6.1.2500 )
+  ['] _[ D# 0 STATE 2!  [ =.ok ] LITERAL @ 'OK ! ; IMMEDIATE
+
+: SOURCE ( -- ca u )( 6.1.2216 ) #IN 2@ ;
+: PARSE-WORD ( "ccc" -- ca u )
+  SOURCE >IN @  /STRING _DELIMIT  >IN +! ;
+
+: EVALUATE ( ca u -- )( 6.1.1360 ( 0xCD )
+  >IN @ >R  D# 0 >IN !  SOURCE >R >R  #IN 2! \ new source
+  BEGIN PARSE-WORD DUP
+  WHILE STATE CELL+ @ EXECUTE
+  REPEAT 2DROP  R> R> #IN 2!  R> >IN ! ;
+
+: ?THROW ( n -- ) \ ABORT, ABORT" or THROW
+  D# 0 EMIT \ notify terminal \ bbb vector???
+  DUP D# -1 XOR ( ABORT ? )
+  IF CR DUP D# -2 = ( ABORT" ? )
+    IF CSP @ COUNT TYPE SPACE EXIT
+    THEN SOURCE DROP >IN @ -TRAILING TYPE
+    ."  ?(" D# 0 .R ." )" ( THROW )
+  THEN SPACE ;
+
+=SP =RP = [IF] \ NO stack pointers \ sp2
+
+: QUIT ( -- (R i*x -- )( 6.1.2050 )
+  [ =HAND ] LITERAL @ EXECUTE   \ reset console i/o
+  [COMPILE] [                   \ reset interpret state
+  BEGIN
+    [ =TIB ] LITERAL            \ input buffer
+    DUP #TIB ACCEPT  BL ECHO    \ input, echo SPACE
+    EVALUATE
+    [ =.cr ] LITERAL @ EXECUTE  \ file loader no CR
+    'OK @ EXECUTE               \ interpreter prompt
+  AGAIN ;
+
+[ELSE]
+
+: QUIT ( -- (R i*x -- )( 6.1.2050 )
+  SUP @ RP!                         \ reset return stack
+  [ =HAND ] LITERAL @ EXECUTE       \ reset console i/o
+  [COMPILE] [                       \ reset interpret state
+  BEGIN
+    [ =TIB ] LITERAL                \ input buffer
+    DUP #TIB ACCEPT  BL ECHO        \ input, echo SPACE
+    ['] EVALUATE CATCH ?DUP         \ error ?
+    IF ?THROW                       \ ABORT = -1, ABORT" = -2
+      SUP CELL+ @ SP!               \ reset data stack
+      RECURSE                       \ restart
+    THEN [ =.cr ] LITERAL @ EXECUTE \ file loader no CR
+    'OK @ EXECUTE                   \ interpreter prompt
+  AGAIN ;
+
+[THEN]
+
+CR .( Compiler ) CR
+
+: ALIGN ( -- )( 6.1.0705 ) HERE ALIGNED DP ! ;
+: ALLOT ( n -- )( 6.1.0710 ) DP +! ; \ address units
+
+: AU, ( n -- ) HERE  D# 1 ALLOT  AU! ; \ address units
+: C, ( n -- )( 6.1.0860 ( 0xD0 )
+  HERE  [ D# 1 CHARS ] LITERAL ALLOT  C! ;
+: , ( n -- )( 6.1.0150 ( 0xD3 )
+  HERE  [ D# 1 CELLS ] LITERAL ALLOT   ! ;
+
+: COMPILE, ( xt -- )( 6.2.0945 ( 0xDD ) , ;
+: LITERAL ( n -- )( 6.1.1780 ) ['] _LIT COMPILE, , ; IMMEDIATE
+
+: CHAR ( "ccc" -- c )( 6.1.0895 ) PARSE-WORD DROP C@ ;
+: [CHAR] ( "ccc" -- )( 6.1.2520 )
+  CHAR [COMPILE] LITERAL ; IMMEDIATE
+: CTRL ( "ccc" -- c ) CHAR H# 01F AND ;
+: [CTRL] ( "ccc" -- ) CTRL [COMPILE] LITERAL ; IMMEDIATE
+
+: ' ( "name" -- xt )( 6.1.0070 )
+  PARSE-WORD SFIND IF DROP EXIT THEN D# -13 THROW ;
+: ['] ( "name" -- )( 6.1.2510 ) ' [COMPILE] LITERAL ; IMMEDIATE
+: [COMPILE] ( "name" -- )( 6.2.2530 ) ' COMPILE, ; IMMEDIATE
+: [DEFINED] ( "name" -- 0 | xt )
+  ['] ' CATCH IF D# 0 THEN ; IMMEDIATE
+
+: PARSE ( c "ccc" -- ca u )( 6.2.2008 )
+  >R  SOURCE >IN @  /STRING R> _PARSE  >IN +! ;
+
+: ( ( "comment" -- )( 6.1.0080 )
+  [CHAR] ) PARSE 2DROP ; IMMEDIATE
+: .( ( "comment" -- )( 6.2.0200 )
+  [CHAR] ) PARSE TYPE ; IMMEDIATE
+: \ ( "comment" -- )( 6.2.2535 ) SOURCE >IN ! DROP ; IMMEDIATE
+: .\ ( "comment" -- ) D# 0 PARSE TYPE ; IMMEDIATE
+: IF\ ( f "comment" -- ) IF [COMPILE] \ THEN ; IMMEDIATE
+
+: _S, ( ca u -- ) HERE   SWAP CHARS   DUP ALLOT   MOVE ;
+: STRING, ( ca u -- ) DUP C,  _S, ; \ no align
+: S, ( ca u -- ) STRING, ALIGN ;
+
+: SLITERAL ( ca u -- ( -- ca u )( 17.6.1.2212 )
+  ['] _S" COMPILE, S, ; IMMEDIATE COMPILE-ONLY
+
+: S" ( "ccc" -- ca u | )( 6.1.2165 ( 11.6.1.2165 ) \ line
+  [CHAR] " PARSE  STATE @ IF [COMPILE] SLITERAL THEN ; IMMEDIATE
+
+: "S, ( xt "ccc" -- ) COMPILE, [CHAR] " PARSE S, ; COMPILE-ONLY
+: ." ( "ccc" -- )( 6.1.0190 )
+  ['] _."  "S, ; IMMEDIATE COMPILE-ONLY
+: ABORT" ( "ccc" -- )( 6.1.0680 )
+  ['] _ABORT"  "S, ; IMMEDIATE COMPILE-ONLY
+
+: _] ( ca u -- ) \ the Forth compiler
+  SFIND IF [ =IMED ] LITERAL AND \ immediate?
+    IF  EXECUTE  ?STACK EXIT THEN  COMPILE,  EXIT
+  THEN  NUMBER?   \ unknown symbol, convert to number?
+  IF DPL @ INVERT \ single = -1, double = position
+    IF SWAP DUP [COMPILE] LITERAL    \ double
+    THEN DROP [COMPILE] LITERAL EXIT \ conversion successful
+  THEN D# -13 THROW ; COMPILE-ONLY   \ failed, not a number
+: ] ( -- )( 6.1.2540 )
+  ALIGN  ['] _] D# -1 STATE 2!  ['] NOOP 'OK ! ;
+
+CREATE LAST ( -- a )
+  H# 0 , \ na, last definition, unlinked
+  H# 0 , \ wid, current wordlist for linking
+LABEL =RECUR
+  H# 0 , \ xt, last definition
+LABEL =DOES
+  H# 0 , \ pointer to patch child
+
+: GET-CURRENT ( -- wid )( 16.6.1.1643 ) CURRENT @ ;
+: SET-CURRENT ( wid -- )( 16.6.1.2195 ) CURRENT ! ;
+
+: ?UNIQUE ( ca u -- ca u )
+  2DUP  GET-CURRENT WID?
+  IF 2DROP CR ." reDef " 2DUP TYPE EXIT THEN 2DROP ;
+
+: >XT ( u -- xt ) ALIGN HERE  [m_>xt_m]  OR ;
+
+: HEAD, ( "name" -- a )
+  PARSE-WORD DUP ( a u u )
+  IF ?UNIQUE                            \ warn if redefined
+    ALIGN HERE >R  D# 0 ,               \ address of xt
+    GET-CURRENT  DUP @ ,  HERE LAST 2!  \ link
+    STRING,                             \ build name
+    R> EXIT
+  THEN D# -16 THROW ; \ zero-length name string
+
+: LEX! ( u -- ) LAST @ C@ OR LAST @ C! ;
+
+: IMMEDIATE ( -- )( 6.1.1710 ) [ =IMED ] LITERAL  LEX! ;
+: COMPILE-ONLY ( -- ) [ =COMP ] LITERAL  LEX! ;
+
+: REVEAL ( -- ) LAST 2@ SWAP ! [COMPILE] [ ;
+: RECURSE ( -- )( 6.1.2120 )
+  [ =RECUR ] LITERAL @ COMPILE, ; IMMEDIATE
+
+: POSTPONE ( "name" -- )( 6.1.2033 )
+  PARSE-WORD SFIND
+  IF [ =IMED ] LITERAL AND 0=
+    IF [COMPILE] LITERAL  ['] COMPILE, THEN  COMPILE,  EXIT
+  THEN D# -13 THROW ; IMMEDIATE
+
+CR .( Defining words ) CR
+
+: :NONAME ( -- xt )( 6.2.0455 )
+  [ LISTBIT ] LITERAL >XT  DUP [ =RECUR ] LITERAL !  ] ;
+
+: : ( "name" -- )( 6.1.0450 ) HEAD, :NONAME SWAP ! ;
+: ; ( -- )( 6.1.0460 )
+  ['] EXIT COMPILE, REVEAL ; IMMEDIATE COMPILE-ONLY
+
+: _DOES> ( -- ) \ link child
+  [ LISTBIT ] LITERAL  R> OR
+  [ =DOES ] LITERAL @  ! ; COMPILE-ONLY
+
+: DOES> ( -- )( 6.1.1250 ) \ build parent
+  ['] _DOES> COMPILE,           \ link child
+  :NONAME DROP  ['] R> COMPILE, \ begin child
+; IMMEDIATE COMPILE-ONLY
+
+: CREATE ( "name" -- )( 6.1.1000 )
+  ['] _VAR  : REVEAL  HERE [ =DOES ] LITERAL ! COMPILE, ;
+: VARIABLE ( "name" -- )( 6.1.2410 ) CREATE D# 0 , ;
+
+: CONSTANT ( n "name" -- )( 6.1.0950 )
+  ['] _CON  : REVEAL COMPILE,  , ;
+
+=SP =RP = [IF] \ NO stack pointers \ sp2
+
+[ELSE]
+
+: USER ( n "name" -- ) ['] _USR  : REVEAL COMPILE,  , ;
+
+\ define task area
+: HAT ( u s r "name" -- ( -- tid ) \ address units
+  CREATE +  SWAP [ =USER  D# 2 CELLS + ] LITERAL
+  + DUP HERE + ( rp0 ) ,  + DUP HERE + ( sp0 ) ,  ALLOT ;
+
+[THEN]
+
+CR .( Wordlists ) CR
+
+: WORDLIST ( -- wid )( 16.6.1.2460 )
+  ALIGN HERE ( wid ) D# 0 ,    \ na, last definition, linked
+  DUP CURRENT CELL+ DUP @ ,  ! \ next|last wordlist in chain
+  D# 0 , ;                     \ na, wordlist name pointer
+
+: ORDER@ ( a -- u*wid u ) \ scan context for 0
+  DUP @ DUP \ return wids in reverse order
+  IF >R CELL+  RECURSE  R> SWAP 1+ EXIT
+  THEN NIP ;
+: GET-ORDER ( -- u*wid u )( 16.6.1.1647 ) CONTEXT ORDER@ ;
+
+: SET-ORDER ( u*wid n -- )( 16.6.1.2197 )
+  DUP D# -1 = IF DROP FORTH-WORDLIST D# 1 THEN   \ default ?
+  [ #VOCS ] LITERAL OVER U< IF D# -46 THROW THEN \ range ?
+  CONTEXT SWAP
+  BEGIN DUP
+  WHILE >R  SWAP OVER !  CELL+  R> 1-
+  REPEAT  ( 0 ) SWAP ! ;
+
+: -ROT ( n1 n2 n3 -- n3 n1 n2 ( 0x4B ) SWAP >R SWAP R> ;
+
+: _-ORDER ( w wid*n n -- wid*n w n )( remove from search order )
+  DUP
+  IF 1- SWAP >R  RECURSE ( wid*i w' n (R wid*j )
+    OVER R@ XOR IF 1+ R>  -ROT  EXIT THEN R> DROP
+  THEN ;
+: -ORDER ( wid -- ) GET-ORDER  _-ORDER NIP  SET-ORDER ;
+: +ORDER ( wid -- )
+  DUP >R -ORDER  GET-ORDER R> SWAP 1+ SET-ORDER ;
+
+: ONLY ( -- )( 16.6.2.1965 ) D# -1 SET-ORDER ;
+: ALSO ( -- )( 16.6.2.0715 ) GET-ORDER OVER SWAP 1+ SET-ORDER ;
+: PREVIOUS ( -- )( 16.6.2.2037 ) GET-ORDER NIP 1- SET-ORDER ;
+: DEFINITIONS ( -- )( 16.6.1.1180 ) CONTEXT @ SET-CURRENT ;
+
+CR .( Marker ) CR
+
+: _MARKER ( -- (R dfa -- )
+  R> 2@ ( * ) DUP @ FOLLOWER !  DUP CONTEXT
+  BEGIN >R CELL+ DUP @ DUP R@ !
+  WHILE R> CELL+ REPEAT                 \ search order
+  CELL+ DUP 2@ CURRENT 2!  CELL+ DUP @  \ cur wid & head
+  BEGIN >R CELL+ DUP @ R@ !
+        R> CELL+ @ ?DUP 0=              \ wid last
+  UNTIL R> 2DROP ( * ) DP 2! ; COMPILE-ONLY
+
+: MARKER ( "name" -- )( 6.2.1850 )
+  ALIGN DP 2@ ( * ) FOLLOWER @ ,  CONTEXT
+  BEGIN DUP @ DUP , WHILE CELL+ REPEAT  DROP \ search order
+  CURRENT 2@ , DUP ,                         \ cur wid & head
+  BEGIN DUP @ , CELL+ @ ?DUP 0= UNTIL        \ wid last na's
+  ['] _MARKER : REVEAL COMPILE, ( * ) , , ;
+
+CR .( Control flow ) CR
+
+: BEGIN ( -- a )( 6.1.0760 ) HERE ; IMMEDIATE COMPILE-ONLY
+: THEN ( a -- )( 6.1.2270 )
+  [COMPILE] BEGIN ( OVER - ) SWAP ! ; IMMEDIATE COMPILE-ONLY
+
+: RESOLVE ( a -- ) ( [COMPILE] BEGIN - ) , ;
+: MARK ( -- a ) HERE [COMPILE] BEGIN RESOLVE ;
+
+: IF ( -- a )( 6.1.1700 )
+  ['] _IF COMPILE, MARK ; IMMEDIATE COMPILE-ONLY
+: AHEAD ( -- a )( 15.6.2.0702 )
+  ['] _ELSE COMPILE, MARK ; IMMEDIATE COMPILE-ONLY
+: ELSE ( a -- a )( 6.1.1310 )
+  [COMPILE] AHEAD SWAP [COMPILE] THEN ; IMMEDIATE COMPILE-ONLY
+: WHILE ( a -- a a )( 6.1.2430 )
+  [COMPILE] IF SWAP ; IMMEDIATE COMPILE-ONLY
+
+: UNTIL ( a -- )( 6.1.2390 )
+  ['] _IF COMPILE, RESOLVE ; IMMEDIATE COMPILE-ONLY
+: AGAIN ( a -- )( 6.2.0700 )
+  ['] _ELSE COMPILE, RESOLVE ; IMMEDIATE COMPILE-ONLY
+: REPEAT ( a a -- )( 6.1.2140 )
+  [COMPILE] AGAIN [COMPILE] THEN ; IMMEDIATE COMPILE-ONLY
+
+CR .( ANSI terminal ) CR
+\ MS-DOS
+\ add device=c:\windows\command\ansi.sys
+\ to c:config.sys
+\ WinXP+
+\ add device=%SystemRoot%\system32\ansi.sys
+\ to c:\windows\system32\config.nt
+
+: PAGE ( -- )( 10.6.1.2005 ) [CTRL] [ EMIT ." [2J" ;
+
+: AT-XY ( col row -- )( 10.6.1.0742 ) \ esc[{row};{col}H
+  BASE @ >R DECIMAL  1+ SWAP 1+  <#  D# 0
+  [CHAR] H HOLD   #S DROP
+  [CHAR] ; HOLD   #S
+  [CHAR] [ HOLD
+  [CTRL] [ HOLD   #>  TYPE  R> BASE ! ;
+
+CR .( Tools ) CR
+
+=SP =RP = [IF] \ NO stack pointers \ sp2
+
+: _.S ( n -- ) ?DUP IF 1- SWAP >R  RECURSE  R> DUP . THEN ;
+: .S ( -- )( 15.6.1.0220 )( 0x9F ) D# 4 _.S ;
+
+[ELSE]
+
+: !CSP ( -- ) SP@ CSP ! ;
+: ?CSP ( -- ) SP@ CSP @ XOR ABORT" csp?" ;
+
+: .S ( -- )( 15.6.1.0220 )( 0x9F )
+  DEPTH IF >R  RECURSE  R> DUP . THEN ;
+
+[THEN]
+
+CR .( Dictionary listings ) CR
+
+: .ID ( ca -- ) COUNT [ ATTRIBUTE& ] LITERAL AND TYPE ;
+: .WID ( wid -- )
+  DUP CELL+ CELL+ @ ?DUP IF .ID DROP EXIT THEN D# 0 U.R ;
+
+: .ORDER ( wid*n n -- )( first on right, root forth ++ forth )
+  ?DUP IF 1- SWAP >R  RECURSE  R> .WID SPACE THEN ;
+: ORDER ( -- )( 16.6.2.1985 ) \ list search order
+  GET-ORDER .ORDER ." ++ " GET-CURRENT .WID ;
+
+: VOCS ( -- ) \ list all wordlists
+  CURRENT CELL+ BEGIN @ ?DUP WHILE DUP .WID SPACE CELL+ REPEAT ;
+
+: WIDWORDS ( ca u wid -- ca u )
+  SWAP >R  DUP
+  IF CR DUP ." wid=" .WID CR
+    BEGIN @ DUP                \ last name ?
+    WHILE 2DUP CHAR+ R@ SAME?  \ match ?
+      IF DUP .ID SPACE  ?CR  THEN  CELL-  NUF?
+    UNTIL THEN
+  THEN DROP R> ;
+
+: WORDS ( [" ccc"] -- )( 15.6.1.2465 )
+  BL PARSE  DUP \ optional search for leading string
+  IF CURRENT    \ all wids
+    BEGIN CELL+ @ ?DUP WHILE DUP >R WIDWORDS R>
+    REPEAT 2DROP EXIT
+  THEN CONTEXT @ WIDWORDS 2DROP ;
+
+CR .( Memory dump / decompiler ) CR
+
+: NAMED? ( a -- na la | 0 la )
+  @ ( xt) CURRENT CELL+ @ \ start la
+  BEGIN DUP >R            \ save la
+    ( la) @ ( na|0) DUP   \ named ?
+  WHILE 2DUP NAME> XOR    \ match xt ?
+    WHILE CELL-  R> DROP  \ next la
+  REPEAT THEN NIP R> ;
+
+: >CHAR ( n -- c ) \ printable characters
+  DUP [ CHAR ~ D# 1 + ] LITERAL BL WITHIN IF DROP BL THEN ;
+
+: DUMP ( a n -- )( 15.6.1.1280 ) \ address units
+  BASE @ >R HEX  CELLS BOUNDS
+  BEGIN 2DUP XOR                    \ end ?
+  WHILE CR DUP >R NAMED?            \ na la | 0 la
+    @ CELL- CELL- R@ = IF CR THEN   \ new head ?
+    R@       [m_cell_m]             \ address
+    R@ @ DUP [m_cell_m] [m_ascii_m] \ data
+    ?DUP IF SPACE .ID THEN          \ xt name
+    R> CELL+  NUF?
+  UNTIL THEN 2DROP  R> BASE ! ;
+
+: SEE ( "name" -- )( 15.6.1.2194 )
+  ' DUP >ADR BEGIN CELL- 2DUP @ = UNTIL \ find head
+  NIP HERE OVER - CELL/ DUMP ;
+
+CR .( Software reset ) CR
+
+VARIABLE 'WARM
+
+=SP =RP = [IF] \ NO stack pointers \ sp2
+
+: COLD ( -- )
+  ['] ?THROW 'ERR  ! \ sp2
+  ['] QUIT   'QUIT ! \ sp2
+
+[ELSE]
+
+: COLD ( -- )
+  SUP 2@ RP! SP!                          \ init stacks
+  SUP @ CELL- ( follower ) UP !           \ init user pointer
+  STATUS FOLLOWER !  SUP TID !  SUP AWAKE \ init main task
+
+[THEN]
+
+  [ =DP ] LITERAL DP [ #DP ] LITERAL MOVE \ init DP WORDLIST
+  [ =HAND ] LITERAL @ EXECUTE             \ set console i/o
+  'WARM @ EXECUTE ;
+
+: .VERSION ( -- )
+  ." eForth btc:20110210 "               \ list version
+  [ =CODE-VERSION ] LITERAL COUNT TYPE ; \ code version
+
+' COLD  =COLD ! \ init startup vector
+

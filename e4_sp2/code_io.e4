@@ -1,0 +1,137 @@
+CR .( ++++ eForth btc sp2 io CODE words ++++ )
+CR .( ++++ 16550 uart ++++ ) \ UART for BEI pipeline proto board
+\ ==============================================================
+\ todo: put TX! loop in LIST
+\       move whole thing to LIST??? speed isn't an issue here
+\ ==============================================================
+\ 20110125 bee move io  change constant to equ
+\ 20110124 bee change name !io to io, need code fix
+\ 20080323 bee change exit to back
+\ 20070925 jwr translated Rick's code, non-optimized code!!
+\ ==============================================================
+
+h# d000 EQU UART \ 8-bit bank4 of external memory (data=$00nn)
+
+h# 0 EQU %THR \ Transmitter holding register
+h# 0 EQU %RBR \ Receiver buffer register
+h# 0 EQU %DLL \ Divisor Latch LSB
+h# 1 EQU %DLM \ Divisor Latch MSB
+h# 1 EQU %IER \ Interrupt enable register
+h# 2 EQU %ISR \ Interrupt Status Reg
+h# 2 EQU %FCR \ FIFO Control Register
+h# 3 EQU %LCR \ Line Control Register
+h# 4 EQU %MCR \ Modem Control Register
+h# 5 EQU %LSR \ Line Status Register
+h# 6 EQU %MSR \ Modem Status Register
+h# 7 EQU %SCR \ Scratch (also mapped to system control reg)
+
+code @IO ( -- n ) \ dummy, returns zero
+   zero back
+
+label UART@ ( ndx -- n )
+  UART # add nip
+  lda drop ret ( +3)
+
+label UART! ( n ndx -- )
+  UART # add nip
+  sta drop ret ( +3)
+end-code
+
+\ bbb 20110123 needs fix
+code IOS ( lsb -- n ) \ init uart: msb=0 for 4800 bps and above
+  if ( valid lsb ) else ( 0->115200 ) 10 # drop then
+  h# 0C # swap %MCR # swap UART! jsr \ Assert OUT1, OUT2
+  h# 80 # swap %LCR # swap UART! jsr \ Select divisor latch
+  h# 00 # swap %DLM # swap UART! jsr \ Baud rate divisor MSB = 0
+  ( lsb)       %DLL # swap UART! jsr \ Baud rate divisor LSB
+  h# 03 # swap %LCR # swap UART! jsr \ 8 bits, 1 stop, no parity
+  h# 01 # swap %FCR # swap UART! jsr \ FIFO enable
+  back
+end-code
+
+code RX? ( -- -c|0 )
+   %LSR # swap nop
+   UART@ jsr
+   1 # and nop
+   if
+     %RBR # drop nop
+     UART@ jsr
+     inv back
+   then
+   back
+end-code
+
+code TX? ( c -- ) \ bbb 20110206
+   dup
+\   begin                 \ jwr loop removed for testing
+\     %LSR # drop nop
+\     UART@ jsr
+\     H# 20 # and nop
+\   until
+   %THR # drop nop
+   UART! jsr
+   back
+end-code
+
+\ ==============================================================
+0 [if] \ Rick's code
+
+$D000 CONSTANT UART
+
+: UART@ ( ndx -- n )   UART + @ ;
+: UART! ( n ndx -- )   UART + ! ;
+
+0 CONSTANT %THR \ Transmitter holding register
+0 CONSTANT %RBR \ Receiver buffer register
+0 CONSTANT %DLL \ Divisor Latch LSB
+1 CONSTANT %DLM \ Divisor Latch MSB
+1 CONSTANT %IER \ Interrupt enable register
+2 CONSTANT %ISR \ Interrupt Status Reg
+2 CONSTANT %FCR \ FIFO Control Register
+3 CONSTANT %LCR \ Line Control Register
+4 CONSTANT %MCR \ Modem Control Register
+5 CONSTANT %LSR \ Line Status Register
+6 CONSTANT %MSR \ Modem Status Register
+7 CONSTANT %SCR \ Scratch (also mapped to system control reg)
+
+{ --------------------------------------------------------------
+Low-level serial XTL
+
+`OUT`       spins until tx holding register empty flag is set
+            then outputs char.
+`IN`        spins until rx rdy bit is set.
+-------------------------------------------------------------- }
+
+: OUT ( char -- )
+   BEGIN    %LSR UART@  $20 AND  UNTIL  %THR UART! ;
+
+: IN ( -- char)
+   BEGIN   %LSR UART@  1 AND UNTIL  %RBR UART@  $FF AND ;
+
+{ --------------------------------------------------------------
+UART initialization
+
+/UART initializes the 16550 UART for XTL use.
+-------------------------------------------------------------  }
+
+18432000 ( Hz xtal) 115200 ( Baud) 16 * / 256 /MOD ( -- lsb msb)
+
+\ 115200 => 0  10
+\  57600 => 0  20
+\ ...
+\   4800 => 0 240
+\   2400 => 1 224   ** need to change !io code (msb)
+
+: /UART ( -- )
+   $0C %MCR UART!                \ Assert OUT1, OUT2
+   $80 %LCR UART!                \ Select divisor latch
+   ( msb) LITERAL %DLM UART!     \ Baud rate divisor MSB
+   ( lsb) LITERAL %DLL UART!     \ Baud rate divisor LSB
+   $03 %LCR UART!                \ 8 bits, 1 stop bit, no parity
+   $01 %FCR UART! ;              \ FIFO enable
+
+[then]
+
+\ ==============================================================
+
+

@@ -1,0 +1,44 @@
+CR .( eForth ansi terminal test )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20081014 jwr move Bill's ram-test words to their own file
+\ 20081014 jwr cleanup display exit; move color words to lib.e4
+\ 20081013 jwr moved BUMP to end for better exiting
+\ 20080822 bee random.e4 display upper alpha chars, add counter
+\ 20080623 bee runs s40 eForth
+\ ==============================================================
+
+[DEFINED] M.DEMO 0= IF\ M.DEMO
+MARKER M.DEMO
+DECIMAL
+
+\ ==============================================================
+\ random number generator, Leo Brodie 'Starting Forth'
+
+VARIABLE RND  HERE RND ! ( seed )
+: RANDOM ( -- u ) RND @ 31421 * 6927 + DUP RND ! ;
+: CHOOSE ( u -- u ) RANDOM UM* SWAP DROP ; \ 0 u within
+
+: ATT ( -- ) 40 CHOOSE 20 CHOOSE AT-XY ;
+
+: BUMP ( u -- u ) 1+ DUP 20 DUP AT-XY U. ; ( counter )
+
+: L? ( -- ) 26 CHOOSE [ CHAR A ] LITERAL + EMIT ;
+: L_ ( -- ) BL EMIT ;
+
+: DEMO ( -- ) PAGE  0
+  BEGIN
+    GREEN   ATT L?  ATT L_
+    YELLOW  ATT L?  ATT L_
+    MAGENTA ATT L?  ATT L_
+    CYAN    ATT L?  ATT L_
+    BOLD    ATT L?  ATT L_
+    BRIGHT  ATT L?  ATT L_
+    NORMAL  ATT L?  ATT L_
+    BUMP  NUF?
+  UNTIL DROP PAGE ;
+
+: HELP ( -- ) CR ." Type DEMO to run 40x20 Random display" CR ;
+HELP
+

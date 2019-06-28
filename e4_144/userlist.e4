@@ -1,0 +1,95 @@
+CR .( ++++ eForth btc ga144 user LIST words ++++ )
+\ This file is for user LIST words that are metacompiled and
+\ put in the e4th kernel binary file loaded at startup.
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110201 jwr move console i/o and user init to list_io.e4
+\ 20110122 bee vector emit to 'echo
+\ 20110121 bee move console i/o
+\ 20110102 jwr moved CODE words to usercode.e4
+\ 20101225 jwr new code.s addresses; changed for 16bit ga144
+\ 20081229 jwr removed address and uncommented name for auto XT
+\ 20081102 jwr comment style change, autobaud startup for 7j
+\ 20080930 jwr document extended page# 0-127 (*256)
+\ 20080925 jwr added PAGE@ and PAGE!
+\ 20080719 jwr changes to terminal simplified comments here
+\ 20080719 jwr added neighbor-word XT's BTC.DN/.UP STK.DN/.UP
+\ 20080719 jwr added meta requirement to resize when code added
+\ 20080713 jwr consistant line-lengths and eForth spelling
+\ 20080713 jwr add initialization section with baud rates
+\ 20080711 bee add file to meta load list
+\ ==============================================================
+
+0 [if] ---------------------------------------------------------
+       NOTE: eForth metacompiler requirements:
+
+   All numbers MUST be preceeded by either  B#  D#  H#
+
+        B# 0101 -- binary
+        D# 1234 -- decimal
+        H# a55a -- hex
+
+   DOES> is not supported
+
+   you must resize the eforth.bin file if you add more that a
+   few words (in eforth.f AND
+
+   (and probably more...)
+--------------------------------------------------------- [then]
+
+CR .( User initialization ) CR
+0 [if] ---------------------------------------------------------
+       The terminal baud rate delay counts below are used with
+       IOS and IO# to match your serial port or usb serial
+       adaptor (autobaud will start at these rates).
+
+   Note that the recorded numbers are averages--there's quite
+   lot of jitter.
+
+   Run bps-test.e4 to check your own USB-Serial Adaptor.
+
+   Data is being sent with two stop bits--it's still too fast
+   for some serial adaptors to do file transfers, so the
+   character delay must be increased using <ctrl-F5> in those
+   cases.
+
+   These adaptors seemed to revert to 9600 baud when set (by the
+   pc) at a rate that's too high for them (---'s below).
+
+   |value|    baud         Keyspan     GUC-232A
+   |+/-1%|    rate       -19W  -19HS
+
+   |    0|   autobaud   waits for user to press SPACE-BAR
+
+   |  625| 460800 baud    ---    627      ---
+   | 1250| 230400 baud   1252   1254     1246
+   | 2500| 115200 baud   2506   2508     2499
+   | 5000|  57600 baud   5013   5015     5008
+   | 7500|  38400 baud   7521   7522     7515
+   |15000|  19200 baud  15066  15040    15030
+   |30000|   9600 baud  30132  30078    30060
+
+   The initial autobaud request set above with 0 in IO# can be
+   changed by putting the correct value there, avoiding the need
+   to type a 'space' before getting the version and 'OK' prompt.
+
+   eForth's initial behavior is user configurable--the default
+   WARM is given below. Be sure you know what you're doing if
+   you change it!
+
+   : WARM ( -- n ) \ default initial behavior
+     ONLY  DEFINITIONS  DECIMAL
+     IO# @ IOS
+     CR .VERSION
+     CR .OK  QUIT ;
+
+   ' WARM  'WARM ! \ init default startup for COLD
+     D# 0    IO# ! \ terminal status autobaud for WARM
+
+--------------------------------------------------------- [then]
+
+\  D#  2400    IO# !    ( set user baud-rate value  )
+\    ' WARM  'WARM !    ( set user startup behavior )
+\ ==============================================================
+

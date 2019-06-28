@@ -1,0 +1,449 @@
+CR .( ++++ eForth Meta Compiler with Late Binding ++++ )
+\ ==============================================================
+\ todo
+\ ==============================================================
+\ 20110204 bee init DP WORDLIST from COLD
+\ 20110115 bee move E4- to >IMAGE  add E4BASE TA>HA
+\ 20110108 bee remove !XTA XT!
+\ 20110106 bee add uWords xWords
+\ 20110105 bee add ALIGNED ALIGN to INSIDE-WORDLIST
+\ 20101208 bee add CODEBIT to OUTSIDE-WORDLIST  add DATABIT&
+\ 20090726 bee update
+\ 20080816 bee E4* base address, move eForth to upper 128k
+\ 20080713 jwr consistant line-lengths and eForth spelling
+\ 20080711 bee change !IMAGE from :O to :
+\ 20080702 bee re-start
+\ 20071019 bee more shuffling wordlists
+\ 20071016 bee SERR
+\ 20071006 bee change error control in _BIND SERR
+\ 20071002 bee remove ;O ;I  change :O :I  remove DEFINITIONS
+\ 20071001 bee add ci cell address to image address
+\ 20070825 bee remove EHOST use EFORTH
+\ 20070803 bee change CREATE VARIABLE CONSTANT USER
+\ 20070803 bee code words replace list words works for constant
+\ 20070802 bee change heads for separate sp2 code
+\ 20070725 bee change to all even
+\ 20070723 bee remove IMAGE.ORG from ORG  add even odd
+\ 20070717 bee split meta cpu definition and cpu code
+\ 20070516 bee x86 add char=8/32  update PARSE-WORD
+\ 20070515 bee rename EVOKE to BOND  EMPLOY to BIND
+\ 20070511 bee combine count and attribute  fixed H# bug
+\ 20070510 bee add :I CELLS/ CTRL [CTRL]  change ,C" to ,"
+\ 20070506 bee change CODEBIT.S for rev7d call opcode
+\ 20070503 bee change TARGET ETARGET  grrr t18 'WORDS' IMMEDIATE
+\ 20070423 bee add defined if skip compile
+\ 20070422 bee add t18 auto xt update
+\ 20070415 bee change WID' _BIND  rename ROOT EHOST
+\ 20070412 bee replace CODE(BIT)?[76] with CODE(BIT).[RS]
+\ 20070401 bee change _code to next_xt  remove AU/XT
+\ 20070331 bee removed !16 words
+\ 20070328 bee remove and rewrite addressing
+\ 20070318 bee add address correction for t18
+\ 20070316 bee swift
+\ 20070216 bee another big step char=cell=32bits
+\ 20070214 bee big step compiles
+\ 20070207 bee big step char = cell works
+\ 20070207 bee eForth btc inline heads au=char=cell model
+\ 20070204 bee add ALIGN to emeta ] gforth does not align
+\ 20070128 bee baby step  add LISTBIT CODEBIT ?~
+\ 20061210 bee gforth 062  start  remove ?BREAK
+\ 20061210 bee number without H# inside code did not error ???
+\ 19971014 bee no host interpreter/compiler vectoring
+\ 19971014 bee replace  SP@ with DEPTH  INCLUDE with INCLUDED
+\ 19971014 bee use WORDLIST  INSIDE OUTSIDE
+\ 19971003 bee change to INSIDE :I ;I [I]  OUTSIDE :O ;O [O]
+\ 19971003 bee change EVOKE EMPLOY  fix error handling, again
+\ 19950720 bee add ENDIAN _C"
+\ 19941006 bee add META[ ]META
+\ 19941006 bee change _]-T SERR PROC  remove HEADS
+\ 19940817 bee itc 1616 and itc 3232
+\ 19930804 bee POSTFIX ASSEMBLER  ?BREAK  C"|
+\ 19930329 bee HEADS ON/OFF
+\ 19930221 bee btc only
+\ 19920126 bee COMPILE, RECURSE  fix error handling
+\ 19910722 bee update C" ,C" RECURSE
+\ 19901030 bee small model
+\ ==============================================================
+
+DECIMAL
+
+\ ==============================================================
+\ memory access
+
+\ target byte addressing \ search " au[\/\*] "
+: AU/ ( n -- n ) [ AU/CELL[H] AU/CELL[T] / ] LITERAL / ;
+: AU* ( n -- n ) [ AU/CELL[H] AU/CELL[T] / ] LITERAL * ;
+
+VARIABLE IADDR \ image base address
+VARIABLE ISIZE \ maximum image size
+VARIABLE E4*   \ eForth base address in host au
+
+: >IMAGE ( n -- a )
+  E4* @ - ISIZE @ OVER U< ABORT" image size?"  IADDR @ + ;
+
+\ for the decompiler  see.f
+: E4BASE ( -- a ) E4* @ AU/ ;
+: TA>HA ( ta -- ha ) E4BASE - AU* IADDR @ + ;
+
+\ host address units
+: CHARS[] ( n -- n ) AU/CHAR[H] * ;
+: CELLS[] ( n -- n ) AU/CELL[H] * ;
+
+VARIABLE '@[]   VARIABLE '![] \ execution vectors
+
+: @[] ( a -- n ) >IMAGE '@[] @ EXECUTE ;
+: ![] ( n a -- ) >IMAGE '![] @ EXECUTE ;
+
+1 CHARS[] 1 = [IF] \ target uses byte addressing
+  : C@[] ( a -- n ) >IMAGE C@ ;
+  : C![] ( n a -- ) >IMAGE C! ;
+[ELSE] \ target uses cell addressing
+  : C@[] ( a -- n ) @[] ;
+  : C![] ( n a -- ) ![] ;
+[THEN]
+
+\ ==============================================================
+\ byte order
+
+\ Big Endian -- Moto
+: HLC@ ( a n -- a+ n' ) 8 LSHIFT OVER C@ OR >R CHAR+ R> ;
+: HLC! ( n a -- n' a+ ) 2DUP C! >R 8 RSHIFT R> 1 CHARS - ;
+
+: @16HL ( a -- n ) 0 HLC@ HLC@ NIP ;
+: !16HL ( n a -- ) 1 CHARS + HLC! C! ;
+
+: @32HL ( a -- n ) 0 HLC@ HLC@ HLC@ HLC@ NIP ;
+: !32HL ( n a -- ) 3 CHARS + HLC! HLC! HLC! C! ;
+
+\ Little Endian -- Intel
+: LHC@ ( a n -- a+ n' ) 8 LSHIFT OVER C@ OR >R 1 CHARS - R> ;
+: LHC! ( n a -- n' a+ ) 2DUP C! >R 8 RSHIFT R> CHAR+ ;
+
+: @16LH ( a -- n ) 1 CHARS + 0 LHC@ LHC@ NIP ;
+: !16LH ( n a -- ) LHC! C! ;
+
+: @32LH ( a -- n ) 3 CHARS + 0 LHC@ LHC@ LHC@ LHC@ NIP ;
+: !32LH ( n a -- ) LHC! LHC! LHC! C! ;
+
+\ ==============================================================
+\ search order \ search-wordlist ( 0 | xt [-]1 )
+
+\ words used INSIDE target definitions ( immediate )
+WORDLIST CONSTANT INSIDE-WORDLIST
+
+: :I ( 'name' -- )
+  GET-CURRENT >R  INSIDE-WORDLIST SET-CURRENT  :
+  R> SET-CURRENT ;
+
+: [I] ( 'name' -- ) PARSE-WORD INSIDE-WORDLIST SEARCH-WORDLIST
+  0= ABORT" undefined[I]?"  COMPILE, ; IMMEDIATE
+
+\ words used OUTSIDE target definitions
+WORDLIST CONSTANT OUTSIDE-WORDLIST
+
+: :O ( 'name' -- )
+  GET-CURRENT >R  OUTSIDE-WORDLIST SET-CURRENT  :
+  R> SET-CURRENT ;
+
+: [O] ( 'name' -- ) PARSE-WORD OUTSIDE-WORDLIST SEARCH-WORDLIST
+  0= ABORT" undefined[O]?"  COMPILE, ; IMMEDIATE
+
+\ ==============================================================
+\ controlled substances
+
+GET-CURRENT ( wid )
+
+INSIDE-WORDLIST SET-CURRENT
+
+AU/CHAR[T] 1 = [IF]   : CHARS ;   : CHAR/ ;   [THEN]
+AU/CELL[T] 1 = [IF]   : CELLS ;   : CELL/ ;   [THEN]
+AU/CELL[T] 1 = [IF]   : ALIGN ;   : ALIGNED ; [THEN]
+
+: [DEFINED] ( 'name' -- f ) [COMPILE] [DEFINED] ;
+: [IF] ( f -- ) [COMPILE] [IF]   ;
+: [ELSE] ( -- ) [COMPILE] [ELSE] ;
+: [THEN] ( -- ) [COMPILE] [THEN] ;
+
+: ( ( 'ccc' -- ) [COMPILE] ( ;
+: \ ( 'ccc' -- ) [COMPILE] \ ;
+
+: .( ( 'ccc' -- ) [COMPILE] .( ;
+
+OUTSIDE-WORDLIST SET-CURRENT
+
+: WORDS ( -- ) WORDS ;    : ORDER ( -- ) ORDER ;
+
+AU/CELL[H] 2 = [IF]
+: MOTO  ( -- ) ['] @16HL '@[] !  ['] !16HL '![] ! ;
+: INTEL ( -- ) ['] @16LH '@[] !  ['] !16LH '![] ! ;
+[THEN]
+
+AU/CELL[H] 4 = [IF]
+: MOTO  ( -- ) ['] @32HL '@[] !  ['] !32HL '![] ! ;
+: INTEL ( -- ) ['] @32LH '@[] !  ['] !32LH '![] ! ;
+[THEN]
+
+: = ( n n -- f ) = ;
+: + ( n n -- n ) + ;
+: - ( n n -- n ) - ;
+: * ( n n -- n ) * ;
+: DUP ( n -- n n ) DUP ;
+: AND ( n n -- n ) AND ;
+: ABS ( n -- n ) ABS ;
+: INVERT ( n -- n ) INVERT ;
+: NEGATE ( n -- n ) NEGATE ;
+: LSHIFT ( n n -- n ) LSHIFT ;
+: RSHIFT ( n n -- n ) RSHIFT ;
+: CHAR ( 'c' -- n ) CHAR ;
+: CTRL ( 'c' -- n ) CTRL ;
+
+: [DEFINED] ( 'name' -- f ) [COMPILE] [DEFINED] ;
+: [IF] ( f -- ) [COMPILE] [IF]   ;
+: [ELSE] ( -- ) [COMPILE] [ELSE] ;
+: [THEN] ( -- ) [COMPILE] [THEN] ;
+
+: ( ( 'ccc' -- ) [COMPILE] ( ;
+: \ ( 'ccc' -- ) [COMPILE] \ ;
+
+: CR ( -- ) CR ;
+: .( ( 'ccc' -- ) [COMPILE] .(  ?CSP ; \ add stack check
+
+: BITS/CELL ( -- n ) BITS/CELL ;
+: CODEBIT   ( -- n ) CODEBIT  ;
+: CODEBIT&  ( -- n ) CODEBIT& ;
+: LISTBIT   ( -- n ) LISTBIT  ;
+: LISTBIT'  ( -- n ) LISTBIT' ;
+: LISTBIT&  ( -- n ) LISTBIT& ;
+
+: D# ( 'ccc' -- n|d ) [COMPILE] D# ; ( decimal )
+: H# ( 'ccc' -- n|d ) [COMPILE] H# ; ( hex )
+
+: CHARS ( n -- n ) AU/CHAR[T] * ;
+: CELLS ( n -- n ) AU/CELL[T] * ;
+
+( wid ) SET-CURRENT
+
+\ ==============================================================
+\ late binding by evaluating strings
+
+: SBIND ( a n wid -- )
+  GET-ORDER DUP BEGIN ?DUP WHILE 1 - ROT >R REPEAT >R \ save
+  1 SET-ORDER  ['] EVALUATE CATCH ( can return a number )
+  R> DUP BEGIN ?DUP WHILE 1 - R> -ROT REPEAT SET-ORDER \ restore
+  ABORT" bind?" ; \ restore order before error control
+
+: XBIND ( xt 'name' -- )
+  PARSE-WORD  [COMPILE] SLITERAL  COMPILE,  ['] SBIND COMPILE, ;
+
+WORDLIST CONSTANT ETARGET-WORDLIST \ database of target words
+
+: BIND ( 'name' -- ) ['] ETARGET-WORDLIST XBIND ; IMMEDIATE
+: BOND ( 'name' -- ) ['] OUTSIDE-WORDLIST XBIND ; IMMEDIATE
+
+\ ==============================================================
+\ tools
+
+: INSIDE  ( -- ) INSIDE-WORDLIST  +ORDER ;
+: OUTSIDE ( -- ) OUTSIDE-WORDLIST +ORDER ;
+
+: ETARGET ( -- ) ETARGET-WORDLIST +ORDER ;
+: EWORDS  ( -- ) WORDS ;
+: EORDER  ( -- ) ORDER ;
+
+:I QQQ ( -- ) FORTH-WORDLIST +ORDER  E4-WORDLIST +ORDER ;
+:O QQQ ( -- ) [I] QQQ ;
+
+\ ==============================================================
+\ memory operators
+
+VARIABLE DP[] \ host dictionary pointer, byte
+: HERE[] ( -- a ) DP[] @ ;
+
+VARIABLE 'ALLOT[] \ execution vector
+: _ALLOT[] ( n -- ) DP[] +! ; \ address units
+: +ALLOT[] ( -- ) ['] _ALLOT[] 'ALLOT[] ! ; \ normal compile
+: -ALLOT[] ( -- ) ['] DROP     'ALLOT[] ! ; \ no compile
+:  ALLOT[] ( n -- ) 'ALLOT[] @ EXECUTE ;    +ALLOT[]
+
+: C,[] ( n -- ) HERE[]  1 CHARS[] ALLOT[]  C![] ;
+
+: MOVE[] ( a a n -- )
+  0 ?DO OVER I CHARS + C@  OVER I CHARS[] + C![]  LOOP 2DROP ;
+
+: STRING,[] ( a n -- )
+  DUP C,[]  HERE[] SWAP CHARS[]  DUP ALLOT[]  MOVE[] ;
+
+: ,[] ( n -- ) HERE[]  1 CELLS[] ALLOT[]  ![] ;
+: XT, ( xt -- ) ,[] ;
+
+: ALIGNED[] ( a -- a )
+  [ AU/CELL[T]  1 -  DUP ] LITERAL + [ INVERT ] LITERAL AND ;
+
+VARIABLE WASTE \ alignment wasted address units
+
+:O ORG ( a -- ) \ set E4* once
+   AU*  E4* @ INVERT 0= IF DUP E4* ! THEN  DP[] ! ;
+
+:O ALIGN ( -- )
+   HERE[]  DUP ALIGNED[] SWAP -  DUP ALLOT[]  WASTE +! ;
+:O HERE ( -- a ) HERE[]  AU/ ;   \ byte to word addressing
+:O ALLOT ( n -- ) AU*  ALLOT[] ; \ word to byte addressing
+:O , ( n -- ) ,[] ;
+:O ! ( n a -- ) AU* ![] ;
+
+:O ,L ( n -- ) ,[] ; \ bbb 20110125
+
+\ ==============================================================
+\ name structure: \xt\link\attribute+count\name_string\
+
+VARIABLE  XT[T] \ most recently defined xt
+VARIABLE LEX[T] \ most recently defined name
+
+:O LATEST ( -- na ) LEX[T] @ AU/ ; \ most recent name address
+
+: HEAD,[T] ( 'name' -- )           \ header field
+  [O] ALIGN  HERE[] XT[T] !  0 XT, \ space for xt
+  [O] LATEST ,[]  HERE[] LEX[T] !  \ pointer to previous name
+  >IN @  PARSE-WORD ( a n )        \ save input for XHEAD,[T]
+  ?LF  2 SPACES 2DUP TYPE          \ display name
+  STRING,[]                        \ save name
+  >IN ! ;                          \ restore input
+   
+VARIABLE  XT[H] \ most recently defined xt
+VARIABLE LEX[H] \ most recently defined name
+VARIABLE uWords \ number of unique words
+VARIABLE xWords \ number of replaced words
+
+: HEAD,[H] ( 'name' -- ) \ create self compiling words
+  GET-CURRENT  ETARGET-WORDLIST SET-CURRENT
+  CREATE  SET-CURRENT
+    1 uWords +!        \ count unique words
+    HERE LEX[H] !  0 , \ lex
+    HERE  XT[H] !  0 , \ xt
+  DOES> 2@ ABORT" immediate?" XT, ;
+
+: !XTS ( xt -- ) DUP XT[T] @ ![]  XT[H] @ ! ;
+
+VARIABLE wasteXT  \ waste from even/odd xt
+VARIABLE '?XT     \ execution vector
+  ' NOOP '?XT !   \ init do nothing
+
+: HEADS ( 'name' -- a ) HEAD,[T]  HEAD,[H] ;
+: LIST[T] ( 'name' -- )
+  LISTBIT HEADS  [O] ALIGN [O] HERE  DUP ."  a=" .H
+  '?XT @ EXECUTE OR  DUP ." x=" .H  !XTS ;
+
+: !LEX[T] ( n -- ) \ set immediate and compile-only bits
+  LEX[T] @ C@[]  OR  LEX[T] @ C![] ;
+
+:O IMMEDIATE ( -- )
+   LEX[H] @ IF  BOND =IMED  DUP !LEX[T]  LEX[H] @ ! THEN ;
+
+:O COMPILE-ONLY ( -- )
+   LEX[H] @ IF  BOND =COMP  !LEX[T] THEN ;
+
+\ ==============================================================
+\ compiler
+
+:I RECURSE ( -- ) XT[H] @ @ XT, ;
+
+:O ," ( 'ccc' -- )
+   [CHAR] " PARSE  [O] ALIGN  STRING,[]  [O] ALIGN ;
+
+:I ABORT" ( 'ccc' -- ) BIND _ABORT"  [O] ," ;
+:I     ." ( 'ccc' -- ) BIND _."      [O] ," ;
+:I     S" ( 'ccc' -- ) BIND _S"      [O] ," ;
+
+:I LITERAL ( n -- ) DATABIT& AND  BIND _LIT  ,[] ;
+:I [CHAR] ( 'c' -- ) CHAR  [I] LITERAL ;
+:I [CTRL] ( 'c' -- ) CTRL  [I] LITERAL ;
+
+\ DPL = -1 no decimal point, else position
+: #II ( n|d -- )
+  DPL @ 0< 0= IF SWAP  [I] LITERAL THEN  [I] LITERAL ;
+:I D# ( 'ccc' -- ) [O] D#  #II ; ( decimal )
+:I H# ( 'ccc' -- ) [O] H#  #II ; ( hex )
+
+:O ' ( 'name' -- xt )
+   PARSE-WORD ETARGET-WORDLIST SEARCH-WORDLIST
+   0= ABORT" undefined[T]?"  >BODY CELL+ @ ;
+
+:I ['] ( 'name' -- ) [O] '  [I] LITERAL ;
+:I [COMPILE] ( 'name' -- ) [O] '  XT, ;
+
+:O ] ( -- )
+   [O] ALIGN  ETARGET-WORDLIST INSIDE-WORDLIST 2 SET-ORDER ;
+:I [ ( -- ) OUTSIDE-WORDLIST  DUP SET-CURRENT  1 SET-ORDER ;
+
+:I [[ ( -- ) [I] [  +ALLOT[] ;
+:I ; ( -- ) BIND EXIT  [I] [[ ;
+
+\ ==============================================================
+\ defining words
+
+:O EQU ( n 'name' -- ) CONSTANT ;
+:O LABEL ( 'name' -- ) [O] HERE  [O] EQU ;
+
+:O : ( 'name' -- )
+   >IN @  PARSE-WORD
+     ETARGET-WORDLIST SEARCH-WORDLIST \ ?previously defined
+   IF 2DROP  -ALLOT[]  0 LEX[H] !     \ compile nothing
+     1 xWords +!                      \ count replaced words
+   ELSE >IN !  LIST[T]  +ALLOT[]      \ compile normally
+   THEN  [O] ] ;
+
+: DUO ( 'name' -- ) >IN @  [O] :  >IN ! ;
+
+:O CREATE   ( 'name' -- ) DUO BIND _VAR  [I] [[  [O] LABEL ;
+:O VARIABLE ( 'name' -- ) [O] CREATE  0 ,[] ;
+:O CONSTANT ( n 'name' -- )
+   DUO BIND _CON  [I] [[  DUP  [O] EQU  ,[] ;
+:O USER     ( n 'name' -- )
+   DUO BIND _USR  [I] [[  DUP  [O] EQU  ,[] ;
+
+\ ==============================================================
+\ control flow
+
+:I BEGIN ( -- a ) [O] HERE ;
+:I THEN ( a -- ) \ uncomment for relative addressing
+   [I] BEGIN ( OVER - ) SWAP ![] ;
+
+: RESOLVE ( a -- ) ( [I] BEGIN - ) ,[] ; \ uncomment relative
+: MARK ( -- a ) HERE[]  [I] BEGIN  RESOLVE ;
+
+:I IF ( -- a ) BIND _IF  MARK ;
+:I AHEAD ( -- a ) BIND _ELSE  MARK ;
+:I ELSE ( a -- a ) [I] AHEAD  SWAP  [I] THEN ;
+:I WHILE ( a -- a a ) [I] IF  SWAP ;
+
+:I UNTIL ( a -- ) BIND _IF  RESOLVE ;
+:I AGAIN ( a -- ) BIND _ELSE  RESOLVE ;
+:I REPEAT ( a a -- ) [I] AGAIN  [I] THEN ;
+
+\ ==============================================================
+\ initialize compiler
+
+: !IMAGE ( n -- )
+   UNUSED OVER U< ABORT" allot image?"
+   HERE SWAP  OVER IADDR !  DUP ISIZE !
+   DUP CHARS ALLOT  [CHAR] b FILL ;
+
+: META[ ( -- wid*n n wid )
+  +ALLOT[]  0 LEX[T] !
+  0 WASTE !  0 wasteXT !  0 uWords !  0 xWords !
+  -1 DUP DP[] ! E4* ! ( arm pointers )
+  [O] INTEL ( default byte order )
+  GET-ORDER GET-CURRENT   !CSP   [I] [  DECIMAL ;
+
+VARIABLE FSIZE ( actual file size )
+
+:O ]META ( wid*n n wid -- )
+   CR   ?CSP   SET-CURRENT SET-ORDER   DECIMAL
+   ." HERE=$" [O] HERE   DUP .H   E4BASE - CELLS FSIZE !
+   ."   Waste=" WASTE @ .D
+   ."   WasteXT=" wasteXT @ .D
+   ."   Words=" uWords @ .D
+   ."   xWords=" xWords @ .D ;
+
+\ ==============================================================
+
